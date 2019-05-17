@@ -153,6 +153,9 @@ function message_switch($client_id,$mid,$data)
                 ///send_to_task_server(my_pack_with_uid(535,$_SESSION['uid'],$task_event->serializeToString()));
                 //804奖励
                 send_pack_task_reward($client_id);
+
+                //发送任务列表
+                get_user_task_list($_SESSION['uid']);
                 break;
             }
         //游戏完成
@@ -236,7 +239,9 @@ function message_switch($client_id,$mid,$data)
                     send_pack_sign($client_id,1,false);
 
                     //任务处理
-                    task_manager($mid);
+//                    task_manager($mid);
+                    task_udpate_once($_SESSION['uid'],299999);
+
                     return;
                 }
                 if(intval(strtotime($get_sign['updated'])/86400)==intval(time()/86400))
@@ -249,7 +254,8 @@ function message_switch($client_id,$mid,$data)
                     db_user_sign(false,$_SESSION['uid']);
                     send_pack_sign($client_id,$get_sign['sign_date']%7+1,false);
                     //任务处理
-                    task_manager($mid);
+                    //task_manager($mid);
+                    task_udpate_once($_SESSION['uid'],299999);
                     return;
                 }
                 break;
@@ -298,6 +304,9 @@ function message_switch($client_id,$mid,$data)
                 }
                 db_user_update_bWx($_SESSION['uid']);
                 send_pack_user_wx($client_id,$is_success);
+                if($is_success){
+                    task_udpate_once($_SESSION['uid'],300033);
+                }
                 return;
             }
         case 1015:
