@@ -287,6 +287,9 @@ function message_switch($client_id,$mid,$data)
                 }
                 db_user_update_bRealName($_SESSION['uid']);
                 send_pack_user_real_name($client_id,$is_success);
+                if($is_success){
+                    task_udpate_once($_SESSION['uid'],300034);
+                }
                 return;
             }
         case 1012:
