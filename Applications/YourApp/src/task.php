@@ -230,7 +230,7 @@ function get_user_task_list($user_id){
         }
     }
     //查询玩家是普通玩家还是代理
-    $sql="select user_type from `user`.`user_info` where user_id='$user_id'";
+    $sql="select user_type from bolaik_user.`user_info` where user_id='$user_id'";
     $user=db_query($sql);
     $isNormal=$user[0]['user_type']==1?1:0;
     //get user_taskList
