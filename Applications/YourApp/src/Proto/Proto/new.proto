@@ -1,0 +1,489 @@
+package proto;
+//////////////////////////////////////////////////用户注册或获取密码
+
+///////////////////////////用户获取密码 701 --> 702
+
+//请求密码
+message CS_Get_Password
+{
+	//option (msgid) = 701;
+	optional string phone	= 1;
+}
+
+
+//返回密码
+message SC_Back_Password
+{
+	//option (msgid) = 702; 
+	optional string phone    = 1;
+    optional string password    = 2;
+    optional bool is_create_user    = 3;
+}
+
+///////////////////////////用户创建角色 703--> 704
+
+//创建角色消息
+message CS_Create_User
+{
+    //option (msgid) = 703;
+    optional string	    name    = 1;
+    optional uint32     gender      = 2; //0女 1男
+    optional E_CONSTELLATION_TYPE constellation   = 3; //星座
+}
+
+//创建角色消息返回是否成功
+message SC_Create_User_Back
+{
+    //option (msgid) = 704;
+    optional int32	result    = 1;
+    optional bool	is_success    = 2;
+}
+
+//////////////////////////////////////////////////用户信息初始化流程
+
+/////////////////用户登录消息 710 --> 711
+
+//登录设备类型枚举
+enum E_Equipment_TYPE
+{
+	Equipment_none			= 0;
+	Equipment_IOS			= 1;
+	Equipment_Android		= 2;
+	Equipment_Ipad_IOS		= 3;
+	Equipment_Ipad_Android	= 4;
+	Equipment_PC			= 5;
+	Equipment_NEW			= 6; //其他或新设备
+}
+
+//登录方式类型枚举
+enum E_Login_TYPE
+{
+	Login_none		= 0;
+	Login_fast		= 1; //快速登陆
+	Login_phone		= 2; //手机登陆
+	Login_wx		= 3; //微信登陆
+}
+
+//登录消息
+message CS_Client_Login
+{
+    //option (msgid) = 710;
+    optional string phone    = 1;
+    optional string password    = 2;
+	optional E_Equipment_TYPE	equipment	= 3; //设备
+	optional E_Login_TYPE		login_type	= 4; //登录方式
+}
+
+
+//是否登录成功
+message SC_Client_Login_Back
+{
+    //option (msgid) = 711;
+    optional int32	result    = 1;
+    optional bool	is_success    = 2;
+}
+
+/////////////////心跳 712-->713
+
+//心跳 
+message CS_XinTiao
+{
+    //option (msgid) = 712;
+}
+//心跳 
+message SC_XinTiao
+{
+    //option (msgid) = 713;
+    optional uint32 date = 1;
+}
+
+//////////////////////////////////////////////////登录流程
+
+/////////////////初始化信息请求 800 --> 801 ,802, 803, 804
+
+//请求用户信息
+message CS_User_Info
+{
+    //option (msgid) = 800;
+}
+
+/////////801
+
+//性别枚举
+enum E_GENDER_TYPE
+{
+	GENDER_0	= 0; //女
+	GENDER_1	= 1; //男
+}
+
+//星座枚举
+enum E_CONSTELLATION_TYPE
+{
+	CONSTELLATION_NONE	= 0;
+	CONSTELLATION_1	= 1; //白羊座
+	CONSTELLATION_2	= 2; //金牛座
+	CONSTELLATION_3 = 3; //双子座
+	CONSTELLATION_4 = 4; //巨蟹座
+	CONSTELLATION_5 = 5; //狮子座
+	CONSTELLATION_6 = 6; //处女座
+	CONSTELLATION_7 = 7; //天秤座
+	CONSTELLATION_8 = 8; //天蝎座
+	CONSTELLATION_9 = 9; //射手座
+	CONSTELLATION_10 = 10; //摩羯座
+	CONSTELLATION_11 = 11; //水瓶座
+	CONSTELLATION_12 = 12; //双鱼座
+}
+
+//角色信息数据结构
+message E_User_Info
+{
+	optional uint64			uid                 = 1; //userid(gameid)
+	optional E_GENDER_TYPE	gender              = 2; //性别
+	optional string			name                = 3; //名字
+	optional uint32     	gold                = 4; //金币
+	optional uint32     	BU                  = 5; //BU
+	optional int32     	    vigour              = 6; //体力 活力
+	optional E_CONSTELLATION_TYPE	xingzhu		= 7; //星座
+	optional string			touxiang			= 8; //头像
+	optional uint32			sign_date			= 9; //签到天数
+	optional string			moxing_ids			= 10; //模型ID
+	optional uint32			moxing_id			= 11;
+	optional string			changjing_ids		= 12; //场景ID	
+	optional uint32			changjing_id		= 13;
+	optional bool			bsign				= 14; //1 已签到 0没有答到
+	optional bool			bAgent				= 15; //同意 代理协议
+	optional bool			bRealName			= 16; //实名认证
+	optional bool			bWx					= 17; //是否已绑定微信
+	optional string			phone				= 18; //手机号
+}
+
+//返回用户信息
+message SC_User_Info_Back
+{
+    //option (msgid) = 801;
+    optional E_User_Info e_user_info = 1;
+}
+
+/////////802
+
+//背包信息
+message SC_User_Info_Bag
+{
+    //option (msgid) = 802;
+    repeated uint32 equipmenting_item =1;
+    repeated uint32 having_item= 2;
+}
+
+/////////803
+
+//任务执行类型
+enum E_TASK_PARAM_TYPE
+{
+	TASK_PARAM_NONE		= 0;
+	TASK_PARAM_TYPE_1	= 1; // 日常任务
+	TASK_PARAM_TYPE_2	= 2; // 成长任务
+	TASK_PARAM_TYPE_3	= 3; // 活动任务
+	TASK_PARAM_TYPE_4	= 4; // 其他任务
+}
+
+//任务ui类型
+enum E_TASK_MODE
+{
+	TASK_MODE_NONE	= 0;
+	TASK_MODE_1	= 1; // 执行功能
+	TASK_MODE_2	= 2; // 打开游戏
+	TASK_MODE_3	= 3; // 跳转链接
+	TASK_MODE_4	= 4; // 跳转微信
+	TASK_MODE_5	= 5; // 跳转UI
+}
+
+//任务执行状态
+enum E_TASK_STATE
+{
+	TASK_STATE_NONE				= 0;
+    TASK_STATE_CAN_ACCEPT		= 1; // 可接收（未执行）
+	TASK_STATE_IS_DOING			= 2; // 进行中的任务
+	TASK_STATE_DONE				= 3; // 已完成的任务
+	TASK_STATE_CANNOT_ACCEPT	= 4;//不可用
+	TASK_STATE_REWARD	= 5; // 已领奖
+}
+
+// 任务信息
+message E_Task_Info
+{
+	optional uint32	Task_id			= 1; //任务ID
+	optional bytes	Task_name		= 2; //任务名称
+	optional bytes	Task_content	= 3; //任务描述
+	optional uint32	channel_id		= 4; //任务渠道编号
+	optional E_TASK_PARAM_TYPE	Task_param_type	= 5; //任务类型：1、日常任务 2、成长任务 3、活动任务 4、其他任务
+	optional E_TASK_MODE	Task_skip_type	= 6; //任务跳转方式：1、跳转UI 2、跳转渠道 3、跳转广告 4、跳转链接
+	optional string	skip			= 7; //任务跳转链接地址
+	optional string	Task_pre		= 8; //获得任务前提条件
+	optional string	arch_task		= 9; //完成任务条件
+	optional uint32	u_coin			= 10; //任务获得U币2
+	optional uint32	gold_coin		= 11; //任务获得金币
+	repeated uint32	prop_id			= 12; //任务获得道具ID
+	optional uint32	script_id		= 13; //脚本ID
+	optional E_TASK_STATE Task_state  = 14; //任务状态
+	optional uint32	step		    = 15; //任务步骤
+	optional uint32	step_done		= 16; //任务完成步骤
+	optional uint32 id              = 17; //任务排序
+	optional uint32 power_point     = 18; //消耗体力
+}
+
+//初始化任务
+message SC_Init_Task
+{
+    //option (msgid) = 803;
+    repeated E_Task_Info Task = 1;
+}
+
+/////////804
+
+//签到奖励表
+message SC_Task_Sign_Reward
+{
+    //option (msgid) = 804;
+	repeated uint32 u_coin = 1;
+}
+
+/////////806
+
+//跑马灯通知公告
+message SC_System_Tips_Str
+{
+    //option (msgid) = 806;
+    optional uint32	type    = 1; //0 中间提示 1弹出框 2走马灯 3聊天框 
+    optional string	tipStr  = 4; //字符参数1 空值无效
+}
+
+/////////807
+
+//同意 代理协议
+message CS_User_bAgent
+{
+    //option (msgid) = 807;
+}
+
+//////////////////////////////////////////////////游戏交互
+
+/////////////////小游戏结束成绩 900 --> 
+
+//小游戏结束成绩 
+message CS_Game_Over_Score
+{
+    //option (msgid) = 900;
+    optional uint32 gameid = 1;
+	optional uint32 value1 = 2;
+	optional uint32 value2 = 3;
+	optional uint32 value3  = 4;
+	optional uint32 value4  = 5;
+	optional uint32 value5  = 6;
+	optional uint32 value6  = 7;
+}
+
+/////////////////小游戏排行榜  901 --> 902
+
+// 所有小游戏排行榜 
+message CS_All_Game_Ranking
+{
+    //option (msgid) = 901;
+}
+
+//小游戏排行榜结构
+message E_Fast_Game_Ranking
+{ 
+   optional uint32 gameid	= 1;
+   optional uint64 userid	= 2;
+   optional string username = 3;
+   optional uint32 score	= 4;
+   optional uint32 index	= 5;
+}
+//所有小游戏排行榜 返回
+message SC_All_Game_Ranking
+{  
+   //option (msgid) = 902;
+   repeated E_Fast_Game_Ranking rankingdata = 1;
+}
+
+/////////////////换装 1000--> 1001
+
+//换装
+message CS_User_Use_Equip
+{
+    //option (msgid) = 1000;
+    optional uint32 moxing      = 1;//角色模型
+    repeated Item_Slot	item_slot   = 2;//穿着装备列表
+}
+
+//换装返回
+message SC_User_Use_Equip_Result
+{
+    //option (msgid) = 1001;
+    repeated uint32	equip_itemid    = 1;
+}
+
+/////////////////购买物品 1002--> 1003
+
+//装备槽位结构
+message Item_Slot
+{
+    optional uint32	slot  = 1;//槽位(如果槽位是7则为场景购买)
+    optional uint32	itemid  = 2;//装备列表
+}
+//购买物品 商店id 物品id 数量  CM_USER_BUY_ITEM
+message CS_User_Buy_Item
+{
+    //option (msgid) = 1002;
+    optional uint32 moxing  = 1;//角色模型
+    repeated Item_Slot	item_slot  = 2;//装备列表
+}
+
+// 购买添加 (默认穿戴)
+message SC_User_Add_Item
+{
+    //option (msgid) = 1003;
+    repeated uint32	itemid    = 1;
+}
+
+/////////////////选择场景 1004--> 1005
+
+//选择场景
+message CS_User_Select_changjing
+{
+    //option (msgid) = 1004;
+    optional uint32 changjing = 1;
+}
+
+//选择场景
+message SC_User_Select_changjing
+{
+    //option (msgid) = 1005;
+    optional uint32 changjing = 1;
+}
+
+/////////////////签到 1006--> 1007
+
+//签到
+message CS_User_Sign
+{
+    //option (msgid) = 1006;
+    optional uint32 date    = 1;
+}
+
+//签到 返回
+message SC_User_Sign
+{
+    //option (msgid) = 1007;
+    optional uint32 date    = 1;
+    optional uint32 is_sign_today    = 2;//是否签到成功
+}
+
+
+/////////////////更新角色信息 1008--> 1009
+
+//更新角色信息 
+message CS_User_Info_Update
+{
+    //option (msgid) = 1008;
+    optional string  name                = 1;
+    optional E_GENDER_TYPE        gender  = 2;
+    optional E_CONSTELLATION_TYPE type    = 3;
+}
+
+//更新角色信息 返回
+message SC_User_Info_Update
+{
+    //option (msgid) = 1009;
+    optional int32	result    = 1;
+    optional bool	is_success    = 2;
+}
+
+/////////////////实名认证 1010--> 1011
+
+//实名认证 
+message CS_User_Real_Name
+{
+    //option (msgid) = 1010;
+    optional string    name    = 1;
+    optional string   code    = 2;
+}
+
+//实名认证 返回
+message SC_User_Real_Name
+{
+    //option (msgid) = 1011;
+    optional int32	result    = 1;
+    optional bool	is_success    = 2;
+}
+
+/////////////////绑定微信 1012--> 1013
+
+//绑定微信 
+message CS_User_Bind_wx
+{
+    //option (msgid) = 1012;
+    optional string unionid = 1;
+    optional string openid  = 2;
+}
+
+//绑定微信  返回
+message SC_User_Bind_wx
+{
+    //option (msgid) = 1013;
+    optional int32	result    = 1;
+    optional bool	is_success    = 2;
+}
+
+/////////////////账变 <-- 1014
+
+//账变
+message SC_User_UB
+{
+    //option (msgid) = 1014;
+    optional uint32     	BU                  = 1; //BU
+	optional uint32     	gold                = 2; //金币
+	optional int32     	    vigour              = 3; //体力 活力
+}
+
+/////////////////GPS位置 1015 --> 
+
+//GPS位置 
+message CS_User_GPS
+{
+    //option (msgid) = 1015;
+    optional double x   = 1;
+    optional double y   = 2;
+}
+
+/////////////////更新任务 <-- 1016
+
+//更新任务
+message SC_Update_Task
+{
+	//option (msgid) = 1016; 
+	repeated E_Task_Info Task = 1;
+}
+
+/////////////////任务奖励 1017 --> 1018
+
+//请求任务奖励
+message CS_Get_Task_ReWard
+{
+    //option (msgid) = 1017;
+	repeated uint32	Task_id	 = 1; //任务ID
+}
+
+//任务奖励结果结构
+message Task_Reward_Result
+{
+	optional uint32	Task_id	 = 1;
+	optional bool  is_success = 2;
+}
+
+//发放任务奖励
+message SC_Given_Task_ReWard
+{
+    //option (msgid) = 1018;
+	repeated Task_Reward_Result	task_reward_result	 = 1; //任务ID
+}
