@@ -2,15 +2,10 @@
 function web_server_message_manager($data)
 {
     global $task_sign_map;
-    $dataArr =json_decode($data);
+    $dataArr =json_decode($data,true);
     if($dataArr['f']=='signNotice')
     {
-        $task_event = new \Proto\SM_Task_Event();
-        $uid= $dataArr['user_id'];
-        $task_id = $dataArr['task_id'];
-        $task_event->appendHandler($task_sign_map[$task_id]);
-        $task_event->setTaskType(\Proto\MY_TASK_TYPE::MY_UPDARE);
-        send_to_task_server(my_pack_with_uid(535,$_SESSION['uid'],$task_event->serializeToString()));
+        task_udpate_once($dataArr['user_id'],$dataArr['task_id']);
         return;
     }
     if($dataArr['f']=='updateUserInfo')

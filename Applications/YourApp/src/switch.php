@@ -12,6 +12,7 @@ function message_switch($client_id,$mid,$data)
 {
     global $task_event_map;
     global $number_object_map;
+//    $_SESSION['uid']=438268928;
     //如果包id不存在,记录错误返回
     if(!array_key_exists($mid,$number_object_map))
     {
@@ -75,7 +76,7 @@ function message_switch($client_id,$mid,$data)
         $is_success =false;
         if(db_create_user($_SESSION['phone'],$create_user->getName(),$create_user->getGender(),$create_user->getConstellation())!=null)
         {
-            task_manager($mid);
+//            task_manager($mid);
             $is_success=true;
         }
         send_pack_create_user($client_id,$is_success);
@@ -168,8 +169,9 @@ function message_switch($client_id,$mid,$data)
             {
                 $play_game_result = new \Proto\CS_Game_Over_Score();
                 $play_game_result->parseFromString($data);
-                db_add_user_game_store($_SESSION['uid'],$play_game_result);
-                task_manager($mid);
+//                db_add_user_game_store($_SESSION['uid'],$play_game_result);
+//                task_manager($mid);
+                task_udpate_game($play_game_result,$_SESSION['uid']);
                 break;
             }
         case 901:
@@ -283,7 +285,7 @@ function message_switch($client_id,$mid,$data)
                 }
                 else
                 {
-                    task_manager($mid);
+//                    task_manager($mid);
                 }
                 db_user_update_bRealName($_SESSION['uid']);
                 send_pack_user_real_name($client_id,$is_success);
@@ -303,7 +305,7 @@ function message_switch($client_id,$mid,$data)
                 }
                 else
                 {
-                    task_manager($mid);
+//                    task_manager($mid);
                 }
                 db_user_update_bWx($_SESSION['uid']);
                 send_pack_user_wx($client_id,$is_success);
@@ -317,10 +319,17 @@ function message_switch($client_id,$mid,$data)
                 $user_info_up = new \Proto\CS_User_GPS();
                 $user_info_up->parseFromString($data);
                 db_store_user_gps($_SESSION['uid'],$user_info_up->getX(),$user_info_up->getY());
+                break;
             }
         case 1017:
             {
                 send_to_task_server(my_pack_with_uid(10056,$_SESSION['uid'],$data));
+                break;
+            }
+        case 1019:
+            {
+                get_user_task_list($_SESSION['uid']);
+                break;
             }
         //绑定微信
         //修改名称 （更改用户信息）
