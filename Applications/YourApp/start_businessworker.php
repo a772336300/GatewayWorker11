@@ -36,7 +36,7 @@ $tcp_worker = new BusinessWorker();
 // worker名称
 $tcp_worker->name = 'YourAppBusinessWorker';
 // bussinessWorker进程数量
-$tcp_worker->count = 1;
+$tcp_worker->count = 8;
 // 服务注册地址
 $tcp_worker->registerAddress = '127.0.0.1:1238';
 
@@ -49,6 +49,8 @@ $connection_count = 0;
 
 //设置db
 $tcp_worker->db = null;
+//设置db_web
+//$tcp_worker->db_web = null;
 //设置任务服务器连接句柄
 $tcp_worker->taskServerConnections = array();
 //连接数缓存
@@ -63,6 +65,7 @@ $tcp_worker->onWorkerStart = function ($worker)
     global $config;
     //初始化数据库
     $worker->db= new \Workerman\MySQL\Connection($config['db']['host'],$config['db']['port'],$config['db']['user'],$config['db']['password'],$config['db']['dbname'],$config['db']['charset']);
+    //$worker->db_web= new \Workerman\MySQL\Connection($config['db_web']['host'],$config['db_web']['port'],$config['db_web']['user'],$config['db_web']['password'],$config['db_web']['dbname'],$config['db_web']['charset']);
     //$worker->db= new Connection('192.168.0.200','3306','dgame','123456','mytest','utf8');
 
     // 开启任务worker进程

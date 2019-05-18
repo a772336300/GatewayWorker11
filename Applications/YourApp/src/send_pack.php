@@ -13,6 +13,7 @@ function send_pack_password($client_id,$phone,$password,$is_create_user)
     \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(702,$sc_back_password->serializeToString()));
     //$connection->send(my_pack(702,$sc_back_password->serializeToString()));
 }
+
 function send_pack_create_user($client_id,$is_success)
 {
     $create_user_back = new \Proto\SC_Create_User_Back();
@@ -182,4 +183,45 @@ function send_pack_strength_change($uid,$strength)
     $object = new \Proto\SC_User_UB();
     $object->setVigour($strength);
     \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(1014,$object->serializeToString()));
+}
+function send_pack_user_task_list($client_id,$is_success,$data)
+{
+    $object= new \Proto\SC_Init_Task();
+    foreach ($data as $value)
+    {
+        $task = new \Proto\E_Task_Info();
+        $task->setTaskId($value['task_id']);
+        $task->setSkip($value['skip']);
+        $task->setArchTask('');
+        $task->setChannelId(1);
+        $task->setGoldCoin($value['gold_coin']);
+        $task->setId($value['id']);
+        $task->setPowerPoint(0);
+        $task->setScriptId(0);
+        $task->setStep($value['total']);
+        $task->setStepDone($value['done']);
+        $task->setTaskContent($value['task_content']);
+        $task->setTaskName($value['task_name']);
+        $task->setTaskParamType($value['task_name_type']);
+        $task->setTaskPre('');
+        $task->setTaskSkipType($value['task_skip_type']);
+        $task->setTaskState($value['state']);
+        $task->setUCoin($value['u_coin']);
+        $object->appendTask($task);
+    }
+    //$connection->send(my_pack(1013,$object->serializeToString()));
+    \GatewayWorker\Lib\Gateway::sendToUid($client_id,my_pack(803,$object->serializeToString()));
+}
+
+function send_update_task_state($uid,$task_id,$state,$stepDone)
+{
+    echo "send to client:".$task_id.",".$state.",".$stepDone;
+    echo '/n';
+    $buff = new \Proto\SC_Update_Task();
+    $object = new \Proto\E_Task_Info();
+    $object->setTaskState($state);
+    $object->setTaskId($task_id);
+    $object->setStepDone($stepDone);
+    $buff->appendTask($object);
+    \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(1016,$buff->serializeToString()));
 }

@@ -13,12 +13,12 @@ function message_switch($client_id,$mid,$data)
     global $task_event_map;
     global $number_object_map;
     //如果包id不存在,记录错误返回
-    if(!array_key_exists($mid,$number_object_map))
-    {
-        echo "client packet error!from ip:";
-        //echo "client packet error!from ip:". $connection->getRemoteIp() . "\n";
-        return;
-    }
+//    if(!array_key_exists($mid,$number_object_map))
+//    {
+//        echo "client packet error!from ip:";
+//        //echo "client packet error!from ip:". $connection->getRemoteIp() . "\n";
+//        return;
+//    }
     if($mid == 40000)
     {
         web_server_message_manager($data);
@@ -70,12 +70,12 @@ function message_switch($client_id,$mid,$data)
         echo "create user request!";
         $create_user = new \Proto\CS_Create_User();
         $create_user->parseFromString($data);
-
         $create_user_back = new \Proto\SC_Create_User_Back();
+
         $is_success =false;
-        if(db_create_user($_SESSION['phone'],$create_user->getName(),$create_user->getGender(),$create_user->getConstellation())!=null)
+        if(db_create_user($_SESSION['phone'],$create_user->getName(),(int)$create_user->getGender(),(int)$create_user->getConstellation())!=null)
         {
-            task_manager($mid);
+//            task_manager($mid);
             $is_success=true;
         }
         send_pack_create_user($client_id,$is_success);
@@ -83,10 +83,13 @@ function message_switch($client_id,$mid,$data)
     }
     if($mid==710)
     {
+
         echo "client login request!";
         //获取请求对象
         $cs_client_login = new \Proto\CS_Client_Login();
         $cs_client_login->parseFromString($data);
+
+
         $get_user=db_get_user_by_verify($cs_client_login->getPhone(),$cs_client_login->getPassword());
         //var_dump($get_user);
         $is_success=false;
@@ -104,6 +107,12 @@ function message_switch($client_id,$mid,$data)
                  * 实现针对特定uid推送数据
                  */
                 //$tcp_worker->uidConnections[$connection->phone] = $connection;
+            }
+            //判断是否创建角色
+            if($get_user[0]['name']==null)
+            {
+                send_pack_password($client_id,$cs_client_login->getPhone(),$cs_client_login->getPassword(),true);
+                return;
             }
         }
         send_pack_login($client_id,$is_success);
@@ -145,14 +154,9 @@ function message_switch($client_id,$mid,$data)
                 var_dump($user_info_bag);
                 send_pack_user_bag_info($client_id,$user_info_bag[0]);
 
-                //任务请求
-                $task_event = new \Proto\SM_Task_Event();
-                $task_event->setUid($_SESSION['uid']);
-                $task_event->setTaskType(\Proto\MY_TASK_TYPE::MY_INIT);
-                echo $_SESSION['uid'];
-                ///send_to_task_server(my_pack_with_uid(535,$_SESSION['uid'],$task_event->serializeToString()));
-                //804奖励
-                send_pack_task_reward($client_id);
+
+                //发送任务列表
+                get_user_task_list($_SESSION['uid']);
                 break;
             }
         //游戏完成
@@ -165,8 +169,9 @@ function message_switch($client_id,$mid,$data)
             {
                 $play_game_result = new \Proto\CS_Game_Over_Score();
                 $play_game_result->parseFromString($data);
-                db_add_user_game_store($_SESSION['uid'],$play_game_result);
-                task_manager($mid);
+//                db_add_user_game_store($_SESSION['uid'],$play_game_result);
+//                task_manager($mid);
+                task_udpate_game($play_game_result,$_SESSION['uid']);
                 break;
             }
         case 901:
@@ -236,7 +241,9 @@ function message_switch($client_id,$mid,$data)
                     send_pack_sign($client_id,1,false);
 
                     //任务处理
-                    task_manager($mid);
+//                    task_manager($mid);
+                    task_udpate_once($_SESSION['uid'],299999);
+
                     return;
                 }
                 if(intval(strtotime($get_sign['updated'])/86400)==intval(time()/86400))
@@ -249,7 +256,8 @@ function message_switch($client_id,$mid,$data)
                     db_user_sign(false,$_SESSION['uid']);
                     send_pack_sign($client_id,$get_sign['sign_date']%7+1,false);
                     //任务处理
-                    task_manager($mid);
+                    //task_manager($mid);
+                    task_udpate_once($_SESSION['uid'],299999);
                     return;
                 }
                 break;
@@ -277,10 +285,13 @@ function message_switch($client_id,$mid,$data)
                 }
                 else
                 {
-                    task_manager($mid);
+                  //  task_manager($mid);
                 }
                 db_user_update_bRealName($_SESSION['uid']);
                 send_pack_user_real_name($client_id,$is_success);
+                if($is_success){
+                    task_udpate_once($_SESSION['uid'],300034);
+                }
                 return;
             }
         case 1012:
@@ -294,10 +305,13 @@ function message_switch($client_id,$mid,$data)
                 }
                 else
                 {
-                    task_manager($mid);
+                 //   task_manager($mid);
                 }
                 db_user_update_bWx($_SESSION['uid']);
                 send_pack_user_wx($client_id,$is_success);
+                if($is_success){
+                    task_udpate_once($_SESSION['uid'],300033);
+                }
                 return;
             }
         case 1015:
@@ -305,11 +319,25 @@ function message_switch($client_id,$mid,$data)
                 $user_info_up = new \Proto\CS_User_GPS();
                 $user_info_up->parseFromString($data);
                 db_store_user_gps($_SESSION['uid'],$user_info_up->getX(),$user_info_up->getY());
+                break;
             }
         case 1017:
             {
                 send_to_task_server(my_pack_with_uid(10056,$_SESSION['uid'],$data));
+                break;
             }
+            case 1019:
+                {
+                    $bu_stream = new \Proto\CS_User_BU_Steam();
+                    $bu_stream->parseFromString($data);
+                    get_jinlian_liushui($_SESSION['uid'],$_SESSION['phone'],$bu_stream->getFlag(),$bu_stream->getDateFlag(),$bu_stream->getPage(),$bu_stream->getPageSize(),$bu_stream->getUnixTimestamp(),$bu_stream->getShowAll());
+                    break;
+                }
+                // case 1019:
+        //     {
+        //         get_user_task_list($_SESSION['uid']);
+        //         break;
+        //     }
         //绑定微信
         //修改名称 （更改用户信息）
         //实名认证 （是否实名认证）
