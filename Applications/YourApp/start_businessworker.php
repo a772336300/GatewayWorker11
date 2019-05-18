@@ -44,7 +44,7 @@ $tcp_worker->registerAddress = '127.0.0.1:1238';
 
 $tcp_worker->product_uid_count = 0;
 //连接数
-$connection_count = 0;
+$tcp_worker->connection_count = 0;
 
 
 //设置db
@@ -68,45 +68,45 @@ $tcp_worker->onWorkerStart = function ($worker)
     //$worker->db_web= new \Workerman\MySQL\Connection($config['db_web']['host'],$config['db_web']['port'],$config['db_web']['user'],$config['db_web']['password'],$config['db_web']['dbname'],$config['db_web']['charset']);
     //$worker->db= new Connection('192.168.0.200','3306','dgame','123456','mytest','utf8');
 
-    // 开启任务worker进程
-    $socket= 'tcp://0.0.0.0:803'.$worker->id;
-    $inner_task_worker = new Worker($socket);
-    $inner_task_worker->reusePort = true;
-    //当有任务服务器连接上来，保存连接
-    $inner_task_worker->onConnect = function ($connection)
-    {
-        global $tcp_worker;
-        $tcp_worker->taskServerConnections[]=$connection;
-        $tcp_worker->taskServerConnectionsCount++;
-        echo $tcp_worker->taskServerConnectionsCount;
-        //任务请求
-        $task_event = new \Proto\SM_Task_Event();
-        $task_event->setTaskType(\Proto\MY_TASK_TYPE::MY_INIT);
-        //send_to_task_server(my_pack_with_uid(535,$connection->phone,$task_event->serializeToString()));
-
-        $connection->send(my_pack_with_uid(500,1,''));
-        echo "a task server connect!! worker $tcp_worker->id port 803$tcp_worker->id!! current count: $tcp_worker->taskServerConnectionsCount!\n";
-    };
-    //接收任务服务器消息
-    $inner_task_worker->onMessage = function($connection, $packet)
-    {
-        echo 'message from task server!';
-        on_task_server_message_switch($packet);
-    };
-    //断开连接时删除连接句柄
-    $inner_task_worker->onClose = function($connection)
-    {
-        global $tcp_worker;
-        if(in_array($connection,$tcp_worker->taskServerConnections))
-        {
-            unset($tcp_worker->taskServerConnections[$connection->id]);
-            $tcp_worker->taskServerConnectionsCount--;
-            echo "a task server close!!left count : $tcp_worker->taskServerConnectionsCount\n";
-        }
-    };
-    // ## 执行监听 ##
-    $inner_task_worker->listen();
-    echo "start task service listen $socket\n";
+//    // 开启任务worker进程
+//    $socket= 'tcp://0.0.0.0:803'.$worker->id;
+//    $inner_task_worker = new Worker($socket);
+//    $inner_task_worker->reusePort = true;
+//    //当有任务服务器连接上来，保存连接
+//    $inner_task_worker->onConnect = function ($connection)
+//    {
+//        global $tcp_worker;
+//        $tcp_worker->taskServerConnections[]=$connection;
+//        $tcp_worker->taskServerConnectionsCount++;
+//        echo $tcp_worker->taskServerConnectionsCount;
+//        //任务请求
+//        $task_event = new \Proto\SM_Task_Event();
+//        $task_event->setTaskType(\Proto\MY_TASK_TYPE::MY_INIT);
+//        //send_to_task_server(my_pack_with_uid(535,$connection->phone,$task_event->serializeToString()));
+//
+//        $connection->send(my_pack_with_uid(500,1,''));
+//        echo "a task server connect!! worker $tcp_worker->id port 803$tcp_worker->id!! current count: $tcp_worker->taskServerConnectionsCount!\n";
+//    };
+//    //接收任务服务器消息
+//    $inner_task_worker->onMessage = function($connection, $packet)
+//    {
+//        echo 'message from task server!';
+//        on_task_server_message_switch($packet);
+//    };
+//    //断开连接时删除连接句柄
+//    $inner_task_worker->onClose = function($connection)
+//    {
+//        global $tcp_worker;
+//        if(in_array($connection,$tcp_worker->taskServerConnections))
+//        {
+//            unset($tcp_worker->taskServerConnections[$connection->id]);
+//            $tcp_worker->taskServerConnectionsCount--;
+//            echo "a task server close!!left count : $tcp_worker->taskServerConnectionsCount\n";
+//        }
+//    };
+//    // ## 执行监听 ##
+//    $inner_task_worker->listen();
+//    echo "start task service listen $socket\n";
     //定时器
 };
 
