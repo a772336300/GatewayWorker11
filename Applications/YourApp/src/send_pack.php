@@ -13,6 +13,7 @@ function send_pack_password($client_id,$phone,$password,$is_create_user)
     \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(702,$sc_back_password->serializeToString()));
     //$connection->send(my_pack(702,$sc_back_password->serializeToString()));
 }
+
 function send_pack_create_user($client_id,$is_success)
 {
     $create_user_back = new \Proto\SC_Create_User_Back();

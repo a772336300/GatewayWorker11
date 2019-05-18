@@ -16,9 +16,10 @@ require_once 'db_repository.php';
 // 创建一个Worker监听端口，不使用任何应用层协议
 $tcp_worker = new Worker("tcp://0.0.0.0:8080");
 
+//生产用户账号
 $tcp_worker->product_uid_count = 0;
 //连接数
-$connection_count = 0;
+$tcp_worker->connection_count = 0;
 
 // 启动1个进程对外提供服务
 $tcp_worker->count = 1;
@@ -92,9 +93,8 @@ $tcp_worker->uidConnections = array();
 $tcp_worker->onConnect = function($connection)
 {
     global $tcp_worker;
-    global $connection_count;
-    $connection_count++;
-    echo "a client connect! worker id :$tcp_worker->id connection client count : $connection_count\n";
+    $tcp_worker->connection_count++;
+    echo "a client connect! worker id :$tcp_worker->id connection client count : $tcp_worker->connection_count\n";
 //    $addCoinLog = new AddCoinLog();
 //    $addCoinLog->setBehaviorId(100);
 //    $addCoinLog->setGetPropId(123);
@@ -134,9 +134,8 @@ $tcp_worker->onClose = function ($connection)
 {
   //用户退出
     global $tcp_worker;
-    global $connection_count;
-    $connection_count--;
-    echo "a client close! worker id :$tcp_worker->id connection client count : $connection_count\n";
+    $tcp_worker->connection_count--;
+    echo "a client close! worker id :$tcp_worker->id connection client count : $tcp_worker->connection_count\n";
 };
 $tcp_worker->onError = function($connection, $code, $msg)
 {
