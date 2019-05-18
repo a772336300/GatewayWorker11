@@ -225,7 +225,7 @@ function get_user_task_list($user_id){
                 $state=3;
                 $done=1;
             }
-            $sql="insert into func_system.user_task (user_id,task_id,state,done,total) values($user_id,$task_config[task_id],$state,$done,$task_config[total])";
+            $sql="insert into func_system.user_task (user_id,task_id,state,done,total,task_name_type) values($user_id,$task_config[task_id],$state,$done,$task_config[total],$task_config[task_name_type])";
             db_query($sql);
         }
     }
