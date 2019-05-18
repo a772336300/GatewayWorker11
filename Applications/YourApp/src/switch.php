@@ -70,10 +70,10 @@ function message_switch($client_id,$mid,$data)
         echo "create user request!";
         $create_user = new \Proto\CS_Create_User();
         $create_user->parseFromString($data);
-        $create_user_back = new \Proto\SC_Create_User_Back();
 
+        $create_user_back = new \Proto\SC_Create_User_Back();
         $is_success =false;
-        if(db_create_user($_SESSION['phone'],$create_user->getName(),(int)$create_user->getGender(),(int)$create_user->getConstellation())!=null)
+        if(db_create_user($_SESSION['phone'],$create_user->getName(),$create_user->getGender(),$create_user->getConstellation())!=null)
         {
 //            task_manager($mid);
             $is_success=true;
@@ -83,13 +83,10 @@ function message_switch($client_id,$mid,$data)
     }
     if($mid==710)
     {
-
         echo "client login request!";
         //获取请求对象
         $cs_client_login = new \Proto\CS_Client_Login();
         $cs_client_login->parseFromString($data);
-
-
         $get_user=db_get_user_by_verify($cs_client_login->getPhone(),$cs_client_login->getPassword());
         //var_dump($get_user);
         $is_success=false;
@@ -169,8 +166,8 @@ function message_switch($client_id,$mid,$data)
             {
                 $play_game_result = new \Proto\CS_Game_Over_Score();
                 $play_game_result->parseFromString($data);
-//                db_add_user_game_store($_SESSION['uid'],$play_game_result);
-//                task_manager($mid);
+                db_add_user_game_store($_SESSION['uid'],$play_game_result);
+                //task_manager($mid);
                 task_udpate_game($play_game_result,$_SESSION['uid']);
                 break;
             }
