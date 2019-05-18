@@ -43,11 +43,11 @@ function send_pack_user_info($client_id,$user_info)
     $user_info_buf->setTouxiang($user_info['touxiang']);//读
     $user_info_buf->setSignDate($user_info['sign_date']);//写
     //$user_info_buf->setMoxingIds($user_info['moxing_ids']);//读？
-    //$user_info_buf->setMoxingId($user_info['moxing_id']);//读？
-    $user_info_buf->setMoxingId(100);
+    $user_info_buf->setMoxingId($user_info['moxing_id']);//读？
+    //$user_info_buf->setMoxingId(100);
     //$user_info_buf->setChangjingIds($user_info['changjing_ids']);//读？
     $user_info_buf->setChangjingId($user_info['changjing_id']);//读？
-    $user_info_buf->setChangjingId(2070002);//读？
+    //$user_info_buf->setChangjingId(2070002);//读？
     if($user_info['updated']==null)
     {
         $user_info_buf->setBsign(false);//写
@@ -224,4 +224,18 @@ function send_update_task_state($uid,$task_id,$state,$stepDone)
     $object->setStepDone($stepDone);
     $buff->appendTask($object);
     \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(1016,$buff->serializeToString()));
+}
+function send_notice($uid,$id,$body)
+{
+    $message = new \Proto\SC_System_Tips_Str();
+    $message->setType($id);
+    $message->setTipStr($body);
+    \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(806,$message->serializeToString()));
+}
+function send_notice_to_all($id,$body)
+{
+    $message = new \Proto\SC_System_Tips_Str();
+    $message->setType($id);
+    $message->setTipStr($body);
+    \GatewayWorker\Lib\Gateway::sendToAll(my_pack(806,$message->serializeToString()));
 }

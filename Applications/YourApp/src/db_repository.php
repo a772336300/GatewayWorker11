@@ -1,5 +1,9 @@
 <?php
-
+function db_get_user_init()
+{
+    global $tcp_worker;
+    return $tcp_worker->db->query("select id,value from func_system.init_system");
+}
 function db_check_user($uid,$password)
 {
     global $tcp_worker;
@@ -16,6 +20,7 @@ function db_exist_user($phone)
 }
 function db_add_user($phone,$uid,$password)
 {
+    global $init_user_config;
     global $tcp_worker;
     global $init_equipment;
     global $init_equipment_having;
@@ -24,7 +29,7 @@ function db_add_user($phone,$uid,$password)
     $tcp_worker->db->beginTrans();
 
     $sql = "insert into user (phone,uid,password) values('$phone',$uid,'$password');";
-    $sql1 = "insert into user_money (uid,gold,vigour) values($uid,1000000,5);";
+    $sql1 = "insert into user_money (uid,gold,vigour) values($uid,$init_user_config[gold],$init_user_config[vigour]);";
     $sql2 = "insert into user_sign (uid) values($uid);";
     $sql3 = "insert into user_bag (uid,equipmenting_item,having_item) values($uid,'$init_equipment_json','$init_equipment_having_json');";
     $sql4 = "insert into user.user_info(user_account,user_passwd,user_id,user_nick,user_equipment,login_type,b_phone_nu) values('$phone','$password',$uid,'',2,2,'$phone')";

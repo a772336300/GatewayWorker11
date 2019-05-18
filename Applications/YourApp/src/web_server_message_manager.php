@@ -28,5 +28,15 @@ function web_server_message_manager($data)
 
         return;
     }
+    if($dataArr['f']=='refreshTable')
+    {
+        $dataArr['libName'];
+        $dataArr['tableName'];
+        $refresh = refreshUserInit();
+        foreach ($refresh as $id=>$value)
+        {
+            send_notice_to_all($id,$value);
+        }
+    }
 
 }

@@ -10,6 +10,7 @@ require_once __DIR__ . '/Proto/Autoloader.php';
 
 function message_switch($client_id,$mid,$data)
 {
+    global $init_user_config;
     global $task_event_map;
     global $number_object_map;
     //如果包id不存在,记录错误返回
@@ -64,7 +65,6 @@ function message_switch($client_id,$mid,$data)
         return;
 
     }
-
     if($mid==703)
     {
         echo "create user request!";
@@ -144,17 +144,20 @@ function message_switch($client_id,$mid,$data)
                     echo "get user error";
                     return;
                 }
+                //商城开关
+                send_notice($_SESSION['uid'],4,$init_user_config['shangchengkaiguan']);
+                //实名认证
+                send_notice($_SESSION['uid'],5,$init_user_config['shimingkaiguan']);
+                //h获取BU信息
                 get_jinlian_assert($_SESSION['uid'],$_SESSION['phone']);
                 //请求金lian
                 //get_user_BU();
                 //801基本信息
                 send_pack_user_info($client_id,$user_info[0]);
-
+                send_pack_task_reward($client_id);
                 $user_info_bag = db_get_user_bag_info_by_uid($_SESSION['uid']);
                 var_dump($user_info_bag);
                 send_pack_user_bag_info($client_id,$user_info_bag[0]);
-
-
                 //发送任务列表
                 get_user_task_list($_SESSION['uid']);
                 break;
