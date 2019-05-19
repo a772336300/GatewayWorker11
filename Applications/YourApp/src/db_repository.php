@@ -20,6 +20,7 @@ function db_exist_user($phone)
 }
 function db_add_user_id($phone,$password)
 {
+
     global $tcp_worker;
     $sql = "insert into user (phone,password) values('$phone','$password');";
     $tcp_worker->db->query($sql);
