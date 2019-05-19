@@ -80,6 +80,7 @@ function message_switch($client_id,$mid,$data)
         return;
 
     }
+
     if($mid==703)
     {
         echo "create user request!";
