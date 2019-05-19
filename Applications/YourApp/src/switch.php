@@ -46,11 +46,26 @@ function message_switch($client_id,$mid,$data)
         $is_create_user = false;
         //获取用户密码
         $password = product_password();
-        //新增用户保存密码
+
+        //新增用户uid
         if(db_exist_user($phone)==null)
         {
+            //新增用户
+            db_add_user_id($phone,$password);
+            $new_user = db_exist_user($phone);
             $is_create_user=true;
-            db_add_user($phone,product_uid(),$password);
+            if(!isset($new_user['uid']))
+            {
+                file_put_contents('log.txt', "db_add_user_id fail!phone: $phone\n", FILE_APPEND | LOCK_EX);
+                return ;
+            }
+            if(!db_add_user($phone,$new_user['uid'],$password))
+            {
+                db_delete_user_id($new_user['uid']);
+                file_put_contents('log.txt', "db_add_user fail!phone: $phone\n", FILE_APPEND | LOCK_EX);
+                return ;
+            }
+
         }
         else
         {
