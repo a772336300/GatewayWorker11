@@ -247,9 +247,11 @@ function get_user_task_list($user_id){
             }else{
                 //还未完成第一次领奖
                 $allDatas[$key]['u_coin']=$allData['u_coin_first'];
+                $allDatas[$key]['gold_coin']=0;
             }
         }else{
             $allDatas[$key]['u_coin']=$allData['u_coin_normal'];
+            $allDatas[$key]['gold_coin']=0;
         }
 
 
