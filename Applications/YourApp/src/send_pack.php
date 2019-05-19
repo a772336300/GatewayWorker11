@@ -5,7 +5,6 @@ require_once __DIR__ . '/Proto/Autoloader.php';
 //发送用户密码
 function send_pack_password($client_id,$phone,$password,$is_create_user)
 {
-    echo "xxxxxxxxxxxxxxxxxxxx";
     $sc_back_password = new SC_Back_Password();
     $sc_back_password->setPassword($password);
     $sc_back_password->setPhone($phone);

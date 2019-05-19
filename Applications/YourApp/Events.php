@@ -59,11 +59,6 @@ class Events
    {
        //echo substr($packet,0,4);
        // 向客户端发送hello $data
-       global $test_count;
-       global $test_count1;
-       $test_count++;
-       echo $test_count;
-       echo "\n";
 //       if(unpack('i*',substr($packet,0,4))[1]!=strlen($packet))
 //       {
 //           $test_count1++;
@@ -80,23 +75,29 @@ class Events
     public static function nianbao($packet,$client_id)
     {
         global $test_xx_count;
+        //剩余包长
         $len_packet = strlen($packet);
+        //截取包长
         $len = unpack('I*',substr($packet,0,4))[1];
         while ($len_packet>=$len)
         {
-            //解析包
+            //截取包
             $data = substr($packet,8,$len-8);
-            message_switch($client_id,unpack('i*',substr($packet,4,4))[1],$data);
-            $test_xx_count++;
-            echo "xxxxxxxxxxxx$test_xx_count\n";
-            //剩余包
+            message_switch($client_id,unpack('I*',substr($packet,4,4))[1],$data);
+            //剩余包长
             $packet = substr($packet,$len);
+            $len_packet=$len_packet-$len;
             if($packet ==null)
             {
                 break;
             }
+            //解包出错，跳出
+            if(!isset(unpack('I*',substr($packet,0,4))[1]))
+            {
+                break;
+            }
+            //新包长
             $len = unpack('I*',substr($packet,0,4))[1];
-            $len_packet=$len_packet-$len;
         }
     }
    /**

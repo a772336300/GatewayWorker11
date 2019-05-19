@@ -21,6 +21,7 @@ use \Workerman\Autoloader;
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../vendor/workerman/workerman/mysql/src/Connection.php';
 require_once 'config.php';
+require_once 'user_init.php';
 require_once 'src/number_object_map.php';
 require_once 'src/task_event_map.php';
 require_once 'src/db_repository.php';
@@ -65,6 +66,7 @@ $tcp_worker->onWorkerStart = function ($worker)
     global $config;
     //初始化数据库
     $worker->db= new \Workerman\MySQL\Connection($config['db']['host'],$config['db']['port'],$config['db']['user'],$config['db']['password'],$config['db']['dbname'],$config['db']['charset']);
+    refreshUserInit();
     //$worker->db_web= new \Workerman\MySQL\Connection($config['db_web']['host'],$config['db_web']['port'],$config['db_web']['user'],$config['db_web']['password'],$config['db_web']['dbname'],$config['db_web']['charset']);
     //$worker->db= new Connection('192.168.0.200','3306','dgame','123456','mytest','utf8');
 
@@ -110,6 +112,51 @@ $tcp_worker->onWorkerStart = function ($worker)
     //定时器
 };
 
+
+function refreshUserInit()
+{
+    $refresh_arr = array();
+    global $init_user_config;
+    global $init_user_config_map;
+    $init_user_config_tmp= db_get_user_init();
+    foreach ($init_user_config_tmp as $item)
+    {
+        if($item['id']==$init_user_config_map['gold'])
+        {
+            $init_user_config['gold']=$item['value'];
+            continue;
+        }
+        if($item['id']==$init_user_config_map['BU'])
+        {
+            $init_user_config['BU']=$item['value'];
+            continue;
+        }
+        if($item['id']==$init_user_config_map['vigour'])
+        {
+            $init_user_config['vigour']=$item['value'];
+            continue;
+        }
+        if($item['id']==$init_user_config_map['shangchengkaiguan'])
+        {
+            if($init_user_config['shangchengkaiguan']!=$item['value'])
+            {
+                $refresh_arr[4]=$item['value'];
+            }
+            $init_user_config['shangchengkaiguan']=$item['value'];
+            continue;
+        }
+        if($item['id']==$init_user_config_map['shimingkaiguan'])
+        {
+            if($init_user_config['shimingkaiguan']!=$item['value'])
+            {
+                $refresh_arr[5]=$item['value'];
+            }
+            $init_user_config['shimingkaiguan']=$item['value'];
+            continue;
+        }
+    }
+    return $refresh_arr;
+}
 
 // 新增加一个属性，用来保存uid到connection的映射
 $tcp_worker->uidConnections = array();
