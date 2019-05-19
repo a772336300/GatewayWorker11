@@ -220,6 +220,8 @@ function get_user_task_list($user_id){
     $sql="select count(id) total from func_system.user_task where user_id=".$user_id;
     $total=db_query($sql)[0]['total'];
     if($total==0){
+        global $tcp_worker;
+        $tcp_worker->db->beginTrans();
         $task_cofigs=db_get_task_config();
         foreach ($task_cofigs as $task_config) {
             echo "task_id".$task_config["task_id"];
@@ -232,6 +234,12 @@ function get_user_task_list($user_id){
             }
             $sql="insert into func_system.user_task (user_id,task_id,state,done,total,task_name_type) values($user_id,$task_config[task_id],$state,$done,$task_config[total],$task_config[task_name_type])";
             db_query($sql);
+        }
+        if(!$tcp_worker->db->commitTrans())
+        {
+            $tcp_worker->db->rollBackTrans();
+            util_log('初始化任务列表失败：user_id:'.$user_id);
+            return false;
         }
     }
     //查询玩家是普通玩家还是代理
