@@ -229,7 +229,14 @@ function send_notice($uid,$id,$body)
 {
     $message = new \Proto\SC_System_Tips_Str();
     $message->setType($id);
-    $message->setTipStr($body);
+    if($body==null)
+    {
+        $message->setTipStr("0");
+    }
+    else
+    {
+        $message->setTipStr((string)$body);
+    }
     \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(806,$message->serializeToString()));
 }
 function send_notice_to_all($id,$body)
