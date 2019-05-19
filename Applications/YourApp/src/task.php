@@ -225,12 +225,12 @@ function get_user_task_list($user_id){
                 $state=3;
                 $done=1;
             }
-            $sql="insert into func_system.user_task (user_id,task_id,state,done,total) values($user_id,$task_config[task_id],$state,$done,$task_config[total])";
+            $sql="insert into func_system.user_task (user_id,task_id,state,done,total,task_name_type) values($user_id,$task_config[task_id],$state,$done,$task_config[total],$task_config[task_name_type])";
             db_query($sql);
         }
     }
     //查询玩家是普通玩家还是代理
-    $sql="select user_type from `user`.`user_info` where user_id='$user_id'";
+    $sql="select user_type from bolaik_user.`user_info` where user_id='$user_id'";
     $user=db_query($sql);
     $isNormal=$user[0]['user_type']==1?1:0;
     //get user_taskList
@@ -247,9 +247,11 @@ function get_user_task_list($user_id){
             }else{
                 //还未完成第一次领奖
                 $allDatas[$key]['u_coin']=$allData['u_coin_first'];
+                $allDatas[$key]['gold_coin']=0;
             }
         }else{
             $allDatas[$key]['u_coin']=$allData['u_coin_normal'];
+            $allDatas[$key]['gold_coin']=0;
         }
 
 
