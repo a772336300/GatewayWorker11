@@ -46,8 +46,8 @@ function task_udpate_game($play_game_result,$uid)
 {
 
     $gameId=$play_game_result->getGameid();
-    echo "gameId:".$gameId;
-    echo '/n';
+//    echo "gameId:".$gameId;
+//    echo '/n';
     util_log('gameId:'.$gameId);
 //    echo "play_game_result:".$play_game_result;
     switch ($gameId){
@@ -194,16 +194,17 @@ function update($taskIds,$value,$uid){
         if($user_task['state']==2){
             $sql="update func_system.user_task set  num=num+$value where task_id = $user_task[task_id] and user_id=$uid";
             db_query($sql);
-            echo "num:".$user_task['num'];
-            echo "total:".$user_task['total'];
+            //echo "num:".$user_task['num'];
+            //echo "total:".$user_task['total'];
             util_log("-->num:".$user_task['num']);
             util_log("--->total:".$user_task['total']);
-            echo '--------》';
+            //echo '--------》';
             $sql="select * from func_system.user_task where task_id = $user_task[task_id] and user_id=$uid";
             $nowUserTask=db_query($sql);
             if($nowUserTask[0]['num']>=$nowUserTask[0]['total']){
                 $sql="update func_system.user_task set num=$user_task[total],state=3 where task_id=$user_task[task_id] and user_id=$uid";
                 db_query($sql);
+                file_put_contents('log.txt', "uid:$uid game task update!", FILE_APPEND | LOCK_EX);
                 //通知客户端更新
                 send_update_task_state($uid,$user_task['task_id'],3,$user_task['total']);
             }else{
@@ -224,8 +225,8 @@ function get_user_task_list($user_id){
         $tcp_worker->db->beginTrans();
         $task_cofigs=db_get_task_config();
         foreach ($task_cofigs as $task_config) {
-            echo "task_id".$task_config["task_id"];
-            echo '/n';
+//            echo "task_id".$task_config["task_id"];
+//            echo '/n';
             $state=2;
             $done=0;
             if($task_config["task_id"]==300032){
