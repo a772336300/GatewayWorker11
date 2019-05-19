@@ -215,6 +215,7 @@ function send_pack_user_task_list($client_id,$is_success,$data)
 function send_update_task_state($uid,$task_id,$state,$stepDone)
 {
     echo "send to client:".$task_id.",".$state.",".$stepDone;
+    util_log("send_update_task_state send to client:".$uid.','.$task_id.",".$state.",".$stepDone);
     echo '/n';
     $buff = new \Proto\SC_Update_Task();
     $object = new \Proto\E_Task_Info();
