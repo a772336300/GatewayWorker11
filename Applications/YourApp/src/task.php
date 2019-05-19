@@ -48,6 +48,7 @@ function task_udpate_game($play_game_result,$uid)
     $gameId=$play_game_result->getGameid();
 //    echo "gameId:".$gameId;
 //    echo '/n';
+    util_log('gameId:'.$gameId);
 //    echo "play_game_result:".$play_game_result;
     switch ($gameId){
         case 1:////布娃娃打僵尸游戏
@@ -154,6 +155,7 @@ function task_udpate_game($play_game_result,$uid)
             $bingdong=$play_game_result->getValue6();//288-291
             $koufen=$play_game_result->getValue4();//292-295
             $gameTime=$play_game_result->getValue2();//296-299
+            util_log('切水果收到数据:getScore:'.$getScore.',fengkuang:'.$fengkuang.',bingdong:'.$bingdong.',koufen:'.$koufen.',gameTime:'.$gameTime);
             if($getScore>0){
                 $taskIds="(300280,300281,300282,300283)";
                 update($taskIds,$getScore,$uid);
@@ -184,17 +186,19 @@ function task_udpate_game($play_game_result,$uid)
 function update($taskIds,$value,$uid){
     //更新分数任务
     //查询任务
-
     $sql="select * from func_system.user_task where user_id=$uid and task_id in $taskIds ";
     $user_tasks=db_query($sql);
     foreach ($user_tasks as $user_task) {
         echo "state:".$user_task['state'];
+        util_log('state:'.$user_task['state']);
         if($user_task['state']==2){
             $sql="update func_system.user_task set  num=num+$value where task_id = $user_task[task_id] and user_id=$uid";
             db_query($sql);
-//            echo "num:".$user_task['num'];
-//            echo "total:".$user_task['total'];
-//            echo '--------》';
+            //echo "num:".$user_task['num'];
+            //echo "total:".$user_task['total'];
+            util_log("-->num:".$user_task['num']);
+            util_log("--->total:".$user_task['total']);
+            //echo '--------》';
             $sql="select * from func_system.user_task where task_id = $user_task[task_id] and user_id=$uid";
             $nowUserTask=db_query($sql);
             if($nowUserTask[0]['num']>=$nowUserTask[0]['total']){
@@ -266,6 +270,9 @@ function mytime()
     \Workerman\Lib\Timer::add(1,function (){
 
     });
+}
+function util_log($str){
+    file_put_contents('log.txt', $str, FILE_APPEND | LOCK_EX);
 }
 
 
