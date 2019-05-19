@@ -280,7 +280,7 @@ function mytime()
     });
 }
 function util_log($str){
-    file_put_contents('log.txt', $str, FILE_APPEND | LOCK_EX);
+    file_put_contents('log.txt', $str."\n", FILE_APPEND | LOCK_EX);
 }
 
 
