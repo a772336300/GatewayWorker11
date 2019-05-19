@@ -7,7 +7,7 @@ function db_get_user_init()
 function db_check_user($uid,$password)
 {
     global $tcp_worker;
-    if($tcp_worker->db->query("select * from user where uid = $uid and password = $password")==null)
+    if($tcp_worker->db->query("select * from user where uid = $uid and password = '$password'")==null)
     {
         return false;
     }
@@ -16,7 +16,19 @@ function db_check_user($uid,$password)
 function db_exist_user($phone)
 {
     global $tcp_worker;
-    return $tcp_worker->db->query("select phone from user where phone = $phone");
+    return $tcp_worker->db->select('uid')->from('user')->where("phone= '$phone'")->row();
+}
+function db_add_user_id($phone,$password)
+{
+    global $tcp_worker;
+    $sql = "insert into user (phone,password) values('$phone','$password');";
+    $tcp_worker->db->query($sql);
+}
+function db_delete_user_id($uid)
+{
+    global $tcp_worker;
+    //$sql = "delete user where uid = $uid;";
+    $tcp_worker->db->query("delete user where uid = $uid;");
 }
 function db_add_user($phone,$uid,$password)
 {
@@ -24,17 +36,16 @@ function db_add_user($phone,$uid,$password)
     global $tcp_worker;
     global $init_equipment;
     global $init_equipment_having;
+
     $init_equipment_json = json_encode($init_equipment);
     $init_equipment_having_json = json_encode($init_equipment_having);
     $tcp_worker->db->beginTrans();
-
-    $sql = "insert into user (phone,uid,password) values('$phone',$uid,'$password');";
     $sql1 = "insert into user_money (uid,gold,vigour) values($uid,$init_user_config[gold],$init_user_config[vigour]);";
     $sql2 = "insert into user_sign (uid) values($uid);";
     $sql3 = "insert into user_bag (uid,equipmenting_item,having_item) values($uid,'$init_equipment_json','$init_equipment_having_json');";
     $sql4 = "insert into bolaik_user.user_info(user_account,user_passwd,user_id,user_nick,user_equipment,login_type,b_phone_nu) values('$phone','$password',$uid,'',2,2,'$phone')";
     //echo $sql.$sql1.$sql2;
-    $tcp_worker->db->query($sql);
+
     $tcp_worker->db->query($sql1);
     $tcp_worker->db->query($sql2);
     $tcp_worker->db->query($sql3);
@@ -70,22 +81,22 @@ function db_create_user($phone,$name,$gender,$constellation)
 function db_get_user_by_verify($phone,$password)
 {
     global $tcp_worker;
-    echo "select uid,name from user where phone = '$phone' and password = '$password'";
+    //echo "select uid,name from user where phone = '$phone' and password = '$password'";
     return $tcp_worker->db->query("select uid,name from user where phone = '$phone' and password = '$password'");
 }
 
 function db_get_user_info_by_uid($uid)
 {
     global $tcp_worker;
-    echo "SELECT * from `user`,user_money,user_sign where `user`.uid = $uid and `user`.uid = user_money.uid and `user`.uid = user_sign.uid";
+    //echo "SELECT * from `user`,user_money,user_sign where `user`.uid = $uid and `user`.uid = user_money.uid and `user`.uid = user_sign.uid";
     return $tcp_worker->db->query("SELECT * from `user`,user_money,user_sign where `user`.uid = $uid and `user`.uid = user_money.uid and `user`.uid = user_sign.uid");
 }
 
 function db_get_user_bag_info_by_uid($uid)
 {
     global $tcp_worker;
-    echo "select * from user_bag where uid = '$uid'";
-    return $tcp_worker->db->query("select * from user_bag where uid = '$uid'");
+    //echo "select * from user_bag where uid = '$uid'";
+    return $tcp_worker->db->query("select * from user_bag where uid = $uid");
 }
 function db_update_user_info_bAgent($isAgent,$uid)
 {
@@ -118,7 +129,7 @@ function db_user_sign($is_new,$uid)
 function db_update_user_info_some($uid,$name,$gender,$type)
 {
     global $tcp_worker;
-    echo "update user set name='$name',gender=$gender,constellation=$type where uid= $uid";
+    //echo "update user set name='$name',gender=$gender,constellation=$type where uid= $uid";
     return $tcp_worker->db->query("update user set name='$name',gender=$gender,constellation=$type where uid= $uid");
     //return $tcp_worker->db->update('user')->cols(array('name'=>(string)$name,'gender'=>$gender,'constellation'=>$type))->where("uid=$uid")->query();
 }
@@ -134,7 +145,7 @@ function db_user_real_name($uid,$name,$code)
 function db_user_update_bRealName($uid)
 {
     global $tcp_worker;
-    echo "update user set bRealName=1 where uid= $uid";
+    //echo "update user set bRealName=1 where uid= $uid";
     return $tcp_worker->db->query("update user set bRealName=1 where uid= $uid");
 }
 
@@ -151,7 +162,7 @@ function db_user_bWx($uid,$openid,$unionid)
 function db_user_update_bWx($uid)
 {
     global $tcp_worker;
-    echo "update user set bWx=1 where uid= $uid";
+    //echo "update user set bWx=1 where uid= $uid";
     return $tcp_worker->db->query("update user set bWx=1 where uid= $uid");
 }
 function db_store_user_gps($uid,$X,$Y)
@@ -176,9 +187,9 @@ function db_buy_item($uid,$user_info_bag,$buy_item)
         {
             foreach ($buy_item->getItemSlotIterator() as $value)
             {
-                echo 'xxoooooooo';
-                echo $value->getSlot();
-                echo '000000ooooo';
+                //echo 'xxoooooooo';
+                //echo $value->getSlot();
+                //echo '000000ooooo';
                 $gold=$gold+$init_equipment_buy[$value->getItemid()];
                 $items[]= $value->getItemid();
                 $having_item_arr[]= $value->getItemid();
@@ -192,9 +203,9 @@ function db_buy_item($uid,$user_info_bag,$buy_item)
     global $tcp_worker;
     if($moxing_id==99)
     {
-        echo 'xxxx';
-        var_dump($items);
-        echo 'xxxx';
+        //echo 'xxxx';
+        //var_dump($items);
+        //echo 'xxxx';
         $tcp_worker->db->query("update user set changjing_id= $items[0] where uid = $uid");
 
     }
@@ -282,7 +293,7 @@ function db_add_user_game_store($uid,$play_game_result)
     $value5=$play_game_result->getValue5();
     $value6=$play_game_result->getValue6();
     global $tcp_worker;
-    echo "insert into user_game (uid,gameid,value1,value2, value3, value4, value5, value6)values($uid,$gameid,$value1,$value2,$value3,$value4,$value5,$value6)";
+    //echo "insert into user_game (uid,gameid,value1,value2, value3, value4, value5, value6)values($uid,$gameid,$value1,$value2,$value3,$value4,$value5,$value6)";
     $tcp_worker->db->query("insert into user_game (uid,gameid,value1,value2, value3, value4, value5, value6)values($uid,$gameid,$value1,$value2,$value3,$value4,$value5,$value6)");
 }
 function db_update_user_money($uid,$u_coin,$gold_coin,$strength)
@@ -294,13 +305,13 @@ function db_get_task_config()
 {
     global $tcp_worker;
     $sql="select * from func_system.task_config";
-    echo $sql;
+   // echo $sql;
     return $tcp_worker->db->query($sql);
 }
 
 function db_query($sql)
 {
     global $tcp_worker;
-    echo $sql;
+    //echo $sql;
     return $tcp_worker->db->query($sql);
 }
