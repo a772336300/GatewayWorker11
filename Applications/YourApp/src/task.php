@@ -194,40 +194,18 @@ function update($taskIds,$value,$uid){
         echo "state:".$user_task['state'];
         util_log('state:'.$user_task['state']);
         if($user_task['state']==2){
-            $sql="update func_system.user_task set  num=num+$value where task_id = $user_task[task_id] and user_id=$uid";
-            db_query($sql);
-            //echo "num:".$user_task['num'];
-            //echo "total:".$user_task['total'];
-            util_log("-->num:".$user_task['num']);
-            util_log("--->total:".$user_task['total']);
-            //echo '--------》';
-        }
-    }
-    if(!$tcp_worker->db->commitTrans())
-    {
-        $tcp_worker->db->rollBackTrans();
-        //util_log('初始化任务列表失败：user_id:'.$user_id);
-        return false;
-    }
-    $tcp_worker->db->beginTrans();
-    $sql="select * from func_system.user_task where user_id=$uid and task_id in $taskIds ";
-    $user_tasks=db_query($sql);
-    foreach ($user_tasks as $user_task) {
-        echo "state:".$user_task['state'];
-        util_log('state:'.$user_task['state']);
-        if($user_task['state']==2){
-            //echo '--------》';
-            $sql="select * from func_system.user_task where task_id = $user_task[task_id] and user_id=$uid";
-            $nowUserTask=db_query($sql);
-            if($user_task['num']>=$user_task['total']){
+            $newNum=$user_task['num']+$value;
+            if($newNum>=$user_task['total']){
                 $sql="update func_system.user_task set num=$user_task[total],state=3 where task_id=$user_task[task_id] and user_id=$uid";
-                db_query($sql);
                 file_put_contents('log.txt', "uid:$uid game task update!", FILE_APPEND | LOCK_EX);
                 //通知客户端更新
                 send_update_task_state($uid,$user_task['task_id'],3,$user_task['total']);
             }else{
-                send_update_task_state($uid,$user_task['task_id'],2,$user_task['num']);
+                $sql="update func_system.user_task set num=$newNum where task_id=$user_task[task_id] and user_id=$uid";
+                send_update_task_state($uid,$user_task['task_id'],2,$newNum);
             }
+            util_log("更新任务：".$sql);
+            db_query($sql);
         }
     }
     if(!$tcp_worker->db->commitTrans())
