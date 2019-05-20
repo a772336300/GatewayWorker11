@@ -241,7 +241,25 @@ function get_user_task_list($user_id){
         if(!$tcp_worker->db->commitTrans())
         {
             $tcp_worker->db->rollBackTrans();
-            util_log('初始化任务列表失败：user_id:'.$user_id);
+            util_log('初始化任务列表1失败：user_id:'.$user_id);
+            return false;
+        }
+    }else if($total==53){
+        global $tcp_worker;
+        $tcp_worker->db->beginTrans();
+        $task_cofigs=db_get_task_config();
+        $state=2;
+        $done=0;
+        foreach ($task_cofigs as $task_config) {
+            if($task_config["task_id"]>=300200&&$task_config["task_id"]<=300303){
+                $sql="insert into func_system.user_task (user_id,task_id,state,done,total,task_name_type) values($user_id,$task_config[task_id],$state,$done,$task_config[total],$task_config[task_name_type])";
+                db_query($sql);
+            }
+        }
+        if(!$tcp_worker->db->commitTrans())
+        {
+            $tcp_worker->db->rollBackTrans();
+            util_log('初始化任务列表2失败：user_id:'.$user_id);
             return false;
         }
     }
