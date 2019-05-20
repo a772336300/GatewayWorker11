@@ -223,43 +223,48 @@ function get_user_task_list($user_id){
     $sql="select count(id) total from func_system.user_task where user_id=".$user_id;
     $total=db_query($sql)[0]['total'];
     if($total==0){
+        //查询是否有老任务
         global $tcp_worker;
         $tcp_worker->db->beginTrans();
         $task_cofigs=db_get_task_config();
-        foreach ($task_cofigs as $task_config) {
+        if($user_id<10000000){
+            foreach ($task_cofigs as $task_config) {
+                if($task_config["task_id"]>=300200&&$task_config["task_id"]<=300303){
+                    $sql="insert into func_system.user_task (user_id,task_id,state,done,total,task_name_type) values($user_id,$task_config[task_id],$state,$done,$task_config[total],$task_config[task_name_type])";
+                    db_query($sql);
+                }else{
+                    $sql="select state,done from func_system.user_task_beifen where uid=$user_id and task_id=$task_config[task_id]";
+                    $old_user_task=db_query($sql);
+                    $old_state=$old_user_task[0]['state'];
+                    $num=$old_user_task[0]['done'];
+                    if($old_state==5){
+                        $state=4;
+                    }else if($old_state==3){
+                        $state=3;
+                    }
+                    $sql="insert into func_system.user_task (user_id,task_id,state,done,total,task_name_type,num) values($user_id,$task_config[task_id],$state,$done,$task_config[total],$task_config[task_name_type],$num)";
+                    db_query($sql);
+                }
+            }
+        }else{
+            foreach ($task_cofigs as $task_config) {
 //            echo "task_id".$task_config["task_id"];
 //            echo '/n';
-            $state=2;
-            $done=0;
-            if($task_config["task_id"]==300032){
-                $state=3;
-                $done=1;
-            }
-            $sql="insert into func_system.user_task (user_id,task_id,state,done,total,task_name_type) values($user_id,$task_config[task_id],$state,$done,$task_config[total],$task_config[task_name_type])";
-            db_query($sql);
-        }
-        if(!$tcp_worker->db->commitTrans())
-        {
-            $tcp_worker->db->rollBackTrans();
-            util_log('初始化任务列表1失败：user_id:'.$user_id);
-            return false;
-        }
-    }else if($total==53){
-        global $tcp_worker;
-        $tcp_worker->db->beginTrans();
-        $task_cofigs=db_get_task_config();
-        $state=2;
-        $done=0;
-        foreach ($task_cofigs as $task_config) {
-            if($task_config["task_id"]>=300200&&$task_config["task_id"]<=300303){
+                $state=2;
+                $done=0;
+                if($task_config["task_id"]==300032){
+                    $state=3;
+                    $done=1;
+                }
                 $sql="insert into func_system.user_task (user_id,task_id,state,done,total,task_name_type) values($user_id,$task_config[task_id],$state,$done,$task_config[total],$task_config[task_name_type])";
                 db_query($sql);
             }
         }
+
         if(!$tcp_worker->db->commitTrans())
         {
             $tcp_worker->db->rollBackTrans();
-            util_log('初始化任务列表2失败：user_id:'.$user_id);
+            util_log('初始化任务列表1失败：user_id:'.$user_id);
             return false;
         }
     }
