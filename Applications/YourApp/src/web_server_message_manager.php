@@ -8,6 +8,7 @@ function web_server_message_manager($data)
         file_put_contents('log.txt', "get bad pack from webserver!data:$data\n", FILE_APPEND | LOCK_EX);
         return ;
     }
+    util_log("收到Web端消息f：".$dataArr['f']);
     if($dataArr['f']=='signNotice')
     {
         task_udpate_once($dataArr['user_id'],$dataArr['task_id']);
