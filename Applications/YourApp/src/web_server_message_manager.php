@@ -3,7 +3,7 @@ function web_server_message_manager($data)
 {
     global $task_sign_map;
     $dataArr =json_decode($data,true);
-    util_log("收到Web端消息：user_id:".$dataArr['user_id'].",u_coin:".$dataArr['u_coin'].",strength:".$dataArr['strength']);
+    util_log("收到Web端消息f：".$dataArr['f']);
     if($dataArr['f']=='signNotice')
     {
         task_udpate_once($dataArr['user_id'],$dataArr['task_id']);
