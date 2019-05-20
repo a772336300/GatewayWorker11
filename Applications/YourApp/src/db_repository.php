@@ -20,7 +20,6 @@ function db_exist_user($phone)
 }
 function db_add_user_id($phone,$password)
 {
-
     global $tcp_worker;
     $sql = "insert into user (phone,password) values('$phone','$password');";
     $tcp_worker->db->query($sql);
@@ -76,7 +75,8 @@ function db_update_password($phone,$password)
 function db_create_user($phone,$name,$gender,$constellation)
 {
     global $tcp_worker;
-    return $tcp_worker->db->update('user')->cols(array('name'=>(string)$name,'gender'=>$gender,'constellation'=>$constellation))->where("phone='$phone'")->query();
+    //默认模型id
+    return $tcp_worker->db->update('user')->cols(array('name'=>(string)$name,'gender'=>$gender,'constellation'=>$constellation,'moxing_id'=>$gender?'100':'102'))->where("phone='$phone'")->query();
 }
 
 function db_get_user_by_verify($phone,$password)
