@@ -26,6 +26,7 @@ function jinlian_http_client($path,$add_arr,$callback)
     $connection_to_jinwowo->onConnect = function ($connection_to_jinwowo)use($path) {
         //echo "connect success\n";
         $connection_to_jinwowo->send("GET $path HTTP/1.1\r\nHost: ubc.jinvovo.com\r\nConnection: Close\r\n\r\n");
+        $connection_to_jinwowo->http_buffer = '';
         ///$connection_to_baidu->send("GET / HTTP/1.1\r\nHost: www.baidu.com\r\nConnection: keep-alive\r\n\r\n");
     };
     $connection_to_jinwowo->onMessage = function ($connection_to_jinwowo, $http_buffer) {
