@@ -45,7 +45,7 @@ $tcp_worker->registerAddress = '127.0.0.1:1238';
 
 $tcp_worker->product_uid_count = 0;
 //连接数
-$tcp_worker->connection_count = 0;
+$connection_count = 0;
 
 
 //设置db

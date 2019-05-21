@@ -39,10 +39,11 @@ class Events
     public static function onConnect($client_id)
     {
         global $tcp_worker;
-        $tcp_worker->connection_count++;
-        $log = "a client connect! worker id :$tcp_worker->id connection client count : $tcp_worker->connection_count\n";
+        global $connection_count;
+        $connection_count++;
+        $log = "a client connect! worker id :$tcp_worker->id connection client count : $connection_count\n";
         file_put_contents('log.txt', $log, FILE_APPEND | LOCK_EX);
-        echo "a client connect! worker id :$tcp_worker->id connection client count : $tcp_worker->connection_count\n";
+        echo "a client connect! worker id :$tcp_worker->id connection client count : $connection_count\n";
 //    $addCoinLog = new AddCoinLog();
         // 向当前client_id发送数据 
         //Gateway::sendToClient($client_id, "Hello $client_id\r\n");
@@ -108,10 +109,11 @@ class Events
    {
        //用户退出
        global $tcp_worker;
-       $tcp_worker->connection_count--;
-       $log = "a client connect! worker id :$tcp_worker->id connection client count : $tcp_worker->connection_count\n";
+       global $connection_count;
+       $connection_count--;
+       $log = "a client connect! worker id :$tcp_worker->id connection client count : $connection_count\n";
       file_put_contents('log.txt', $log, FILE_APPEND | LOCK_EX);
-       echo "a client close! worker id :$tcp_worker->id connection client count : $tcp_worker->connection_count\n";
+       echo "a client close! worker id :$tcp_worker->id connection client count : $connection_count\n";
        // 向所有人发送 
       // GateWay::sendToAll("$client_id logout\r\n");
    }
