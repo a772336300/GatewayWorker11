@@ -11,7 +11,7 @@ $init_user_config_map=[
 $init_user_config =[
     'gold'=>1000,//金币1
     'BU'=>0,//BU2
-    'vigour'=>100,//体力13
+    'vigour'=>20,//体力13
     'shangchengkaiguan'=>1,//14
     'shimingkaiguan'=>1,//15
 ];
