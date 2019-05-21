@@ -13,5 +13,5 @@ $init_user_config =[
     'BU'=>0,//BU2
     'vigour'=>20,//体力13
     'shangchengkaiguan'=>1,//14
-    'shimingkaiguan'=>1,//15
+    'shimingkaiguan'=>0,//15
 ];
