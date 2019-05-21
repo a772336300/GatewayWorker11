@@ -265,7 +265,7 @@ function message_switch($client_id,$mid,$data)
 
                     return;
                 }
-                if((intval((strtotime($get_sign['updated'])+10800)/86400))==intval(time()+10800/86400))
+                if((intval(strtotime($get_sign['updated'])/86400))==intval(time()/86400))
                 {
                     send_pack_sign($client_id,$get_sign['sign_date'],true);
                     return;
