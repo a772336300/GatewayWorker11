@@ -85,6 +85,11 @@ $tcp_worker->onWorkerStart = function ($worker)
     // ## 执行监听 ##
     $inner_task_worker->listen();
     echo "start task service listen $socket\n";
+
+    //更新没正常推出游戏的用户数据（包含重启服务器，导致用户没退出记录）
+    $nowTime=date('Y-m-d h:i:s', time());
+    $sql="update bolaik_user.user_stat_time set login_out_time=$nowTime where login_out_time is null ";
+    db_query($sql);
 };
 
 // 新增加一个属性，用来保存uid到connection的映射
