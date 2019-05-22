@@ -197,7 +197,7 @@ function update($taskIds,$value,$uid){
             $newNum=$user_task['num']+$value;
             if($newNum>=$user_task['total']){
                 $sql="update func_system.user_task set num=$user_task[total],state=3 where task_id=$user_task[task_id] and user_id=$uid";
-                file_put_contents('log.txt', "uid:$uid game task update!", FILE_APPEND | LOCK_EX);
+                util_log("uid:$uid game task update!");
                 //通知客户端更新
                 send_update_task_state($uid,$user_task['task_id'],3,$user_task['total']);
             }else{

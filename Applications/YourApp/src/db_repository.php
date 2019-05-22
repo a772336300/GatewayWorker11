@@ -16,12 +16,15 @@ function db_check_user($uid,$password)
 function db_exist_user($phone)
 {
     global $tcp_worker;
-    return $tcp_worker->db->select('uid')->from('user')->where("phone= '$phone'")->row();
+    global $web_user;
+    return $tcp_worker->db->select('uid')->from("$web_user.user_info")->where("phone= '$phone'")->row();
 }
 function db_add_user_id($phone,$password)
 {
     global $tcp_worker;
-    $sql = "insert into user (phone,password) values('$phone','$password');";
+    global $web_user;
+    $sql = "insert into $web_user.user_info(user_account,user_passwd,user_nick,user_equipment,login_type,b_phone_nu) values('$phone','$password','',2,2,'$phone');";
+    //$sql = "insert into user (phone,password) values('$phone','$password');";
     $tcp_worker->db->query($sql);
 }
 function db_delete_user_id($uid)
@@ -40,16 +43,18 @@ function db_add_user($phone,$uid,$password)
     $init_equipment_json = json_encode($init_equipment);
     $init_equipment_having_json = json_encode($init_equipment_having);
     $tcp_worker->db->beginTrans();
+    $sql = "insert into user (uid,phone,password) values($uid,'$phone','$password');";
     $sql1 = "insert into user_money (uid,gold,vigour) values($uid,$init_user_config[gold],$init_user_config[vigour]);";
     $sql2 = "insert into user_sign (uid) values($uid);";
     $sql3 = "insert into user_bag (uid,equipmenting_item,having_item) values($uid,'$init_equipment_json','$init_equipment_having_json');";
-    $sql4 = "insert into bolaik_user.user_info(user_account,user_passwd,user_id,user_nick,user_equipment,login_type,b_phone_nu) values('$phone','$password',$uid,'',2,2,'$phone')";
+    //$sql4 = "insert into bolaik_user.user_info(user_account,user_passwd,user_id,user_nick,user_equipment,login_type,b_phone_nu) values('$phone','$password',$uid,'',2,2,'$phone')";
     //echo $sql.$sql1.$sql2;
 
+    $tcp_worker->db->query($sql);
     $tcp_worker->db->query($sql1);
     $tcp_worker->db->query($sql2);
     $tcp_worker->db->query($sql3);
-    $tcp_worker->db->query($sql4);
+    //$tcp_worker->db->query($sql4);
 
 
     if(!$tcp_worker->db->commitTrans())

@@ -123,35 +123,35 @@ function refreshUserInit()
     {
         if($item['id']==$init_user_config_map['gold'])
         {
-            $init_user_config['gold']=$item['value'];
+            $init_user_config['gold']=(int)$item['value'];
             continue;
         }
         if($item['id']==$init_user_config_map['BU'])
         {
-            $init_user_config['BU']=$item['value'];
+            $init_user_config['BU']=(int)$item['value'];
             continue;
         }
         if($item['id']==$init_user_config_map['vigour'])
         {
-            $init_user_config['vigour']=$item['value'];
+            $init_user_config['vigour']=(int)$item['value'];
             continue;
         }
         if($item['id']==$init_user_config_map['shangchengkaiguan'])
         {
-            if($init_user_config['shangchengkaiguan']!=$item['value'])
+            if($init_user_config['shangchengkaiguan']!=(int)$item['value'])
             {
-                $refresh_arr[4]=$item['value'];
+                $refresh_arr[4]=(int)$item['value'];
             }
-            $init_user_config['shangchengkaiguan']=$item['value'];
+            $init_user_config['shangchengkaiguan']=(int)$item['value'];
             continue;
         }
         if($item['id']==$init_user_config_map['shimingkaiguan'])
         {
-            if($init_user_config['shimingkaiguan']!=$item['value'])
+            if($init_user_config['shimingkaiguan']!=(int)$item['value'])
             {
-                $refresh_arr[5]=$item['value'];
+                $refresh_arr[5]=(int)$item['value'];
             }
-            $init_user_config['shimingkaiguan']=$item['value'];
+            $init_user_config['shimingkaiguan']=(int)$item['value'];
             continue;
         }
     }

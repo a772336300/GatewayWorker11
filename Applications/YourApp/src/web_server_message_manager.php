@@ -5,7 +5,7 @@ function web_server_message_manager($data)
     $dataArr =json_decode($data,true);
     if(!isset($dataArr['f']))
     {
-        file_put_contents('log.txt', "get bad pack from webserver!data:$data\n", FILE_APPEND | LOCK_EX);
+        util_log("get bad pack from webserver!data:$data");
         return ;
     }
     util_log("收到Web端消息f：".$dataArr['f']);
@@ -41,6 +41,7 @@ function web_server_message_manager($data)
         $refresh = refreshUserInit();
         foreach ($refresh as $id=>$value)
         {
+            util_log("refreshTable notice,id:$id value:$value");
             send_notice_to_all($id,$value);
         }
     }

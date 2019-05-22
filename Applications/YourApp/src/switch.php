@@ -11,8 +11,6 @@ require_once __DIR__ . '/Proto/Autoloader.php';
 function message_switch($client_id,$mid,$data)
 {
     global $init_user_config;
-    global $task_event_map;
-    global $number_object_map;
     //如果包id不存在,记录错误返回
 //    if(!array_key_exists($mid,$number_object_map))
 //    {
@@ -56,13 +54,15 @@ function message_switch($client_id,$mid,$data)
             $is_create_user=true;
             if(!isset($new_user['uid']))
             {
-                file_put_contents('log.txt', "db_add_user_id fail!phone: $phone\n", FILE_APPEND | LOCK_EX);
+                send_notice_by_client_id($client_id,1,'注册失败！error:1001');
+                util_log("db_add_user fail!web注册失败!phone: $phone");
                 return ;
             }
             if(!db_add_user($phone,$new_user['uid'],$password))
             {
                 db_delete_user_id($new_user['uid']);
-                file_put_contents('log.txt', "db_add_user fail!phone: $phone\n", FILE_APPEND | LOCK_EX);
+                send_notice_by_client_id($client_id,1,'注册失败！error:1002');
+                util_log("db_add_user fail!!游戏服务器注册失败!phone: $phone");
                 return ;
             }
 
@@ -260,7 +260,7 @@ function message_switch($client_id,$mid,$data)
                     send_pack_sign($client_id,1,false);
 
                     //任务处理
-//                    task_manager($mid);
+//                  task_manager($mid);
                     task_udpate_once($_SESSION['uid'],299999);
 
                     return;
