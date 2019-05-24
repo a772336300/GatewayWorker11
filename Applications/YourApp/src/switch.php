@@ -353,13 +353,21 @@ function message_switch($client_id,$mid,$data)
                 send_to_task_server(my_pack_with_uid(10056,$_SESSION['uid'],$data));
                 break;
             }
-            case 1019:
-                {
-                    $bu_stream = new \Proto\CS_User_BU_Steam();
-                    $bu_stream->parseFromString($data);
-                    get_jinlian_liushui($_SESSION['uid'],$_SESSION['phone'],$bu_stream->getFlag(),$bu_stream->getDateFlag(),$bu_stream->getPage(),$bu_stream->getPageSize(),$bu_stream->getUnixTimestamp(),$bu_stream->getShowAll());
-                    break;
-                }
+        case 1019:
+            {
+                $bu_stream = new \Proto\CS_User_BU_Steam();
+                $bu_stream->parseFromString($data);
+                get_jinlian_liushui($_SESSION['uid'],$_SESSION['phone'],$bu_stream->getFlag(),$bu_stream->getDateFlag(),$bu_stream->getPage(),$bu_stream->getPageSize(),$bu_stream->getUnixTimestamp(),$bu_stream->getShowAll());
+                break;
+            }
+        case 1020: //充值
+            {
+
+            }
+        case 1022: //提现
+            {
+
+            }
                 // case 1019:
         //     {
         //         get_user_task_list($_SESSION['uid']);
