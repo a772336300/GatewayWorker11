@@ -491,7 +491,7 @@ message SC_Given_Task_ReWard
 //用户充值
 message CS_User_Recharge
 {
-    //option (msgid) = 1019;
+    //option (msgid) = 1020;
     optional uint32 userid      = 1;
     optional uint32 variable    = 2; //充值金额
     optional bytes  code        = 3; //返回码
@@ -499,7 +499,7 @@ message CS_User_Recharge
 
 message SC_User_Recharge
 {
-    //option (msgid) = 1020;
+    //option (msgid) = 1021;
     optional uint32 userid      = 1;
     optional uint32 variable    = 2;
 }
@@ -507,14 +507,14 @@ message SC_User_Recharge
 //用户提现
 message CS_User_Tixian
 {
-    //option (msgid) = 1021;
+    //option (msgid) = 1022;
     optional uint32 userid      = 1;
     optional uint32 variable    = 2;
 }
 
 message SC_User_Tixian
 {
-    //option (msgid) = 1022;
+    //option (msgid) = 1023;
     optional uint32 userid      = 1;
     optional uint32 variable    = 2;
     optional uint32 utype       = 3; //当前状态 1已提交 2通过审核 3已发放
