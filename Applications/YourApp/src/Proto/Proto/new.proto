@@ -487,3 +487,35 @@ message SC_Given_Task_ReWard
     //option (msgid) = 1018;
 	repeated Task_Reward_Result	task_reward_result	 = 1; //任务ID
 }
+
+//用户充值
+message CS_User_Recharge
+{
+    //option (msgid) = 1019;
+    optional uint32 userid      = 1;
+    optional uint32 variable    = 2; //充值金额
+    optional bytes  code        = 3; //返回码
+}
+
+message SC_User_Recharge
+{
+    //option (msgid) = 1020;
+    optional uint32 userid      = 1;
+    optional uint32 variable    = 2;
+}
+
+//用户提现
+message CS_User_Tixian
+{
+    //option (msgid) = 1021;
+    optional uint32 userid      = 1;
+    optional uint32 variable    = 2;
+}
+
+message SC_User_Tixian
+{
+    //option (msgid) = 1022;
+    optional uint32 userid      = 1;
+    optional uint32 variable    = 2;
+    optional uint32 utype       = 3; //当前状态 1已提交 2通过审核 3已发放
+}
