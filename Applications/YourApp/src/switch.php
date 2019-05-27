@@ -46,17 +46,27 @@ function message_switch($client_id,$mid,$data)
         $password = product_password();
 
         //新增用户uid
-        if(db_exist_user($phone)==null)
+        if(db_exist_user_info($phone)==null)
         {
             //新增用户
             db_add_user_id($phone,$password);
-            $new_user = db_exist_user($phone);
+            $new_user = db_exist_user_info($phone);
             $is_create_user=true;
             if(!isset($new_user['user_id']))
             {
                 send_notice_by_client_id($client_id,1,'注册失败！error:1001');
                 util_log("db_add_user fail!web注册失败!phone: $phone");
                 return ;
+            }
+            $user = db_exist_user($phone);
+            if(isset($user['uid'])&&$user['uid']!=null)
+            {
+                if(!db_delete_user($user['uid']))
+                {
+                    send_notice_by_client_id($client_id,1,'注册失败！error:1003');
+                    util_log("db_add_user fail!游戏服务器注册失败!phone: $phone");
+                    return ;
+                }
             }
             if(!db_add_user($phone,(int)$new_user['user_id'],$password))
             {

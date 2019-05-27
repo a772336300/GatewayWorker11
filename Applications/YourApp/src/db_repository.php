@@ -13,7 +13,7 @@ function db_check_user($uid,$password)
     }
     return true;
 }
-function db_exist_user($phone)
+function db_exist_user_info($phone)
 {
     global $tcp_worker;
     global $web_user;
@@ -35,6 +35,31 @@ function db_delete_user_id($uid)
     global $tcp_worker;
     //$sql = "delete user where uid = $uid;";
     $tcp_worker->db->query("delete user where uid = $uid;");
+}
+function db_exist_user($phone)
+{
+    global $tcp_worker;
+    return $tcp_worker->db->select('uid')->from("user")->where("phone= '$phone'")->row();
+}
+function db_delete_user($uid)
+{
+    global $tcp_worker;
+    $tcp_worker->db->beginTrans();
+
+    $tcp_worker->db->delete('user')->where("uid=$uid")->query();
+    $tcp_worker->db->delete('user_money')->where("uid=$uid")->query();
+    $tcp_worker->db->delete('user_sign')->where("uid=$uid")->query();
+    $tcp_worker->db->delete('user_bag')->where("uid=$uid")->query();
+
+    if(!$tcp_worker->db->commitTrans())
+    {
+        $tcp_worker->db->rollBackTrans();
+        return false;
+    }// or $db1->rollBackTrans();
+
+
+    return true;
+
 }
 function db_add_user($phone,$uid,$password)
 {
