@@ -58,9 +58,9 @@ function message_switch($client_id,$mid,$data)
                 util_log("db_add_user fail!web注册失败!phone: $phone");
                 return ;
             }
-            if(!db_add_user($phone,$new_user['user_id'],$password))
+            if(!db_add_user($phone,(int)$new_user['user_id'],$password))
             {
-                db_delete_user_id($new_user['user_id']);
+                db_delete_user_id((int)$new_user['user_id']);
                 send_notice_by_client_id($client_id,1,'注册失败！error:1002');
                 util_log("db_add_user fail!!游戏服务器注册失败!phone: $phone");
                 return ;
