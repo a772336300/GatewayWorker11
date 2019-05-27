@@ -48,12 +48,13 @@ function jinlian_http_client($path,$add_arr,$callback)
 //
 //        }
     };
-    $connection_to_jinwowo->onClose = function ($connection_to_jinwowo) {
+    $connection_to_jinwowo->onClose = function ($connection_to_jinwowo)
+    {
         echo "http connection closed\n";
         //$connection_to_jinwowo->http_buffer .= $http_buffer;
-        echo "xxxxxxxxbuff:\n";
+        echo "buff:\n";
         echo $connection_to_jinwowo->http_buffer;
-        echo "\nxxxxxxxxend\n";
+        echo "\nend\n";
         call_user_func($connection_to_jinwowo->mycallback,$connection_to_jinwowo->http_buffer);
 //        $json_arr=array();
 //        preg_match('/{.*}/',$connection_to_jinwowo->http_buffer,$json_arr);
@@ -64,7 +65,8 @@ function jinlian_http_client($path,$add_arr,$callback)
 //            call_user_func($connection_to_jinwowo->mycallback,$json_arr[0]);
 //        }
     };
-    $connection_to_jinwowo->onError = function ($connection_to_jinwowo, $code, $msg) {
+    $connection_to_jinwowo->onError = function ($connection_to_jinwowo, $code, $msg)
+    {
         echo "Error code:$code msg:$msg\n";
     };
     $connection_to_jinwowo->connect();

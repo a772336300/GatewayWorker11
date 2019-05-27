@@ -168,6 +168,12 @@ function message_switch($client_id,$mid,$data)
                     echo "get user error";
                     return;
                 }
+                ///$user_info_vip = db_get_user_info_vip($_SESSION['uid']);
+//                if(isset($user_info_vip['vip_state']))
+//                {
+//
+//                }
+                send_vip_day($_SESSION['uid'],1);
                 //商城开关
                 send_notice($_SESSION['uid'],4,$init_user_config['shangchengkaiguan']);
                 //实名认证

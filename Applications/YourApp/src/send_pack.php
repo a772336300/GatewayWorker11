@@ -260,3 +260,10 @@ function send_notice_to_all($id,$body)
     $message->setTipStr($body);
     \GatewayWorker\Lib\Gateway::sendToAll(my_pack(806,$message->serializeToString()));
 }
+
+function send_vip_day($uid,$day)
+{
+    $message = new \Proto\SC_User_Vip();
+    $message->setVipDay($day);
+    \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(1024,$message->serializeToString()));
+}

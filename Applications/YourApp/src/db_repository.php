@@ -100,7 +100,14 @@ function db_get_user_info_by_uid($uid)
     //echo "SELECT * from `user`,user_money,user_sign where `user`.uid = $uid and `user`.uid = user_money.uid and `user`.uid = user_sign.uid";
     return $tcp_worker->db->query("SELECT * from `user`,user_money,user_sign where `user`.uid = $uid and `user`.uid = user_money.uid and `user`.uid = user_sign.uid");
 }
-
+//function db_get_user_info_vip($uid)
+//{
+//    global $tcp_worker;
+//    global $web_user;
+//    return $tcp_worker->db->select('vip_state','vip_buy_time')->from("$web_user.user_info")->where("user_id= '$uid'")->row();
+//    //echo "SELECT * from `user`,user_money,user_sign where `user`.uid = $uid and `user`.uid = user_money.uid and `user`.uid = user_sign.uid";
+//    //return $tcp_worker->db->query("SELECT * from `user`,user_money,user_sign where `user`.uid = $uid and `user`.uid = user_money.uid and `user`.uid = user_sign.uid");
+//}
 function db_get_user_bag_info_by_uid($uid)
 {
     global $tcp_worker;
