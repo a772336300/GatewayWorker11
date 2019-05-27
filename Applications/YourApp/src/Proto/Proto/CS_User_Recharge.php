@@ -7,20 +7,26 @@
 
 namespace Proto {
 /**
- * CS_User_Real_Name message
+ * CS_User_Recharge message
  */
-class CS_User_Real_Name extends \ProtobufMessage
+class CS_User_Recharge extends \ProtobufMessage
 {
     /* Field index constants */
-    const NAME = 1;
-    const CODE = 2;
+    const USERID = 1;
+    const VARIABLE = 2;
+    const CODE = 3;
 
     /* @var array Field descriptors */
     protected static $fields = array(
-        self::NAME => array(
-            'name' => 'name',
+        self::USERID => array(
+            'name' => 'userid',
             'required' => false,
-            'type' => \ProtobufMessage::PB_TYPE_STRING,
+            'type' => \ProtobufMessage::PB_TYPE_INT,
+        ),
+        self::VARIABLE => array(
+            'name' => 'variable',
+            'required' => false,
+            'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
         self::CODE => array(
             'name' => 'code',
@@ -44,7 +50,8 @@ class CS_User_Real_Name extends \ProtobufMessage
      */
     public function reset()
     {
-        $this->values[self::NAME] = null;
+        $this->values[self::USERID] = null;
+        $this->values[self::VARIABLE] = null;
         $this->values[self::CODE] = null;
     }
 
@@ -59,36 +66,69 @@ class CS_User_Real_Name extends \ProtobufMessage
     }
 
     /**
-     * Sets value of 'name' property
+     * Sets value of 'userid' property
      *
-     * @param string $value Property value
+     * @param integer $value Property value
      *
      * @return null
      */
-    public function setName($value)
+    public function setUserid($value)
     {
-        return $this->set(self::NAME, $value);
+        return $this->set(self::USERID, $value);
     }
 
     /**
-     * Returns value of 'name' property
+     * Returns value of 'userid' property
      *
-     * @return string
+     * @return integer
      */
-    public function getName()
+    public function getUserid()
     {
-        $value = $this->get(self::NAME);
-        return $value === null ? (string)$value : $value;
+        $value = $this->get(self::USERID);
+        return $value === null ? (integer)$value : $value;
     }
 
     /**
-     * Returns true if 'name' property is set, false otherwise
+     * Returns true if 'userid' property is set, false otherwise
      *
      * @return boolean
      */
-    public function hasName()
+    public function hasUserid()
     {
-        return $this->get(self::NAME) !== null;
+        return $this->get(self::USERID) !== null;
+    }
+
+    /**
+     * Sets value of 'variable' property
+     *
+     * @param integer $value Property value
+     *
+     * @return null
+     */
+    public function setVariable($value)
+    {
+        return $this->set(self::VARIABLE, $value);
+    }
+
+    /**
+     * Returns value of 'variable' property
+     *
+     * @return integer
+     */
+    public function getVariable()
+    {
+        $value = $this->get(self::VARIABLE);
+        return $value === null ? (integer)$value : $value;
+    }
+
+    /**
+     * Returns true if 'variable' property is set, false otherwise
+     *
+     * @return boolean
+     */
+    public function hasVariable()
+    {
+        return $this->get(self::VARIABLE) !== null;
     }
 
     /**

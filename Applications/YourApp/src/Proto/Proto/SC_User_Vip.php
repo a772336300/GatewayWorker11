@@ -7,17 +7,17 @@
 
 namespace Proto {
 /**
- * CS_User_Sign message
+ * SC_User_Vip message
  */
-class CS_User_Sign extends \ProtobufMessage
+class SC_User_Vip extends \ProtobufMessage
 {
     /* Field index constants */
-    const DATE = 1;
+    const VIP_DAY = 1;
 
     /* @var array Field descriptors */
     protected static $fields = array(
-        self::DATE => array(
-            'name' => 'date',
+        self::VIP_DAY => array(
+            'name' => 'vip_day',
             'required' => false,
             'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
@@ -38,7 +38,7 @@ class CS_User_Sign extends \ProtobufMessage
      */
     public function reset()
     {
-        $this->values[self::DATE] = null;
+        $this->values[self::VIP_DAY] = null;
     }
 
     /**
@@ -52,36 +52,36 @@ class CS_User_Sign extends \ProtobufMessage
     }
 
     /**
-     * Sets value of 'date' property
+     * Sets value of 'vip_day' property
      *
      * @param integer $value Property value
      *
      * @return null
      */
-    public function setDate($value)
+    public function setVipDay($value)
     {
-        return $this->set(self::DATE, $value);
+        return $this->set(self::VIP_DAY, $value);
     }
 
     /**
-     * Returns value of 'date' property
+     * Returns value of 'vip_day' property
      *
      * @return integer
      */
-    public function getDate()
+    public function getVipDay()
     {
-        $value = $this->get(self::DATE);
+        $value = $this->get(self::VIP_DAY);
         return $value === null ? (integer)$value : $value;
     }
 
     /**
-     * Returns true if 'date' property is set, false otherwise
+     * Returns true if 'vip_day' property is set, false otherwise
      *
      * @return boolean
      */
-    public function hasDate()
+    public function hasVipDay()
     {
-        return $this->get(self::DATE) !== null;
+        return $this->get(self::VIP_DAY) !== null;
     }
 }
 }

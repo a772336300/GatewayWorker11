@@ -7,29 +7,29 @@
 
 namespace Proto {
 /**
- * SC_User_UB message
+ * SC_User_Tixian message
  */
-class SC_User_UB extends \ProtobufMessage
+class SC_User_Tixian extends \ProtobufMessage
 {
     /* Field index constants */
-    const BU = 1;
-    const GOLD = 2;
-    const VIGOUR = 3;
+    const USERID = 1;
+    const VARIABLE = 2;
+    const UTYPE = 3;
 
     /* @var array Field descriptors */
     protected static $fields = array(
-        self::BU => array(
-            'name' => 'BU',
+        self::USERID => array(
+            'name' => 'userid',
             'required' => false,
             'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
-        self::GOLD => array(
-            'name' => 'gold',
+        self::VARIABLE => array(
+            'name' => 'variable',
             'required' => false,
             'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
-        self::VIGOUR => array(
-            'name' => 'vigour',
+        self::UTYPE => array(
+            'name' => 'utype',
             'required' => false,
             'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
@@ -50,9 +50,9 @@ class SC_User_UB extends \ProtobufMessage
      */
     public function reset()
     {
-        $this->values[self::BU] = null;
-        $this->values[self::GOLD] = null;
-        $this->values[self::VIGOUR] = null;
+        $this->values[self::USERID] = null;
+        $this->values[self::VARIABLE] = null;
+        $this->values[self::UTYPE] = null;
     }
 
     /**
@@ -66,102 +66,102 @@ class SC_User_UB extends \ProtobufMessage
     }
 
     /**
-     * Sets value of 'BU' property
+     * Sets value of 'userid' property
      *
      * @param integer $value Property value
      *
      * @return null
      */
-    public function setBU($value)
+    public function setUserid($value)
     {
-        return $this->set(self::BU, $value);
+        return $this->set(self::USERID, $value);
     }
 
     /**
-     * Returns value of 'BU' property
+     * Returns value of 'userid' property
      *
      * @return integer
      */
-    public function getBU()
+    public function getUserid()
     {
-        $value = $this->get(self::BU);
+        $value = $this->get(self::USERID);
         return $value === null ? (integer)$value : $value;
     }
 
     /**
-     * Returns true if 'BU' property is set, false otherwise
+     * Returns true if 'userid' property is set, false otherwise
      *
      * @return boolean
      */
-    public function hasBU()
+    public function hasUserid()
     {
-        return $this->get(self::BU) !== null;
+        return $this->get(self::USERID) !== null;
     }
 
     /**
-     * Sets value of 'gold' property
+     * Sets value of 'variable' property
      *
      * @param integer $value Property value
      *
      * @return null
      */
-    public function setGold($value)
+    public function setVariable($value)
     {
-        return $this->set(self::GOLD, $value);
+        return $this->set(self::VARIABLE, $value);
     }
 
     /**
-     * Returns value of 'gold' property
+     * Returns value of 'variable' property
      *
      * @return integer
      */
-    public function getGold()
+    public function getVariable()
     {
-        $value = $this->get(self::GOLD);
+        $value = $this->get(self::VARIABLE);
         return $value === null ? (integer)$value : $value;
     }
 
     /**
-     * Returns true if 'gold' property is set, false otherwise
+     * Returns true if 'variable' property is set, false otherwise
      *
      * @return boolean
      */
-    public function hasGold()
+    public function hasVariable()
     {
-        return $this->get(self::GOLD) !== null;
+        return $this->get(self::VARIABLE) !== null;
     }
 
     /**
-     * Sets value of 'vigour' property
+     * Sets value of 'utype' property
      *
      * @param integer $value Property value
      *
      * @return null
      */
-    public function setVigour($value)
+    public function setUtype($value)
     {
-        return $this->set(self::VIGOUR, $value);
+        return $this->set(self::UTYPE, $value);
     }
 
     /**
-     * Returns value of 'vigour' property
+     * Returns value of 'utype' property
      *
      * @return integer
      */
-    public function getVigour()
+    public function getUtype()
     {
-        $value = $this->get(self::VIGOUR);
+        $value = $this->get(self::UTYPE);
         return $value === null ? (integer)$value : $value;
     }
 
     /**
-     * Returns true if 'vigour' property is set, false otherwise
+     * Returns true if 'utype' property is set, false otherwise
      *
      * @return boolean
      */
-    public function hasVigour()
+    public function hasUtype()
     {
-        return $this->get(self::VIGOUR) !== null;
+        return $this->get(self::UTYPE) !== null;
     }
 }
 }

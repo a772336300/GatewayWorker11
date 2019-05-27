@@ -1,29 +1,29 @@
 <?php
 /**
- * Auto generated from new.proto at 2019-05-27 10:49:43
+ * Auto generated from new.proto at 2019-05-27 10:49:44
  *
  * proto package
  */
 
 namespace Proto {
 /**
- * Item_Slot message
+ * CS_User_Tixian message
  */
-class Item_Slot extends \ProtobufMessage
+class CS_User_Tixian extends \ProtobufMessage
 {
     /* Field index constants */
-    const SLOT = 1;
-    const ITEMID = 2;
+    const USERID = 1;
+    const VARIABLE = 2;
 
     /* @var array Field descriptors */
     protected static $fields = array(
-        self::SLOT => array(
-            'name' => 'slot',
+        self::USERID => array(
+            'name' => 'userid',
             'required' => false,
             'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
-        self::ITEMID => array(
-            'name' => 'itemid',
+        self::VARIABLE => array(
+            'name' => 'variable',
             'required' => false,
             'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
@@ -44,8 +44,8 @@ class Item_Slot extends \ProtobufMessage
      */
     public function reset()
     {
-        $this->values[self::SLOT] = null;
-        $this->values[self::ITEMID] = null;
+        $this->values[self::USERID] = null;
+        $this->values[self::VARIABLE] = null;
     }
 
     /**
@@ -59,69 +59,69 @@ class Item_Slot extends \ProtobufMessage
     }
 
     /**
-     * Sets value of 'slot' property
+     * Sets value of 'userid' property
      *
      * @param integer $value Property value
      *
      * @return null
      */
-    public function setSlot($value)
+    public function setUserid($value)
     {
-        return $this->set(self::SLOT, $value);
+        return $this->set(self::USERID, $value);
     }
 
     /**
-     * Returns value of 'slot' property
+     * Returns value of 'userid' property
      *
      * @return integer
      */
-    public function getSlot()
+    public function getUserid()
     {
-        $value = $this->get(self::SLOT);
+        $value = $this->get(self::USERID);
         return $value === null ? (integer)$value : $value;
     }
 
     /**
-     * Returns true if 'slot' property is set, false otherwise
+     * Returns true if 'userid' property is set, false otherwise
      *
      * @return boolean
      */
-    public function hasSlot()
+    public function hasUserid()
     {
-        return $this->get(self::SLOT) !== null;
+        return $this->get(self::USERID) !== null;
     }
 
     /**
-     * Sets value of 'itemid' property
+     * Sets value of 'variable' property
      *
      * @param integer $value Property value
      *
      * @return null
      */
-    public function setItemid($value)
+    public function setVariable($value)
     {
-        return $this->set(self::ITEMID, $value);
+        return $this->set(self::VARIABLE, $value);
     }
 
     /**
-     * Returns value of 'itemid' property
+     * Returns value of 'variable' property
      *
      * @return integer
      */
-    public function getItemid()
+    public function getVariable()
     {
-        $value = $this->get(self::ITEMID);
+        $value = $this->get(self::VARIABLE);
         return $value === null ? (integer)$value : $value;
     }
 
     /**
-     * Returns true if 'itemid' property is set, false otherwise
+     * Returns true if 'variable' property is set, false otherwise
      *
      * @return boolean
      */
-    public function hasItemid()
+    public function hasVariable()
     {
-        return $this->get(self::ITEMID) !== null;
+        return $this->get(self::VARIABLE) !== null;
     }
 }
 }
