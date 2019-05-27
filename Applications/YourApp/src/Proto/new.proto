@@ -519,3 +519,7 @@ message SC_User_Tixian
     optional uint32 variable    = 2;
     optional uint32 utype       = 3; //当前状态 1已提交 2通过审核 3已发放
 }
+message SC_User_Vip
+{
+    optional int32 vip_day = 1;
+}
