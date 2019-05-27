@@ -116,5 +116,14 @@ class Events
       echo "a client close! worker id :$tcp_worker->id connection client count : $connection_count\n";
        // 向所有人发送 
       // GateWay::sendToAll("$client_id logout\r\n");
+
+       if(isset($_SESSION['uid'])){
+           echo "ccc\n";
+           $nowTime=date('Y-m-d h:i:s', time());
+           $uid=$_SESSION['uid'];
+           $sql="update bolaik_user.user_stat_time set login_out_time='$nowTime' where user_id=$uid order by id desc limit 1 ";
+           db_query($sql);
+       }
+
    }
 }

@@ -17,13 +17,16 @@ function db_exist_user($phone)
 {
     global $tcp_worker;
     global $web_user;
-    return $tcp_worker->db->select('uid')->from("$web_user.user_info")->where("phone= '$phone'")->row();
+    return $tcp_worker->db->select('user_id')->from("$web_user.user_info")->where("user_account= '$phone'")->row();
 }
 function db_add_user_id($phone,$password)
 {
     global $tcp_worker;
     global $web_user;
-    $sql = "insert into $web_user.user_info(user_account,user_passwd,user_nick,user_equipment,login_type,b_phone_nu) values('$phone','$password','',2,2,'$phone');";
+    $sql="select max(user_id) maxId from $web_user.user_info";
+    $maxUser=$tcp_worker->db->query($sql);
+    $user_id=$maxUser[0]['maxId'];
+    $sql = "insert into $web_user.user_info(user_account,user_passwd,user_id,user_nick,user_equipment,login_type,b_phone_nu) values('$phone','$password',$user_id,'',2,2,'$phone');";
     //$sql = "insert into user (phone,password) values('$phone','$password');";
     $tcp_worker->db->query($sql);
 }

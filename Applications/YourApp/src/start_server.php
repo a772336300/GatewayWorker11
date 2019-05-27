@@ -96,6 +96,13 @@ $tcp_worker->onConnect = function($connection)
     global $connection_count;
     $connection_count++;
     echo "a client connect! worker id :$tcp_worker->id connection client count : $connection_count\n";
+
+//    if(isset($_SESSION['uid'])){
+//        $nowTime=date('Y-m-d h:i:s', time());
+//        $sql="update bolaik_user.user_stat_time set login_out_time=$nowTime where user_id=$connection->id";
+//        db_query($sql);
+//    }
+
 //    $addCoinLog = new AddCoinLog();
 //    $addCoinLog->setBehaviorId(100);
 //    $addCoinLog->setGetPropId(123);

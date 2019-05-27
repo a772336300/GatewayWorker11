@@ -60,7 +60,7 @@ function message_switch($client_id,$mid,$data)
             }
             if(!db_add_user($phone,$new_user['uid'],$password))
             {
-                db_delete_user_id($new_user['uid']);
+                db_delete_user_id($new_user['user_id']);
                 send_notice_by_client_id($client_id,1,'注册失败！error:1002');
                 util_log("db_add_user fail!!游戏服务器注册失败!phone: $phone");
                 return ;
@@ -130,6 +130,14 @@ function message_switch($client_id,$mid,$data)
                 send_pack_password($client_id,$cs_client_login->getPhone(),$cs_client_login->getPassword(),true);
                 return;
             }
+            //
+            $nowTime=date('Y-m-d h:i:s', time());
+            $uid=$_SESSION['uid'];
+            //修改用户登陆时间信息
+            $sql="update bolaik_user.user_info set login_time='$nowTime' where user_id=$uid";
+            db_query($sql);
+            $sql="insert into bolaik_user.user_stat_time(user_id) values($uid)";
+            db_query($sql);
         }
         send_pack_login($client_id,$is_success);
         return;
