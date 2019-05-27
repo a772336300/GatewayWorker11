@@ -521,5 +521,6 @@ message SC_User_Tixian
 }
 message SC_User_Vip
 {
+	//option (msgid) = 1024;
     optional int32 vip_day = 1;
 }
