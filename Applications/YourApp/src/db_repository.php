@@ -23,7 +23,7 @@ function db_add_user_id($phone,$password)
 {
     global $tcp_worker;
     global $web_user;
-    $sql="select max(user_id) maxId from $web_user.user_info";
+    $sql="select max(user_id+0) maxId from $web_user.user_info";
     $maxUser=$tcp_worker->db->query($sql);
     $user_id=$maxUser[0]['maxId']+1;
     $sql = "insert into $web_user.user_info(user_account,user_passwd,user_id,user_nick,user_equipment,login_type,b_phone_nu) values('$phone','$password',$user_id,'',2,2,'$phone');";
