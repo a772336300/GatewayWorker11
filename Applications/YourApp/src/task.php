@@ -279,17 +279,17 @@ function get_user_task_list($user_id){
     $allDatas=db_query($sql);
     foreach ($allDatas as $key=>$allData) {
         if(($allData['task_id']>=300000&&$allData['task_id']<=300021)||($allData['task_id']>=300090&&$allData['task_id']<=300112)){
-            if($allData['times']>0){
+//            if($allData['times']>0){
 //                if($isNormal){
                     $allDatas[$key]['u_coin']=$allData['u_coin_normal'];
 //                }else{
                     $allDatas[$key]['gold_coin']=$allData['u_coin_agent'];
 //                }
-            }else{
-                //还未完成第一次领奖
-                $allDatas[$key]['u_coin']=$allData['u_coin_first'];
-                $allDatas[$key]['gold_coin']=0;
-            }
+//            }else{
+//                //还未完成第一次领奖
+//                $allDatas[$key]['u_coin']=$allData['u_coin_first'];
+//                $allDatas[$key]['gold_coin']=0;
+//            }
         }else{
             $allDatas[$key]['u_coin']=$allData['u_coin_normal'];
             $allDatas[$key]['gold_coin']=0;
@@ -297,6 +297,7 @@ function get_user_task_list($user_id){
 
 
     }
+    $allDatas=[];
     send_pack_user_task_list($user_id,true,$allDatas);
 }
 

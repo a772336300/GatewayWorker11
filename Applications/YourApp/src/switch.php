@@ -52,13 +52,13 @@ function message_switch($client_id,$mid,$data)
             db_add_user_id($phone,$password);
             $new_user = db_exist_user($phone);
             $is_create_user=true;
-            if(!isset($new_user['uid']))
+            if(!isset($new_user['user_id']))
             {
                 send_notice_by_client_id($client_id,1,'注册失败！error:1001');
                 util_log("db_add_user fail!web注册失败!phone: $phone");
                 return ;
             }
-            if(!db_add_user($phone,$new_user['uid'],$password))
+            if(!db_add_user($phone,$new_user['user_id'],$password))
             {
                 db_delete_user_id($new_user['user_id']);
                 send_notice_by_client_id($client_id,1,'注册失败！error:1002');
