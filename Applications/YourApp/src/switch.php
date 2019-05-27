@@ -189,7 +189,7 @@ function message_switch($client_id,$mid,$data)
                 $play_game_result = new \Proto\CS_Game_Over_Score();
                 $play_game_result->parseFromString($data);
                 db_add_user_game_store($_SESSION['uid'],$play_game_result);
-//                task_manager($mid);
+//              task_manager($mid);
                 task_udpate_game($play_game_result,$_SESSION['uid']);
                 break;
             }
@@ -302,10 +302,6 @@ function message_switch($client_id,$mid,$data)
                 {
                     $is_success=false;
                 }
-                else
-                {
-                  //  task_manager($mid);
-                }
                 db_user_update_bRealName($_SESSION['uid']);
                 send_pack_user_real_name($client_id,$is_success);
                 if($is_success){
@@ -322,13 +318,10 @@ function message_switch($client_id,$mid,$data)
                 {
                     $is_success=false;
                 }
-                else
-                {
-                 //   task_manager($mid);
-                }
                 db_user_update_bWx($_SESSION['uid']);
                 send_pack_user_wx($client_id,$is_success);
-                if($is_success){
+                if($is_success)
+                {
                     task_udpate_once($_SESSION['uid'],300033);
                 }
                 return;
@@ -351,6 +344,10 @@ function message_switch($client_id,$mid,$data)
                     $bu_stream->parseFromString($data);
                     get_jinlian_liushui($_SESSION['uid'],$_SESSION['phone'],$bu_stream->getFlag(),$bu_stream->getDateFlag(),$bu_stream->getPage(),$bu_stream->getPageSize(),$bu_stream->getUnixTimestamp(),$bu_stream->getShowAll());
                     break;
+                }
+            case 1020:
+                {
+                    //chongzhi
                 }
                 // case 1019:
         //     {
