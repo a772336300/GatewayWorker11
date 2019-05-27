@@ -440,10 +440,12 @@ message SC_User_Bind_wx
 //账变
 message SC_User_UB
 {
-    //option (msgid) = 1014;
-    optional uint32     	BU                  = 1; //BU
-	optional uint32     	gold                = 2; //金币
-	optional int32     	    vigour              = 3; //体力 活力
+	//option (msgid) = 1014;
+	optional bool     	init_bu             = 1;
+	optional int32     	BU                  = 2; //BU
+	optional int32     	gold                = 3; //金币
+	optional int32     	vigour              = 4; //体力 活力
+
 }
 
 /////////////////GPS位置 1015 --> 
@@ -488,10 +490,38 @@ message SC_Given_Task_ReWard
 	repeated Task_Reward_Result	task_reward_result	 = 1; //任务ID
 }
 
+/////////////////用户流水 1019 --> 1020
+message CS_User_BU_Steam
+{
+	//option (msgid) = 1019;
+	optional int32 flag =1;
+	optional int32 dateFlag =2;
+	optional int32 page =3;
+	optional int32 pageSize =4;
+	optional int64 unixTimestamp =5;
+	optional int32 showAll =6;
+}
+//用户单条流水记录
+message User_BU_Stream_Item
+{
+	optional int32 buValue =1;
+	optional string flowTime =2;
+	optional string behaviorName =3;
+	optional string partnerName =4;
+	optional string buType =5;
+}
+//返回用户流水
+message SC__User_BU_Stream
+{
+	//option (msgid) = 1020;
+	optional bool is_success =1;
+	repeated User_BU_Stream_Item item =2;
+}
+
 //用户充值
 message CS_User_Recharge
 {
-    //option (msgid) = 1020;
+    //option (msgid) = 1021;
     optional uint32 userid      = 1;
     optional uint32 variable    = 2; //充值金额
     optional bytes  code        = 3; //返回码
@@ -499,7 +529,7 @@ message CS_User_Recharge
 
 message SC_User_Recharge
 {
-    //option (msgid) = 1021;
+    //option (msgid) = 1022;
     optional uint32 userid      = 1;
     optional uint32 variable    = 2;
 }
@@ -507,14 +537,14 @@ message SC_User_Recharge
 //用户提现
 message CS_User_Tixian
 {
-    //option (msgid) = 1022;
+    //option (msgid) = 1023;
     optional uint32 userid      = 1;
     optional uint32 variable    = 2;
 }
 
 message SC_User_Tixian
 {
-    //option (msgid) = 1023;
+    //option (msgid) = 1025;
     optional uint32 userid      = 1;
     optional uint32 variable    = 2;
     optional uint32 utype       = 3; //当前状态 1已提交 2通过审核 3已发放
