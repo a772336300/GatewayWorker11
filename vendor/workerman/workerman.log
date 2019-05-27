@@ -26123,3 +26123,121 @@ Stack trace:
 2019-05-23 16:47:38 pid:9261 Workerman[start.php] stopping ...
 2019-05-23 16:47:38 pid:9261 Workerman[start.php] has been stopped
 2019-05-23 16:47:38 pid:9431 Workerman[/home/lhp/protoserver/GatewayWorker/start.php] start in DEBUG mode
+2019-05-23 16:51:13 pid:9624 Workerman[/home/lhp/protoserver/GatewayWorker/start.php] start in DEBUG mode
+2019-05-23 16:51:13 pid:9624 Workerman[/home/lhp/protoserver/GatewayWorker/start.php] already running
+2019-05-23 16:51:13 pid:9431 Workerman[start.php] stopping ...
+2019-05-23 16:51:13 pid:9431 Workerman[start.php] has been stopped
+2019-05-23 16:51:15 pid:9629 Workerman[/home/lhp/protoserver/GatewayWorker/start.php] start in DEBUG mode
+2019-05-23 16:52:11 pid:9629 Workerman[start.php] stopping ...
+2019-05-23 16:52:11 pid:9629 Workerman[start.php] has been stopped
+2019-05-23 16:52:11 pid:9655 Workerman[/home/lhp/protoserver/GatewayWorker/start.php] start in DEBUG mode
+2019-05-23 16:53:27 pid:9706 Workerman[/home/lhp/protoserver/GatewayWorker/start.php] start in DEBUG mode
+2019-05-23 16:53:27 pid:9706 Workerman[/home/lhp/protoserver/GatewayWorker/start.php] already running
+2019-05-23 16:53:27 pid:9655 Workerman[start.php] stopping ...
+2019-05-23 16:53:27 pid:9655 Workerman[start.php] has been stopped
+2019-05-23 16:53:29 pid:9709 Workerman[/home/lhp/protoserver/GatewayWorker/start.php] start in DEBUG mode
+2019-05-23 16:56:15 pid:9709 Workerman[start.php] stopping ...
+2019-05-23 16:56:15 pid:9709 Workerman[start.php] has been stopped
+2019-05-25 16:25:39 pid:23667 Workerman[/home/lhp/protoserver/GatewayWorker/start.php] start in DEBUG mode
+2019-05-25 17:04:44 pid:23669 process_timeout:
+#1 /home/lhp/protoserver/GatewayWorker/vendor/workerman/workerman/Events/Select.php(268): pcntl_signal_dispatch()
+#2 /home/lhp/protoserver/GatewayWorker/vendor/workerman/workerman/Worker.php(2321): Workerman\Events\Select->loop()
+#3 /home/lhp/protoserver/GatewayWorker/vendor/workerman/gateway-worker/src/BusinessWorker.php(197): Workerman\Worker->run()
+#4 /home/lhp/protoserver/GatewayWorker/vendor/workerman/workerman/Worker.php(1452): GatewayWorker\BusinessWorker->run()
+#5 /home/lhp/protoserver/GatewayWorker/vendor/workerman/workerman/Worker.php(1282): Workerman\Worker::forkOneWorkerForLinux(Object(GatewayWorker\BusinessWorker))
+#6 /home/lhp/protoserver/GatewayWorker/vendor/workerman/workerman/Worker.php(1256): Workerman\Worker::forkWorkersForLinux()
+#7 /home/lhp/protoserver/GatewayWorker/vendor/workerman/workerman/Worker.php(507): Workerman\Worker::forkWorkers()
+#8 /home/lhp/protoserver/GatewayWorker/start.php(37): Workerman\Worker::runAll()
+#9 {main}
+
+2019-05-25 17:06:07 pid:23670 process_timeout:
+#1 /home/lhp/protoserver/GatewayWorker/vendor/workerman/workerman/Events/Select.php(268): pcntl_signal_dispatch()
+#2 /home/lhp/protoserver/GatewayWorker/vendor/workerman/workerman/Worker.php(2321): Workerman\Events\Select->loop()
+#3 /home/lhp/protoserver/GatewayWorker/vendor/workerman/gateway-worker/src/BusinessWorker.php(197): Workerman\Worker->run()
+#4 /home/lhp/protoserver/GatewayWorker/vendor/workerman/workerman/Worker.php(1452): GatewayWorker\BusinessWorker->run()
+#5 /home/lhp/protoserver/GatewayWorker/vendor/workerman/workerman/Worker.php(1282): Workerman\Worker::forkOneWorkerForLinux(Object(GatewayWorker\BusinessWorker))
+#6 /home/lhp/protoserver/GatewayWorker/vendor/workerman/workerman/Worker.php(1256): Workerman\Worker::forkWorkersForLinux()
+#7 /home/lhp/protoserver/GatewayWorker/vendor/workerman/workerman/Worker.php(507): Workerman\Worker::forkWorkers()
+#8 /home/lhp/protoserver/GatewayWorker/start.php(37): Workerman\Worker::runAll()
+#9 {main}
+
+2019-05-25 17:06:32 pid:23674 process_timeout:
+#1 /home/lhp/protoserver/GatewayWorker/vendor/workerman/workerman/Events/Select.php(268): pcntl_signal_dispatch()
+#2 /home/lhp/protoserver/GatewayWorker/vendor/workerman/workerman/Worker.php(2321): Workerman\Events\Select->loop()
+#3 /home/lhp/protoserver/GatewayWorker/vendor/workerman/gateway-worker/src/BusinessWorker.php(197): Workerman\Worker->run()
+#4 /home/lhp/protoserver/GatewayWorker/vendor/workerman/workerman/Worker.php(1452): GatewayWorker\BusinessWorker->run()
+#5 /home/lhp/protoserver/GatewayWorker/vendor/workerman/workerman/Worker.php(1282): Workerman\Worker::forkOneWorkerForLinux(Object(GatewayWorker\BusinessWorker))
+#6 /home/lhp/protoserver/GatewayWorker/vendor/workerman/workerman/Worker.php(1256): Workerman\Worker::forkWorkersForLinux()
+#7 /home/lhp/protoserver/GatewayWorker/vendor/workerman/workerman/Worker.php(507): Workerman\Worker::forkWorkers()
+#8 /home/lhp/protoserver/GatewayWorker/start.php(37): Workerman\Worker::runAll()
+#9 {main}
+
+2019-05-25 17:29:12 pid:24345 process_timeout:
+#1 /home/lhp/protoserver/GatewayWorker/vendor/workerman/workerman/Events/Select.php(268): pcntl_signal_dispatch()
+#2 /home/lhp/protoserver/GatewayWorker/vendor/workerman/workerman/Worker.php(2321): Workerman\Events\Select->loop()
+#3 /home/lhp/protoserver/GatewayWorker/vendor/workerman/gateway-worker/src/BusinessWorker.php(197): Workerman\Worker->run()
+#4 /home/lhp/protoserver/GatewayWorker/vendor/workerman/workerman/Worker.php(1452): GatewayWorker\BusinessWorker->run()
+#5 /home/lhp/protoserver/GatewayWorker/vendor/workerman/workerman/Worker.php(1282): Workerman\Worker::forkOneWorkerForLinux(Object(GatewayWorker\BusinessWorker))
+#6 /home/lhp/protoserver/GatewayWorker/vendor/workerman/workerman/Worker.php(1256): Workerman\Worker::forkWorkersForLinux()
+#7 /home/lhp/protoserver/GatewayWorker/vendor/workerman/workerman/Worker.php(1586): Workerman\Worker::forkWorkers()
+#8 /home/lhp/protoserver/GatewayWorker/vendor/workerman/workerman/Worker.php(1535): Workerman\Worker::monitorWorkersForLinux()
+#9 /home/lhp/protoserver/GatewayWorker/vendor/workerman/workerman/Worker.php(509): Workerman\Worker::monitorWorkers()
+#10 /home/lhp/protoserver/GatewayWorker/start.php(37): Workerman\Worker::runAll()
+#11 {main}
+
+2019-05-25 17:37:37 pid:23675 process_timeout:
+#1 /home/lhp/protoserver/GatewayWorker/vendor/workerman/workerman/Events/Select.php(268): pcntl_signal_dispatch()
+#2 /home/lhp/protoserver/GatewayWorker/vendor/workerman/workerman/Worker.php(2321): Workerman\Events\Select->loop()
+#3 /home/lhp/protoserver/GatewayWorker/vendor/workerman/gateway-worker/src/BusinessWorker.php(197): Workerman\Worker->run()
+#4 /home/lhp/protoserver/GatewayWorker/vendor/workerman/workerman/Worker.php(1452): GatewayWorker\BusinessWorker->run()
+#5 /home/lhp/protoserver/GatewayWorker/vendor/workerman/workerman/Worker.php(1282): Workerman\Worker::forkOneWorkerForLinux(Object(GatewayWorker\BusinessWorker))
+#6 /home/lhp/protoserver/GatewayWorker/vendor/workerman/workerman/Worker.php(1256): Workerman\Worker::forkWorkersForLinux()
+#7 /home/lhp/protoserver/GatewayWorker/vendor/workerman/workerman/Worker.php(507): Workerman\Worker::forkWorkers()
+#8 /home/lhp/protoserver/GatewayWorker/start.php(37): Workerman\Worker::runAll()
+#9 {main}
+
+2019-05-25 17:45:00 pid:23667 Workerman[start.php] stopping ...
+2019-05-25 17:45:02 pid:23667 worker[YourAppBusinessWorker:23673] exit with status 9
+2019-05-25 17:45:02 pid:23667 worker[YourAppBusinessWorker:24363] exit with status 9
+2019-05-25 17:45:02 pid:23667 Workerman[start.php] has been stopped
+2019-05-25 17:45:02 pid:24593 Workerman[/home/lhp/protoserver/GatewayWorker/start.php] start in DEBUG mode
+2019-05-25 17:50:13 pid:24593 Workerman[start.php] stopping ...
+2019-05-25 17:50:13 pid:24593 Workerman[start.php] has been stopped
+2019-05-25 17:50:15 pid:24638 Workerman[/home/lhp/protoserver/GatewayWorker/start.php] start in DEBUG mode
+2019-05-27 09:38:00 pid:24638 Workerman[start.php] stopping ...
+2019-05-27 09:38:00 pid:36513 Workerman[/home/lhp/protoserver/GatewayWorker/start.php] start in DEBUG mode
+2019-05-27 09:38:00 pid:36513 Workerman[/home/lhp/protoserver/GatewayWorker/start.php] already running
+2019-05-27 09:38:02 pid:24638 worker[YourAppBusinessWorker:24645] exit with status 139
+2019-05-27 09:38:02 pid:36526 Workerman[/home/lhp/protoserver/GatewayWorker/start.php] start in DEBUG mode
+2019-05-27 09:38:02 pid:36526 Workerman[/home/lhp/protoserver/GatewayWorker/start.php] already running
+2019-05-27 09:38:02 pid:24638 worker[YourAppBusinessWorker:24643] exit with status 139
+2019-05-27 09:38:02 pid:24638 worker[YourAppBusinessWorker:24642] exit with status 139
+2019-05-27 09:38:02 pid:24638 worker[YourAppBusinessWorker:24639] exit with status 139
+2019-05-27 09:38:02 pid:24638 worker[YourAppBusinessWorker:24644] exit with status 139
+2019-05-27 09:38:02 pid:24638 worker[YourAppBusinessWorker:24640] exit with status 139
+2019-05-27 09:38:02 pid:24638 worker[YourAppBusinessWorker:24646] exit with status 139
+2019-05-27 09:38:02 pid:24638 worker[YourAppBusinessWorker:24641] exit with status 139
+2019-05-27 09:38:02 pid:24638 Workerman[start.php] has been stopped
+2019-05-27 09:38:04 pid:36530 Workerman[/home/lhp/protoserver/GatewayWorker/start.php] start in DEBUG mode
+2019-05-27 11:08:19 pid:36530 Workerman[start.php] stopping ...
+2019-05-27 11:08:21 pid:36530 worker[YourAppBusinessWorker:36531] exit with status 9
+2019-05-27 11:08:21 pid:36530 Workerman[start.php] has been stopped
+2019-05-27 11:08:21 pid:36993 Workerman[/home/lhp/protoserver/GatewayWorker/start.php] start in DEBUG mode
+2019-05-27 11:16:50 pid:36993 Workerman[start.php] stopping ...
+2019-05-27 11:16:50 pid:37109 Workerman[/home/lhp/protoserver/GatewayWorker/start.php] start in DEBUG mode
+2019-05-27 11:16:50 pid:37109 Workerman[/home/lhp/protoserver/GatewayWorker/start.php] already running
+2019-05-27 11:16:52 pid:37113 Workerman[/home/lhp/protoserver/GatewayWorker/start.php] start in DEBUG mode
+2019-05-27 11:16:52 pid:37113 Workerman[/home/lhp/protoserver/GatewayWorker/start.php] already running
+2019-05-27 11:16:52 pid:36993 worker[YourAppBusinessWorker:37000] exit with status 9
+2019-05-27 11:16:52 pid:36993 Workerman[start.php] has been stopped
+2019-05-27 11:16:54 pid:37117 Workerman[/home/lhp/protoserver/GatewayWorker/start.php] start in DEBUG mode
+2019-05-27 11:18:19 pid:37152 Workerman[/home/lhp/protoserver/GatewayWorker/start.php] start in DEBUG mode
+2019-05-27 11:18:19 pid:37152 Workerman[/home/lhp/protoserver/GatewayWorker/start.php] already running
+2019-05-27 11:18:19 pid:37117 Workerman[start.php] stopping ...
+2019-05-27 11:18:19 pid:37117 Workerman[start.php] has been stopped
+2019-05-27 11:18:20 pid:37157 Workerman[/home/lhp/protoserver/GatewayWorker/start.php] start in DEBUG mode
+2019-05-27 11:30:27 pid:37244 Workerman[/home/lhp/protoserver/GatewayWorker/start.php] start in DEBUG mode
+2019-05-27 11:30:27 pid:37244 Workerman[/home/lhp/protoserver/GatewayWorker/start.php] already running
+2019-05-27 11:30:27 pid:37157 Workerman[start.php] stopping ...
+2019-05-27 11:30:27 pid:37157 Workerman[start.php] has been stopped
+2019-05-27 11:30:29 pid:37249 Workerman[/home/lhp/protoserver/GatewayWorker/start.php] start in DEBUG mode
