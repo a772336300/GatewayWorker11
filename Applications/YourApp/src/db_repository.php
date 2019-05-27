@@ -324,3 +324,23 @@ function db_query($sql)
     //echo $sql;
     return $tcp_worker->db->query($sql);
 }
+
+//用戶充值
+function db_user_recharge_query($userid,$variable,$code)
+{
+    global $tcp_worker;
+    $select_sql="select user_account,user_id,agent_level,agent_id from user_info where user_id = $userid";
+    $tcp_worker->db->query($select_sql);
+
+    $member_num = 0;
+    $sql="update user_info set Member_num = $member_num where user_id= $userid";
+    return $tcp_worker->db->query($sql);
+}
+
+//代理提現
+function db_user_tixian_query($userid,$variable)
+{
+    global $tcp_worker;
+    $sql="insert ";
+    return $tcp_worker->db->query($sql);
+}
