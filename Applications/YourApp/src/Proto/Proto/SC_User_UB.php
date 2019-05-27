@@ -1,6 +1,6 @@
 <?php
 /**
- * Auto generated from new.proto at 2019-05-18 13:34:50
+ * Auto generated from new.proto at 2019-05-27 09:30:50
  *
  * proto package
  */
@@ -12,18 +12,12 @@ namespace Proto {
 class SC_User_UB extends \ProtobufMessage
 {
     /* Field index constants */
-    const INIT_BU = 1;
-    const BU = 2;
-    const GOLD = 3;
-    const VIGOUR = 4;
+    const BU = 1;
+    const GOLD = 2;
+    const VIGOUR = 3;
 
     /* @var array Field descriptors */
     protected static $fields = array(
-        self::INIT_BU => array(
-            'name' => 'init_bu',
-            'required' => false,
-            'type' => \ProtobufMessage::PB_TYPE_BOOL,
-        ),
         self::BU => array(
             'name' => 'BU',
             'required' => false,
@@ -56,7 +50,6 @@ class SC_User_UB extends \ProtobufMessage
      */
     public function reset()
     {
-        $this->values[self::INIT_BU] = null;
         $this->values[self::BU] = null;
         $this->values[self::GOLD] = null;
         $this->values[self::VIGOUR] = null;
@@ -70,39 +63,6 @@ class SC_User_UB extends \ProtobufMessage
     public function fields()
     {
         return self::$fields;
-    }
-
-    /**
-     * Sets value of 'init_bu' property
-     *
-     * @param boolean $value Property value
-     *
-     * @return null
-     */
-    public function setInitBu($value)
-    {
-        return $this->set(self::INIT_BU, $value);
-    }
-
-    /**
-     * Returns value of 'init_bu' property
-     *
-     * @return boolean
-     */
-    public function getInitBu()
-    {
-        $value = $this->get(self::INIT_BU);
-        return $value === null ? (boolean)$value : $value;
-    }
-
-    /**
-     * Returns true if 'init_bu' property is set, false otherwise
-     *
-     * @return boolean
-     */
-    public function hasInitBu()
-    {
-        return $this->get(self::INIT_BU) !== null;
     }
 
     /**
