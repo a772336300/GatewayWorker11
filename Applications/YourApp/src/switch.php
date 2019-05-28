@@ -376,20 +376,6 @@ function message_switch($client_id,$mid,$data)
                 get_jinlian_liushui($_SESSION['uid'],$_SESSION['phone'],$bu_stream->getFlag(),$bu_stream->getDateFlag(),$bu_stream->getPage(),$bu_stream->getPageSize(),$bu_stream->getUnixTimestamp(),$bu_stream->getShowAll());
                 break;
             }
-        case 1020: //充值
-            {
-                $user_Recharge = new \Proto\CS_User_Recharge();
-                $user_Recharge->parseFromString($data);
-                user_recharge($_SESSION['userid'],$_SESSION['variable'],$_SESSION['code']);
-                break;
-            }
-        case 1022: //提现
-            {
-                $user_tixian = new \Proto\CS_User_Tixian();
-                $user_tixian->parseFromString($data);
-                user_tixian($_SESSION['userid'],$_SESSION['variable']);
-                break;
-            }
                 // case 1019:
         //     {
         //         get_user_task_list($_SESSION['uid']);
