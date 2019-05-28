@@ -362,11 +362,16 @@ function db_user_recharge_query($userid,$variable,$code)
 {
     global $tcp_worker;
     $select_sql="select user_account,user_id,agent_level,agent_id from user_info where user_id = $userid";
-    $tcp_worker->db->query($select_sql);
+    $result=$tcp_worker->db->query($select_sql);
 
+    $tmp_agent_id=$result[0]["agent_id"];
+    $tmp_agent_level=result[0]["agent_level"];
     $member_num = 0;
-    $sql="update user_info set Member_num = $member_num where user_id= $userid";
-    return $tcp_worker->db->query($sql);
+    $sql="update user_info set Member_num = $member_num, bMember = 1 where user_id= $userid";
+    $tcp_worker->db->query($sql);
+
+    $sql="insert into recharge_vip_log(order_id,user_id,code,b_phone_nu,rmb,type,u_coin,totalxsf,status) VALUES ()";
+    $tcp_worker->db->query($sql);
 }
 
 //代理提現
