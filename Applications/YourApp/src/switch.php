@@ -178,12 +178,13 @@ function message_switch($client_id,$mid,$data)
                     echo "get user error";
                     return;
                 }
-                ///$user_info_vip = db_get_user_info_vip($_SESSION['uid']);
-//                if(isset($user_info_vip['vip_state']))
-//                {
-//
-//                }
-                send_vip_day($_SESSION['uid'],1);
+                $vip_day = 0;
+                $user_info_vip = db_get_user_info_vip($_SESSION['uid']);
+                if(isset($user_info_vip['vip_num'])&&$user_info_vip['vip_num']!=null&&$user_info_vip['vip_num']>0)
+                {
+                    $vip_day = $user_info_vip['vip_num'];
+                }
+                send_vip_day($_SESSION['uid'],$vip_day);
                 //商城开关
                 send_notice($_SESSION['uid'],4,$init_user_config['shangchengkaiguan']);
                 //实名认证
@@ -345,10 +346,6 @@ function message_switch($client_id,$mid,$data)
                 if(db_user_bWx($_SESSION['uid'],$user_info_up->getOpenid(),$user_info_up->getUnionid())==null)
                 {
                     $is_success=false;
-                }
-                else
-                {
-                 //   task_manager($mid);
                 }
                 db_user_update_bWx($_SESSION['uid']);
                 send_pack_user_wx($client_id,$is_success);

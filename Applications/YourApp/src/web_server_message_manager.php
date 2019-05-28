@@ -45,5 +45,15 @@ function web_server_message_manager($data)
             send_notice_to_all($id,$value);
         }
     }
+    if($dataArr['f']=='rechargeNotice')
+    {
+        $vip_day =0;
+        if(isset($dataArr['vip_num'])&&$dataArr['vip_num']!=null&&$dataArr['vip_num']>0)
+        {
+            $vip_day = $dataArr['vip_num'];
+        }
+        send_vip_day($dataArr['user_id'],$vip_day);
+
+    }
 
 }

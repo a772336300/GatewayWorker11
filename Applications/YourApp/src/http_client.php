@@ -30,18 +30,8 @@ function jinlian_http_client($path,$add_arr,$callback)
         ///$connection_to_baidu->send("GET / HTTP/1.1\r\nHost: www.baidu.com\r\nConnection: keep-alive\r\n\r\n");
     };
     $connection_to_jinwowo->onMessage = function ($connection_to_jinwowo, $http_buffer) {
-        $match = array();
-        preg_match("/\r\n\r\n(.+)\r\n(.+)/",$http_buffer,$match);
-        if($match==null)
-        {
-            preg_match("/(.+)\r\n(.+)/",$http_buffer,$match);
-        }
-        if(isset($match[1])&&isset($match[2]))
-        {
-            $body = substr($match[2],0,hexdec($match[1]));
-            echo "\n body \n $body \n";
-            $connection_to_jinwowo->http_buffer .= $body;
-        }
+
+        $connection_to_jinwowo->http_buffer .= $http_buffer;
         //$response = json_decode($http_buffer,true);\r\n
 //        if($response['code']==200)
 //        {
@@ -50,12 +40,14 @@ function jinlian_http_client($path,$add_arr,$callback)
     };
     $connection_to_jinwowo->onClose = function ($connection_to_jinwowo)
     {
+        list(, $http_body) = explode("\r\n\r\n", $connection_to_jinwowo->http_buffer, 2);
+        $data = get_body($http_body);
         echo "http connection closed\n";
         //$connection_to_jinwowo->http_buffer .= $http_buffer;
         echo "buff:\n";
         echo $connection_to_jinwowo->http_buffer;
         echo "\nend\n";
-        call_user_func($connection_to_jinwowo->mycallback,$connection_to_jinwowo->http_buffer);
+        call_user_func($connection_to_jinwowo->mycallback,$data);
 //        $json_arr=array();
 //        preg_match('/{.*}/',$connection_to_jinwowo->http_buffer,$json_arr);
 //
@@ -70,4 +62,24 @@ function jinlian_http_client($path,$add_arr,$callback)
         echo "Error code:$code msg:$msg\n";
     };
     $connection_to_jinwowo->connect();
+}
+function get_body($http_body)
+{
+    $result = '';
+    $left_body = $http_body;
+    while ($http_body!=null)
+    {
+        if($http_body=="\r\n")
+        {
+            break;
+        }
+        list($len, $http_body) = explode("\r\n", $http_body, 2);
+        if($len == "")
+        {
+            continue;
+        }
+        $result .= substr($http_body,0,hexdec($len));
+        $http_body= substr($http_body,hexdec($len));
+    }
+    return $result;
 }
