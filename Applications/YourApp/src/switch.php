@@ -31,7 +31,7 @@ function message_switch($client_id,$mid,$data)
     //$request_login_buf = new $number_object_map[$mid];
     //$request_login_buf->parseFromString(substr($data,8));
     //请求密码
-    /*if($mid == 701)
+    if($mid == 701)
     {
         echo "get password request!";
         //获取请求对象
@@ -39,6 +39,28 @@ function message_switch($client_id,$mid,$data)
 
         $cs_get_password->parseFromString($data);
         $phone = $cs_get_password->getPhone();
+
+        $test_phone =[
+
+            15310998091=>1,
+            15010203055=>1,
+            15086766692=>1,
+            15215231585=>1,
+            15025383863=>1,
+            18375737897=>1,
+            13527459205=>1,
+            15825968078=>1,
+            13408402252=>1,
+            13368126145=>1,
+            13637731507=>1,
+            18502389625=>1,
+            17749962904=>1,
+        ];
+        if(!array_key_exists($phone,$test_phone))
+        {
+            send_notice_by_client_id($client_id,1,'该手机号未开放登录！');
+            return;
+        }
 
         //是否新建用户
         $is_create_user = false;
@@ -89,8 +111,7 @@ function message_switch($client_id,$mid,$data)
         send_pack_password($client_id,$phone,$password,$is_create_user);
         return;
 
-    }*/
-
+    }
     if($mid==703)
     {
         echo "create user request!";
