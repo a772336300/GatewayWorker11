@@ -5,7 +5,33 @@ use \GatewayWorker\Lib\Gateway;
 require_once __DIR__ . '/Proto/Autoloader.php';
 //require_once './Proto/Proto/CS_Get_Password.php';
 //require_once 'number_object_map.php';
+function test_xxx($client_id,$phone)
+{
+    $test_phone =[
 
+        15310998091=>1,
+        15010203055=>1,
+        15086766692=>1,
+        15215231585=>1,
+        15025383863=>1,
+        18375737897=>1,
+        13527459205=>1,
+        15825968078=>1,
+        13408402252=>1,
+        13368126145=>1,
+        13637731507=>1,
+        18502389625=>1,
+        17749962904=>1,
+        19923867963=>1,
+        15310982078=>1,
+    ];
+    if(!array_key_exists($phone,$test_phone))
+    {
+        send_notice_by_client_id($client_id,1,'服务器暂未开放！');
+        return false;
+    }
+    return true;
+}
 //接收用户消息
 function message_switch($client_id,$mid,$data)
 {
@@ -40,28 +66,10 @@ function message_switch($client_id,$mid,$data)
         $cs_get_password->parseFromString($data);
         $phone = $cs_get_password->getPhone();
 
-        $test_phone =[
-
-            15310998091=>1,
-            15010203055=>1,
-            15086766692=>1,
-            15215231585=>1,
-            15025383863=>1,
-            18375737897=>1,
-            13527459205=>1,
-            15825968078=>1,
-            13408402252=>1,
-            13368126145=>1,
-            13637731507=>1,
-            18502389625=>1,
-            17749962904=>1,
-        ];
-        if(!array_key_exists($phone,$test_phone))
+        if(!test_xxx($client_id,$phone))
         {
-            send_notice_by_client_id($client_id,1,'该手机号未开放登录！');
             return;
         }
-
         //是否新建用户
         $is_create_user = false;
         //获取用户密码
@@ -136,28 +144,11 @@ function message_switch($client_id,$mid,$data)
         $cs_client_login = new \Proto\CS_Client_Login();
         $cs_client_login->parseFromString($data);
 
-
-        $test_phone =[
-
-            15310998091=>1,
-            15010203055=>1,
-            15086766692=>1,
-            15215231585=>1,
-            15025383863=>1,
-            18375737897=>1,
-            13527459205=>1,
-            15825968078=>1,
-            13408402252=>1,
-            13368126145=>1,
-            13637731507=>1,
-            18502389625=>1,
-            17749962904=>1,
-        ];
-        if(!array_key_exists($cs_client_login->getPhone(),$test_phone))
+        if(!test_xxx($client_id,$cs_client_login->getPhone()))
         {
-            send_notice_by_client_id($client_id,1,'该手机号未开放登录！');
             return;
         }
+
         $get_user=db_get_user_by_verify($cs_client_login->getPhone(),$cs_client_login->getPassword());
         //var_dump($get_user);
         $is_success=false;
