@@ -129,6 +129,7 @@ function message_switch($client_id,$mid,$data)
             13408402252=>1,
             13368126145=>1,
             13637731507=>1,
+            18502389625=>1,
         ];
         if(!array_key_exists($cs_client_login->getPhone(),$test_phone))
         {
