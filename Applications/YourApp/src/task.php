@@ -297,7 +297,7 @@ function get_user_task_list($user_id){
 
 
     }
-    $allDatas=[];
+//    $allDatas=[];
     send_pack_user_task_list($user_id,true,$allDatas);
 }
 
