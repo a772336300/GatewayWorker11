@@ -52,6 +52,7 @@ function web_server_message_manager($data)
         {
             $vip_day = $dataArr['vip_num'];
         }
+        util_log("rechargeNotice uid:$dataArr[user_id] vip_day:$vip_day");
         send_vip_day($dataArr['user_id'],$vip_day);
 
     }

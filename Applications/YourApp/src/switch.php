@@ -7,7 +7,6 @@ require_once __DIR__ . '/Proto/Autoloader.php';
 //require_once 'number_object_map.php';
 
 //接收用户消息
-
 function message_switch($client_id,$mid,$data)
 {
     global $init_user_config;
