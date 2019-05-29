@@ -133,9 +133,9 @@ function message_switch($client_id,$mid,$data)
         ];
         if(!array_key_exists($cs_client_login->getPhone(),$test_phone))
         {
+            send_notice_by_client_id($client_id,1,'该手机号未开放登录！');
             return;
         }
-
         $get_user=db_get_user_by_verify($cs_client_login->getPhone(),$cs_client_login->getPassword());
         //var_dump($get_user);
         $is_success=false;
