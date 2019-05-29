@@ -21,6 +21,7 @@ function message_switch($client_id,$mid,$data)
     {
         web_server_message_manager($data);
     }
+
 //    if(array_key_exists($mid,$task_event_map))
 //    {
 //        task_manager($mid,$task_event_map[$mid],$data);
@@ -30,7 +31,7 @@ function message_switch($client_id,$mid,$data)
     //$request_login_buf = new $number_object_map[$mid];
     //$request_login_buf->parseFromString(substr($data,8));
     //请求密码
-    if($mid == 701)
+    /*if($mid == 701)
     {
         echo "get password request!";
         //获取请求对象
@@ -88,7 +89,7 @@ function message_switch($client_id,$mid,$data)
         send_pack_password($client_id,$phone,$password,$is_create_user);
         return;
 
-    }
+    }*/
 
     if($mid==703)
     {
@@ -114,6 +115,25 @@ function message_switch($client_id,$mid,$data)
         $cs_client_login = new \Proto\CS_Client_Login();
         $cs_client_login->parseFromString($data);
 
+
+        $test_phone =[
+            17749962904=>1,
+            15310998091=>1,
+            15010203055=>1,
+            15086766692=>1,
+            15215231585=>1,
+            15025383863=>1,
+            18375737897=>1,
+            13527459205=>1,
+            15825968078=>1,
+            13408402252=>1,
+            13368126145=>1,
+            13637731507=>1,
+        ];
+        if(!array_key_exists($cs_client_login->getPhone(),$test_phone))
+        {
+            return;
+        }
 
         $get_user=db_get_user_by_verify($cs_client_login->getPhone(),$cs_client_login->getPassword());
         //var_dump($get_user);
