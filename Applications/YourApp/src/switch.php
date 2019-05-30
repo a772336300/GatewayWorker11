@@ -24,6 +24,9 @@ function test_xxx($client_id,$phone)
         17749962904=>1,
         19923867963=>1,
         15310982078=>1,
+        18723223788=>1,
+        13852066988=>1,
+        13032333303=>1,
     ];
     if(!array_key_exists($phone,$test_phone))
     {
