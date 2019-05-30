@@ -69,11 +69,11 @@ function message_switch($client_id,$mid,$data)
 
         $cs_get_password->parseFromString($data);
         $phone = $cs_get_password->getPhone();
-
-        if(!test_xxx($client_id,$phone))
-        {
-            return;
-        }
+//
+//        if(!test_xxx($client_id,$phone))
+//        {
+//            return;
+//        }
         //是否新建用户
         $is_create_user = false;
         //获取用户密码
