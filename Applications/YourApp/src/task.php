@@ -275,9 +275,13 @@ function get_user_task_list($user_id){
     $user=db_query($sql);
     $isNormal=$user[0]['user_type']==1?1:0;
     //get user_taskList
-    $sql="select ut.times,tc.id,ut.user_id, ut.task_id, ut.state, ut.num done, ut.total,tc.task_name,tc.task_content,tc.task_name_type,tc.task_skip_type,tc.skip,tc.u_coin_first,tc.u_coin_agent,tc.u_coin_normal from func_system.user_task ut,func_system.task_config tc where ut.task_id=tc.task_id and ut.state<4 and ut.user_id=".$user_id." order by ut.state desc";
+    $sql="select ut.times,tc.id,ut.user_id, ut.task_id, ut.state, ut.num done, tc.total,ut.total total1,tc.task_name,tc.task_content,tc.task_name_type,tc.task_skip_type,tc.skip,tc.u_coin_first,tc.u_coin_agent,tc.u_coin_normal from func_system.user_task ut,func_system.task_config tc where ut.task_id=tc.task_id and ut.state<4 and ut.user_id=".$user_id." order by ut.state desc";
     $allDatas=db_query($sql);
     foreach ($allDatas as $key=>$allData) {
+        if($allData['total']!=$allData['total1']){
+            $sql="update func_system.user_task set total=".$allData['total1'];
+            db_query($sql);
+        }
         if(($allData['task_id']>=300000&&$allData['task_id']<=300021)||($allData['task_id']>=300090&&$allData['task_id']<=300112)){
 //            if($allData['times']>0){
 //                if($isNormal){
