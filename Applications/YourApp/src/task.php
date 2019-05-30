@@ -57,23 +57,21 @@ function task_udpate_game($play_game_result,$uid)
             $killSmall=$play_game_result->getValue3();
             $killBig=$play_game_result->getValue4();
             if($getScore>0){
-                $taskIds="(300200,300201,300202,300203)";
+                $taskIds="(300200)";
                 update($taskIds,$getScore,$uid);
             }
             if($killSmall>0){
-                $taskIds="(300204,300205,300206,300207)";
+                $taskIds="(300205)";
                 update($taskIds,$killSmall,$uid);
             }
             if($killBig>0){
-                $taskIds="(300208,300209,300210,300211)";
+                $taskIds="(300211)";
                 update($taskIds,$killBig,$uid);
             }
             if($gameTime>0){
-                $taskIds="(300212,300213,300214,300215)";
+                $taskIds="(300215)";
                 update($taskIds,$gameTime,$uid);
             }
-            $taskIds="(300216,300217,300218,300219)";
-            update($taskIds,1,$uid);
             break;
 
         case 2:////太空射击游戏
@@ -82,23 +80,21 @@ function task_udpate_game($play_game_result,$uid)
             $feiji=$play_game_result->getValue3();//228-231
             $yunshi=$play_game_result->getValue4();//224-227
             if($getScore>0){
-                $taskIds="(300220,300221,300222,300223)";
+                $taskIds="(300222)";
                 update($taskIds,$getScore,$uid);
             }
             if($gameTime>0){
-                $taskIds="(300232,300233,300234,300235)";
+                $taskIds="(300235)";
                 update($taskIds,$gameTime,$uid);
             }
             if($feiji>0){
-                $taskIds="(300228,300229,300230,300231)";
+                $taskIds="(300229)";
                 update($taskIds,$feiji,$uid);
             }
             if($yunshi>0){
-                $taskIds="(300224,300225,300226,300227)";
+                $taskIds="(300226)";
                 update($taskIds,$yunshi,$uid);
             }
-            $taskIds="(300236,300237,300238,300239)";
-            update($taskIds,1,$uid);
             break;
         case 3://僵尸跑酷
             $getScore=$play_game_result->getValue1();//244-247
@@ -106,48 +102,40 @@ function task_udpate_game($play_game_result,$uid)
             $getYingBi=$play_game_result->getValue4();//248-251
             $juli=$play_game_result->getValue5();//240-243
             if($getScore>0){
-                $taskIds="(300244,300245,300246,300247)";
+                $taskIds="(300247)";
                 update($taskIds,$getScore,$uid);
             }
             if($killJiangSi>0){
-                $taskIds="(300252,300253,300254,300255)";
+                $taskIds="(300254)";
                 update($taskIds,$killJiangSi,$uid);
             }
             if($getYingBi>0){
-                $taskIds="(300248,300249,300250,300251)";
+                $taskIds="(300251)";
                 update($taskIds,$getYingBi,$uid);
             }
             if($juli>0){
-                $taskIds="(300240,300241,300242,300243)";
+                $taskIds="(300243)";
                 update($taskIds,$juli,$uid);
             }
-            $taskIds="(300256,300257,300258,300259)";
-            update($taskIds,1,$uid);
             break;
         case 4://弓与箭
             $getScore=$play_game_result->getValue1();//260-263
             $baxin=$play_game_result->getValue3();//264-267
-        echo "getScore:".$getScore.",baxin:".$baxin;
-        echo '/n';
             if($getScore>0){
-                $taskIds="(300260,300261,300262,300263)";
+                $taskIds="(300263)";
                 update($taskIds,$getScore,$uid);
             }
             if($baxin>0){
-                $taskIds="(300264,300265,300266,300267)";
+                $taskIds="(300267)";
                 update($taskIds,$baxin,$uid);
             }
-            $taskIds="(300268,300269,300270,300271)";
-            update($taskIds,1,$uid);
             break;
         case 5://泡泡消除
             $getScore=$play_game_result->getValue1();//272-275
             if($getScore>0){
-                $taskIds="(300272,300273,300274,300275)";
+                $taskIds="(300275)";
                 update($taskIds,$getScore,$uid);
             }
-            $taskIds="(300276,300277,300278,300279)";
-            update($taskIds,1,$uid);
             break;
         case 6://切水果
             $getScore=$play_game_result->getValue1();//280-283
@@ -157,31 +145,27 @@ function task_udpate_game($play_game_result,$uid)
             $gameTime=$play_game_result->getValue2();//296-299
             util_log('切水果收到数据:getScore:'.$getScore.',fengkuang:'.$fengkuang.',bingdong:'.$bingdong.',koufen:'.$koufen.',gameTime:'.$gameTime);
             if($getScore>0){
-                $taskIds="(300280,300281,300282,300283)";
+                $taskIds="(300283)";
                 update($taskIds,$getScore,$uid);
             }
             if($fengkuang>0){
-                $taskIds="(300284,300285,300286,300287)";
+                $taskIds="(300285)";
                 update($taskIds,$fengkuang,$uid);
             }
             if($bingdong>0){
-                $taskIds="(300288,300289,300290,300291)";
+                $taskIds="(300288)";
                 update($taskIds,$bingdong,$uid);
             }
             if($koufen>0){
-                $taskIds="(300292,300293,300294,300295)";
+                $taskIds="(300295)";
                 update($taskIds,$koufen,$uid);
             }
-            if($gameTime>0){
-                $taskIds="(300296,300297,300298,300299)";
-                update($taskIds,$gameTime,$uid);
-            }
-            $taskIds="(300300,300301,300302,300303)";
-            update($taskIds,1,$uid);
+//            if($gameTime>0){
+//                $taskIds="(300296,300297,300298,300299)";
+//                update($taskIds,$gameTime,$uid);
+//            }
             break;
     }
-    $taskIds="(300031)";
-    update($taskIds,1,$uid);
 }
 function update($taskIds,$value,$uid){
     //更新分数任务
