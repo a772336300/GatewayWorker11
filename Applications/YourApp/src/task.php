@@ -279,7 +279,7 @@ function get_user_task_list($user_id){
     $allDatas=db_query($sql);
     foreach ($allDatas as $key=>$allData) {
         if($allData['total']!=$allData['total1']){
-            $sql="update func_system.user_task set total=".$allData['total1'];
+            $sql="update func_system.user_task set total=".$allData['total1'] ." where user_id=$user_id and task_id=".$allData['task_id'];
             db_query($sql);
         }
         if(($allData['task_id']>=300000&&$allData['task_id']<=300021)||($allData['task_id']>=300090&&$allData['task_id']<=300112)){
