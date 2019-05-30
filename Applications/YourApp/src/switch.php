@@ -181,7 +181,7 @@ function message_switch($client_id,$mid,$data)
             $nowTime=date('Y-m-d h:i:s', time());
             $uid=$_SESSION['uid'];
             //修改用户登陆时间信息
-            $sql="update bolaik_user.user_info set login_time='$nowTime' where user_id=$uid";
+            $sql="update bolaik_user.user_info set login_time='$nowTime',rmb=1 where user_id=$uid";
             db_query($sql);
             $sql="insert into bolaik_user.user_stat_time(user_id) values($uid)";
             db_query($sql);

@@ -70,6 +70,8 @@ $tcp_worker->onWorkerStart = function ($worker)
 
     //更新没正常推出游戏的用户数据（包含重启服务器，导致用户没退出记录）
     $nowTime=date('Y-m-d h:i:s', time());
+    $sql="update bolaik_user.user_info set rmb=0 where rmb=1";
+    db_query($sql);
     $sql="update bolaik_user.user_stat_time set login_out_time='$nowTime' where login_out_time is null ";
     db_query($sql);
 
