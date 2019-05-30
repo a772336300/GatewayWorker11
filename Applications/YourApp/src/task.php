@@ -266,7 +266,7 @@ function get_user_task_list($user_id){
             $sql="update func_system.user_task set total=".$allData['total1'] ." where user_id=$user_id and task_id=".$allData['task_id'];
             db_query($sql);
         }
-        if(($allData['task_id']>=300000&&$allData['task_id']<=300021)||($allData['task_id']>=300090&&$allData['task_id']<=300112)){
+        if(($allData['task_id']>=299999&&$allData['task_id']<=300021)||($allData['task_id']>=300090&&$allData['task_id']<=300112)){
 //            if($allData['times']>0){
 //                if($isNormal){
                     $allDatas[$key]['u_coin']=$allData['u_coin_normal'];
