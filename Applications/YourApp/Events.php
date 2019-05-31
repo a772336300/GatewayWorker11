@@ -123,7 +123,9 @@ class Events
            $uid=$_SESSION['uid'];
            $sql="update bolaik_user.user_info set rmb=0 where user_id=$uid";
            db_query($sql);
-           $sql="update bolaik_user.user_stat_time set login_out_time='$nowTime' where user_id=$uid order by id desc limit 1 ";
+           //计算在线时长
+           $num=time()-$_SESSION['loginTime'];
+           $sql="update bolaik_user.user_stat_time set login_out_time='$nowTime',time_length=$num where user_id=$uid order by id desc limit 1 ";
            db_query($sql);
        }
 
