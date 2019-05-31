@@ -113,7 +113,25 @@ function message_switch($client_id,$mid,$data)
         }
         else
         {
-            db_update_password($phone,$password);
+
+            $user = db_exist_user($phone);
+            if(isset($user['uid'])&&$user['uid']!=null)
+            {
+                db_update_password($phone,$password);
+
+            }
+            else
+            {
+                $xxx = db_exist_user_info($phone);
+                if(!db_add_user($phone,(int)$xxx['user_id'],$xxx['user_passwd']))
+                {
+                    //db_delete_user_id((int)$xxx['user_id']);
+                    send_notice_by_client_id($client_id,1,'注册失败！error:1004');
+                    util_log("db_add_user fail!!游戏服务器注册失败!phone: $phone");
+                    return ;
+                }
+                $password=$xxx['user_passwd'];
+            }
         }
         if(!isset($_SESSION['phone']))
         {
@@ -158,6 +176,18 @@ function message_switch($client_id,$mid,$data)
         $is_success=false;
         if($get_user!=null)
         {
+            //验证账号是否有问题
+            $get_user_info=db_exist_user_info($cs_client_login->getPhone());
+            if($get_user_info==null || $get_user_info['user_id']!=$get_user[0]['uid'])
+            {
+                if(!db_delete_user($get_user[0]['uid']))
+                {
+                    send_notice_by_client_id($client_id,1,'注册失败！error:1005');
+                    util_log("db_add_user fail!游戏服务器注册失败!phone: ".$cs_client_login->getPhone());
+                    return ;
+                }
+                return;
+            }
             $is_success=true;
             if(!isset($_SESSION['uid']))
             {
