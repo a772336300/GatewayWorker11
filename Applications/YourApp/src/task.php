@@ -215,22 +215,8 @@ function get_user_task_list($user_id){
             foreach ($task_cofigs as $task_config) {
                 $state=2;
                 $done=0;
-                if($task_config["task_id"]>=300200&&$task_config["task_id"]<=300303){
-                    $sql="insert into func_system.user_task (user_id,task_id,state,done,total,task_name_type) values($user_id,$task_config[task_id],$state,$done,$task_config[total],$task_config[task_name_type])";
-                    db_query($sql);
-                }else{
-                    $sql="select state,done from func_system.user_task_beifen where uid=$user_id and task_id=$task_config[task_id]";
-                    $old_user_task=db_query($sql);
-                    $old_state=$old_user_task[0]['state'];
-                    $num=$old_user_task[0]['done'];
-                    if($old_state==5){
-                        $state=4;
-                    }else if($old_state==3){
-                        $state=3;
-                    }
-                    $sql="insert into func_system.user_task (user_id,task_id,state,done,total,task_name_type,num,times) values($user_id,$task_config[task_id],$state,$done,$task_config[total],$task_config[task_name_type],$num,1)";
-                    db_query($sql);
-                }
+                $sql="insert into func_system.user_task (user_id,task_id,state,done,total,task_name_type) values($user_id,$task_config[task_id],$state,$done,$task_config[total],$task_config[task_name_type])";
+                db_query($sql);
             }
         }else{
             foreach ($task_cofigs as $task_config) {
@@ -266,7 +252,7 @@ function get_user_task_list($user_id){
             $sql="update func_system.user_task set total=".$allData['total'] ." where user_id=$user_id and task_id=".$allData['task_id'];
             db_query($sql);
         }
-        if(($allData['task_id']>=299999&&$allData['task_id']<=300021)||($allData['task_id']>=300090&&$allData['task_id']<=300112)){
+        if($allData['task_id']==299999){
 //            if($allData['times']>0){
 //                if($isNormal){
                     $allDatas[$key]['u_coin']=$allData['u_coin_normal'];
