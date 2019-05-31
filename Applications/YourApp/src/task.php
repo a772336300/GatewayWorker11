@@ -211,26 +211,17 @@ function get_user_task_list($user_id){
         global $tcp_worker;
         $tcp_worker->db->beginTrans();
         $task_cofigs=db_get_task_config();
-        if($user_id<10000000){
-            foreach ($task_cofigs as $task_config) {
-                $state=2;
-                $done=0;
-                $sql="insert into func_system.user_task (user_id,task_id,state,done,total,task_name_type) values($user_id,$task_config[task_id],$state,$done,$task_config[total],$task_config[task_name_type])";
-                db_query($sql);
-            }
-        }else{
-            foreach ($task_cofigs as $task_config) {
+        foreach ($task_cofigs as $task_config) {
 //            echo "task_id".$task_config["task_id"];
 //            echo '/n';
-                $state=2;
-                $done=0;
-                if($task_config["task_id"]==300032){
-                    $state=3;
-                    $done=1;
-                }
-                $sql="insert into func_system.user_task (user_id,task_id,state,done,total,task_name_type) values($user_id,$task_config[task_id],$state,$done,$task_config[total],$task_config[task_name_type])";
-                db_query($sql);
+            $state=2;
+            $done=0;
+            if($task_config["task_id"]==300032){
+                $state=3;
+                $done=1;
             }
+            $sql="insert into func_system.user_task (user_id,task_id,state,done,total,task_name_type) values($user_id,$task_config[task_id],$state,$done,$task_config[total],$task_config[task_name_type])";
+            db_query($sql);
         }
 
         if(!$tcp_worker->db->commitTrans())
