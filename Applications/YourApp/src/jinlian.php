@@ -34,7 +34,7 @@ function get_jinlian_assert($uid,$phone)
 function get_jinlian_liushui($uid,$phone,$flag,$dateFlag,$page,$pageSize,$unixTimestamp,$showAll)
 {
     //$canshu = array('terraceId=', 'signType', 'device', 'version', 'sign');
-    $add_arr= array('userMobile='.$phone,'flag='.$flag,'dateFlag='.$dateFlag,'page='.$page,'pageSize='.$pageSize,'unixTimestamp='.$unixTimestamp,'showAll='.$showAll);
+    $add_arr= array('userMobile='.$phone,'flag='.$flag,'dateFlag='.$dateFlag,'page='.$page,'pageSize='.$pageSize,'unixTimestamp='.$unixTimestamp,'showAll=1');
     //$add_arr= array('userMobile='.$phone,'flag='.$flag,'dateFlag='.$dateFlag,'page='.$page,'pageSize='.$pageSize,'unixTimestamp='.$unixTimestamp,'showAll='.$showAll);
     jinlian_http_client('/app/v1/flowList?',$add_arr , function ($json_data) use ($uid,$phone){
         $buf_arr= json_decode($json_data);
