@@ -148,10 +148,10 @@ function message_switch($client_id,$mid,$data)
         $cs_client_login = new \Proto\CS_Client_Login();
         $cs_client_login->parseFromString($data);
 
-        if(!test_xxx($client_id,$cs_client_login->getPhone()))
-        {
-            return;
-        }
+//        if(!test_xxx($client_id,$cs_client_login->getPhone()))
+//        {
+//            return;
+//        }
 
         $get_user=db_get_user_by_verify($cs_client_login->getPhone(),$cs_client_login->getPassword());
         //var_dump($get_user);
