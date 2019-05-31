@@ -176,6 +176,7 @@ function message_switch($client_id,$mid,$data)
         $is_success=false;
         if($get_user!=null)
         {
+            $nowTime=date('Y-m-d h:i:s', time());
             //验证账号是否有问题
             $get_user_info=db_exist_user_info($cs_client_login->getPhone());
             if($get_user_info==null || $get_user_info['user_id']!=$get_user[0]['uid'])
@@ -195,6 +196,7 @@ function message_switch($client_id,$mid,$data)
                 // 没验证的话把第一个包当做uid（这里为了方便演示，没做真正的验证）
                 $_SESSION['uid'] = $get_user[0]['uid'];
                 $_SESSION['phone'] = $cs_client_login->getPhone();
+                $_SESSION['loginTime']=time();
                 //添加相应数据到连接
                 /* 保存uid到connection的映射，这样可以方便的通过uid查找connection，
                  * 实现针对特定uid推送数据
@@ -208,7 +210,6 @@ function message_switch($client_id,$mid,$data)
                 return;
             }
             //
-            $nowTime=date('Y-m-d h:i:s', time());
             $uid=$_SESSION['uid'];
             //修改用户登陆时间信息
             $sql="update bolaik_user.user_info set login_time='$nowTime',rmb=1 where user_id=$uid";
@@ -219,10 +220,11 @@ function message_switch($client_id,$mid,$data)
             $date=date('Y-m-d', time());
             $time=date('h:i:s', time());
             $sql="select max_user from bolaik_user.user_online where date_time='$date'";
-            $max=db_query($sql)[0]['max_user'];
+            $online=db_query($sql);
+            $max=$online[0]['max_user'];
             global $connection_count;
             if($connection_count>$max){
-                $sql="update bolaik_user.user_online set max_user= $connection_count,max_time=$time where date_time=$date";
+                $sql="update bolaik_user.user_online set max_user= $connection_count,max_time='$time' where date_time='$date'";
                 db_query($sql);
             }
         }

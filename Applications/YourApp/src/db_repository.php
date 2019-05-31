@@ -17,7 +17,7 @@ function db_exist_user_info($phone)
 {
     global $tcp_worker;
     global $web_user;
-    return $tcp_worker->db->select('user_id')->from("$web_user.user_info")->where("user_account= '$phone'")->row();
+    return $tcp_worker->db->select('user_id,user_passwd')->from("$web_user.user_info")->where("user_account= '$phone'")->row();
 }
 function db_add_user_id($phone,$password)
 {
@@ -50,6 +50,7 @@ function db_delete_user($uid)
     $tcp_worker->db->delete('user_money')->where("uid=$uid")->query();
     $tcp_worker->db->delete('user_sign')->where("uid=$uid")->query();
     $tcp_worker->db->delete('user_bag')->where("uid=$uid")->query();
+    $tcp_worker->db->delete('user_wx')->where("uid=$uid")->query();
 
     if(!$tcp_worker->db->commitTrans())
     {
