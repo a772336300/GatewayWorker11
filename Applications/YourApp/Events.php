@@ -120,9 +120,11 @@ class Events
        if(isset($_SESSION['uid'])){
            echo "ccc\n";
            $nowTime=date('Y-m-d h:i:s', time());
-           $uid=$_SESSION['uid'];
-           $sql="update bolaik_user.user_info set rmb=0 where user_id=$uid";
-           db_query($sql);
+           if(isset($_SESSION['uid'])&&$_SESSION['uid']!=null){
+               $uid=$_SESSION['uid'];
+               $sql="update bolaik_user.user_info set rmb=0 where user_id=$uid";
+               db_query($sql);
+           }
            //计算在线时长
            if(isset($_SESSION['loginTime'])&&$_SESSION['loginTime']!=null)
            {
