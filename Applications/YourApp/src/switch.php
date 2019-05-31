@@ -185,6 +185,16 @@ function message_switch($client_id,$mid,$data)
             db_query($sql);
             $sql="insert into bolaik_user.user_stat_time(user_id) values($uid)";
             db_query($sql);
+            //记录今日最高在线人数
+            $date=date('Y-m-d', time());
+            $time=date('h:i:s', time());
+            $sql="select max_user from bolaik_user.user_online where date_time='$date'";
+            $max=db_query($sql)[0]['max_user'];
+            global $connection_count;
+            if($connection_count>$max){
+                $sql="update bolaik_user.user_online set max_user= $connection_count,max_time=$time where date_time=$date";
+                db_query($sql);
+            }
         }
         send_pack_login($client_id,$is_success);
         return;
