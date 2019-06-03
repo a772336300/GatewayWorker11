@@ -79,8 +79,9 @@ function message_switch($client_id,$mid,$data)
         //获取用户密码
         $password = product_password();
 
+        $xxxx=db_exist_user_info($phone);
         //新增用户uid
-        if(db_exist_user_info($phone)==null)
+        if($xxxx==null)
         {
             //新增用户
             db_add_user_id($phone,$password);
@@ -115,22 +116,31 @@ function message_switch($client_id,$mid,$data)
         {
 
             $user = db_exist_user($phone);
-            if(isset($user['uid'])&&$user['uid']!=null)
+            if(isset($user['uid'])&&$user['uid']!=null&&$user['uid']==$xxxx['user_id'])
             {
                 db_update_password($phone,$password);
 
             }
             else
             {
-                $xxx = db_exist_user_info($phone);
-                if(!db_add_user($phone,(int)$xxx['user_id'],$xxx['user_passwd']))
+                if(isset($user['uid'])&&$user['uid']!=null&&$user['uid']!=$xxxx['user_id'])
+                {
+                    if(!db_delete_user($user['uid']))
+                    {
+                        send_notice_by_client_id($client_id,1,'注册失败！error:1006');
+                        util_log("db_add_user fail!游戏服务器注册失败!phone: $phone");
+                        return ;
+                    }
+                }
+                //$xxx = db_exist_user_info($phone);
+                if(!db_add_user($phone,(int)$xxxx['user_id'],$xxxx['user_passwd']))
                 {
                     //db_delete_user_id((int)$xxx['user_id']);
                     send_notice_by_client_id($client_id,1,'注册失败！error:1004');
                     util_log("db_add_user fail!!游戏服务器注册失败!phone: $phone");
                     return ;
                 }
-                $password=$xxx['user_passwd'];
+                $password=$xxxx['user_passwd'];
             }
         }
         if(!isset($_SESSION['phone']))
