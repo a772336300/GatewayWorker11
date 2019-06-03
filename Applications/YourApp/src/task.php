@@ -58,19 +58,19 @@ function task_udpate_game($play_game_result,$uid)
             $killBig=$play_game_result->getValue4();
             if($getScore>0){
                 $taskIds="(300200)";
-                update($taskIds,$getScore,$uid);
+                update($taskIds,$getScore,$uid,$gameTime);
             }
             if($killSmall>0){
                 $taskIds="(300205)";
-                update($taskIds,$killSmall,$uid);
+                update($taskIds,$killSmall,$uid,$gameTime);
             }
             if($killBig>0){
                 $taskIds="(300211)";
-                update($taskIds,$killBig,$uid);
+                update($taskIds,$killBig,$uid,$gameTime);
             }
             if($gameTime>0){
                 $taskIds="(300215)";
-                update($taskIds,$gameTime,$uid);
+                update($taskIds,$gameTime,$uid,$gameTime);
             }
             break;
 
@@ -81,60 +81,63 @@ function task_udpate_game($play_game_result,$uid)
             $yunshi=$play_game_result->getValue4();//224-227
             if($getScore>0){
                 $taskIds="(300222)";
-                update($taskIds,$getScore,$uid);
+                update($taskIds,$getScore,$uid,$gameTime);
             }
             if($gameTime>0){
                 $taskIds="(300235)";
-                update($taskIds,$gameTime,$uid);
+                update($taskIds,$gameTime,$uid,$gameTime);
             }
             if($feiji>0){
                 $taskIds="(300229)";
-                update($taskIds,$feiji,$uid);
+                update($taskIds,$feiji,$uid,$gameTime);
             }
             if($yunshi>0){
                 $taskIds="(300226)";
-                update($taskIds,$yunshi,$uid);
+                update($taskIds,$yunshi,$uid,$gameTime);
             }
             break;
         case 3://僵尸跑酷
             $getScore=$play_game_result->getValue1();//244-247
+            $gameTime=$play_game_result->getValue2();
             $killJiangSi=$play_game_result->getValue3();//252-255
             $getYingBi=$play_game_result->getValue4();//248-251
             $juli=$play_game_result->getValue5();//240-243
             if($getScore>0){
                 $taskIds="(300247)";
-                update($taskIds,$getScore,$uid);
+                update($taskIds,$getScore,$uid,$gameTime);
             }
             if($killJiangSi>0){
                 $taskIds="(300254)";
-                update($taskIds,$killJiangSi,$uid);
+                update($taskIds,$killJiangSi,$uid,$gameTime);
             }
             if($getYingBi>0){
                 $taskIds="(300251)";
-                update($taskIds,$getYingBi,$uid);
+                update($taskIds,$getYingBi,$uid,$gameTime);
             }
             if($juli>0){
                 $taskIds="(300243)";
-                update($taskIds,$juli,$uid);
+                update($taskIds,$juli,$uid,$gameTime);
             }
             break;
         case 4://弓与箭
             $getScore=$play_game_result->getValue1();//260-263
+            $gameTime=$play_game_result->getValue2();
             $baxin=$play_game_result->getValue3();//264-267
             if($getScore>0){
                 $taskIds="(300263)";
-                update($taskIds,$getScore,$uid);
+                update($taskIds,$getScore,$uid,$gameTime);
             }
             if($baxin>0){
                 $taskIds="(300267)";
-                update($taskIds,$baxin,$uid);
+                update($taskIds,$baxin,$uid,$gameTime);
             }
             break;
         case 5://泡泡消除
             $getScore=$play_game_result->getValue1();//272-275
+            $gameTime=$play_game_result->getValue2();
             if($getScore>0){
                 $taskIds="(300275)";
-                update($taskIds,$getScore,$uid);
+                update($taskIds,$getScore,$uid,$gameTime);
             }
             break;
         case 6://切水果
@@ -146,19 +149,19 @@ function task_udpate_game($play_game_result,$uid)
             util_log('切水果收到数据:getScore:'.$getScore.',fengkuang:'.$fengkuang.',bingdong:'.$bingdong.',koufen:'.$koufen.',gameTime:'.$gameTime);
             if($getScore>0){
                 $taskIds="(300283)";
-                update($taskIds,$getScore,$uid);
+                update($taskIds,$getScore,$uid,$gameTime);
             }
             if($fengkuang>0){
                 $taskIds="(300285)";
-                update($taskIds,$fengkuang,$uid);
+                update($taskIds,$fengkuang,$uid,$gameTime);
             }
             if($bingdong>0){
                 $taskIds="(300288)";
-                update($taskIds,$bingdong,$uid);
+                update($taskIds,$bingdong,$uid,$gameTime);
             }
             if($koufen>0){
                 $taskIds="(300295)";
-                update($taskIds,$koufen,$uid);
+                update($taskIds,$koufen,$uid,$gameTime);
             }
 //            if($gameTime>0){
 //                $taskIds="(300296,300297,300298,300299)";
@@ -167,9 +170,12 @@ function task_udpate_game($play_game_result,$uid)
             break;
     }
 }
-function update($taskIds,$value,$uid){
+function update($taskIds,$value,$uid,$gameTime){
     //更新分数任务
     //查询任务
+    if($gameTime==null){
+        $gameTime=60;
+    }
     $sql="select * from func_system.user_task where user_id=$uid and task_id in $taskIds ";
     $user_tasks=db_query($sql);
     global $tcp_worker;
@@ -180,7 +186,7 @@ function update($taskIds,$value,$uid){
         if($user_task['state']==2){
             $newNum=$user_task['num']+$value;
             if($newNum>=$user_task['total']){
-                $sql="update func_system.user_task set num=$user_task[total],state=3 where task_id=$user_task[task_id] and user_id=$uid";
+                $sql="update func_system.user_task set num=$user_task[total],state=3,time_num=$gameTime where task_id=$user_task[task_id] and user_id=$uid";
                 util_log("uid:$uid game task update!");
                 //通知客户端更新
                 send_update_task_state($uid,$user_task['task_id'],3,$user_task['total']);
