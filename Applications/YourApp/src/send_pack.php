@@ -40,28 +40,14 @@ function send_pack_user_info($client_id,$user_info)
     $user_info_buf->setVigour($user_info['vigour']);//写
     $user_info_buf->setXingzhu($user_info['constellation']);//读
     $user_info_buf->setTouxiang($user_info['touxiang']);//读
-    $user_info_buf->setSignDate($user_info['sign_date']);//写
+    $user_info_buf->setSignDate(1);//写
     //$user_info_buf->setMoxingIds($user_info['moxing_ids']);//读？
     $user_info_buf->setMoxingId($user_info['moxing_id']);//读？
     //$user_info_buf->setMoxingId(100);
     //$user_info_buf->setChangjingIds($user_info['changjing_ids']);//读？
     $user_info_buf->setChangjingId($user_info['changjing_id']);//读？
     //$user_info_buf->setChangjingId(2070002);//读？
-    if($user_info['updated']==null)
-    {
-        $user_info_buf->setBsign(false);//写
-    }
-    else
-    {
-        if((int)$user_info['updated']%86400==(int)time()%86400)
-        {
-            $user_info_buf->setBsign(true);//写
-        }
-        else
-        {
-            $user_info_buf->setBsign(false);//写
-        }
-    }
+    $user_info_buf->setBsign($user_info['is_sign']);//写
     $user_info_buf->setBAgent($user_info['bAgent']);//读
     $user_info_buf->setBRealName($user_info['bRealName']);//读
     $user_info_buf->setBWx($user_info['bWx']);//读

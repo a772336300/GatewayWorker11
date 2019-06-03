@@ -186,12 +186,12 @@ function update($taskIds,$value,$uid,$gameTime){
         if($user_task['state']==2){
             $newNum=$user_task['num']+$value;
             if($newNum>=$user_task['total']){
-                $sql="update func_system.user_task set num=$user_task[total],state=3,time_num=$gameTime where task_id=$user_task[task_id] and user_id=$uid";
+                $sql="update func_system.user_task set num=$user_task[total],state=3,time_num=time_num+$gameTime where task_id=$user_task[task_id] and user_id=$uid";
                 util_log("uid:$uid game task update!");
                 //通知客户端更新
                 send_update_task_state($uid,$user_task['task_id'],3,$user_task['total']);
             }else{
-                $sql="update func_system.user_task set num=$newNum where task_id=$user_task[task_id] and user_id=$uid";
+                $sql="update func_system.user_task set num=$newNum,time_num=time_num+$gameTime where task_id=$user_task[task_id] and user_id=$uid";
                 send_update_task_state($uid,$user_task['task_id'],2,$newNum);
             }
             util_log("更新任务：".$sql);
