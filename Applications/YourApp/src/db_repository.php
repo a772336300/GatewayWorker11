@@ -199,7 +199,18 @@ function db_user_update_bRealName($uid)
     //echo "update user set bRealName=1 where uid= $uid";
     return $tcp_worker->db->query("update user set bRealName=1 where uid= $uid");
 }
-
+function db_user_bWx_mark($uid)
+{
+    global $tcp_worker;
+    //return $tcp_worker->db->query("select sign_date,updated from user_sign where uid = $uid");
+    return $tcp_worker->db->select('bWx')->from('user')->where("uid= $uid")->row();
+}
+function db_user_is_bWx($uid)
+{
+    global $tcp_worker;
+    //return $tcp_worker->db->query("select sign_date,updated from user_sign where uid = $uid");
+    return $tcp_worker->db->select('openid')->from('user_wx')->where("uid= $uid")->row();
+}
 function db_user_bWx($uid,$openid,$unionid)
 {
     global $tcp_worker;

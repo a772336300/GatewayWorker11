@@ -1433,11 +1433,21 @@ function message_switch($client_id,$mid,$data)
                 $user_info_up = new \Proto\CS_User_Bind_wx();
                 $user_info_up->parseFromString($data);
                 $is_success = true;
-                if(db_user_bWx($_SESSION['uid'],$user_info_up->getOpenid(),$user_info_up->getUnionid())==null)
+                $user=db_user_bWx_mark($_SESSION['uid']);
+                if(!isset($user['bWx'])|| $user['bWx']===null || $user['bWx'])
                 {
-                    $is_success=false;
+                    send_pack_user_wx($client_id,false);
+                    return;
                 }
                 db_user_update_bWx($_SESSION['uid']);
+                $user_wx = db_user_is_bWx($_SESSION['uid']);
+                if($user_wx==null||!isset($user_wx['openid'])||$user_wx['openid']==null)
+                {
+                    if(db_user_bWx($_SESSION['uid'],$user_info_up->getOpenid(),$user_info_up->getUnionid())==null)
+                    {
+                        $is_success=false;
+                    }
+                }
                 send_pack_user_wx($client_id,$is_success);
                 if($is_success){
                     task_udpate_once($_SESSION['uid'],300033);
