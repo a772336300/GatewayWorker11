@@ -158,25 +158,37 @@ function db_is_sign($uid)
 {
     global $tcp_worker;
     //return $tcp_worker->db->query("select sign_date,updated from user_sign where uid = $uid");
-    return $tcp_worker->db->select('sign_date,updated')->from('user_sign')->where("uid= $uid ")->row();
+    return $tcp_worker->db->select('is_sign')->from('user_sign')->where("uid= $uid ")->row();
 }
-function db_user_sign($is_new,$uid)
+//function db_is_sign($uid)
+//{
+//    global $tcp_worker;
+//    //return $tcp_worker->db->query("select sign_date,updated from user_sign where uid = $uid");
+//    return $tcp_worker->db->select('sign_date,updated')->from('user_sign')->where("uid= $uid ")->row();
+//}
+function db_user_sign($uid)
 {
 
     global $tcp_worker;
-    if($is_new)
-    {
-        return $tcp_worker->db->query("update user_sign set sign_date=1 where uid= $uid");
-//    return $tcp_worker->db->insert('user_sign')->cols(array(
-//        'uid'=>$uid,
-//        'sign_date'=>1,
-//     ))->query();
-    }
-    else
-    {
-        return $tcp_worker->db->query("update user_sign set sign_date=sign_date%7+1 where uid= $uid");
-    }
+    return $tcp_worker->db->query("update user_sign set is_sign=1 where uid= $uid");
 }
+//function db_user_sign($is_new,$uid)
+//{
+//
+//    global $tcp_worker;
+//    if($is_new)
+//    {
+//        return $tcp_worker->db->query("update user_sign set sign_date=1 where uid= $uid");
+////    return $tcp_worker->db->insert('user_sign')->cols(array(
+////        'uid'=>$uid,
+////        'sign_date'=>1,
+////     ))->query();
+//    }
+//    else
+//    {
+//        return $tcp_worker->db->query("update user_sign set sign_date=sign_date%7+1 where uid= $uid");
+//    }
+//}
 function db_update_user_info_some($uid,$name,$gender,$type)
 {
     global $tcp_worker;

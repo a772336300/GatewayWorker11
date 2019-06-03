@@ -1368,33 +1368,16 @@ function message_switch($client_id,$mid,$data)
 
                 //用户是否以签到
                 $get_sign = db_is_sign($_SESSION['uid']);
-                if($get_sign['sign_date']==null)
+                if($get_sign['is_sign']==1)
                 {
-
-                    db_user_sign(true,$_SESSION['uid']);
                     send_pack_sign($client_id,1,false);
+                    return;
+                }
+                db_user_sign($_SESSION['uid']);
+                send_pack_sign($client_id,1,true);
 
-                    //任务处理
-//                  task_manager($mid);
-                    task_udpate_once($_SESSION['uid'],299999);
-
-                    return;
-                }
-                if((intval(strtotime($get_sign['updated'])/86400))==intval(time()/86400))
-                {
-                    send_pack_sign($client_id,$get_sign['sign_date'],true);
-                    return;
-                }
-                else
-                {
-                    db_user_sign(false,$_SESSION['uid']);
-                    send_pack_sign($client_id,$get_sign['sign_date']%7+1,false);
-                    //任务处理
-                    //task_manager($mid);
-                    task_udpate_once($_SESSION['uid'],299999);
-                    return;
-                }
-                break;
+                task_udpate_once($_SESSION['uid'],299999);
+                return;
             }
         case 1008:
             {
