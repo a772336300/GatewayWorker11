@@ -13,6 +13,15 @@ function db_check_user($uid,$password)
     }
     return true;
 }
+function db_get_user_by_id($uid)
+{
+    global $tcp_worker;
+    if($tcp_worker->db->query("select * from user where uid = $uid")==null)
+    {
+        return false;
+    }
+    return true;
+}
 function db_exist_user_info($phone)
 {
     global $tcp_worker;

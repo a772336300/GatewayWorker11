@@ -123,11 +123,20 @@ function message_switch($client_id,$mid,$data)
             }
             else
             {
+                if(db_get_user_by_id($xxxx['user_id']))
+                {
+                    if(!db_delete_user($xxxx['user_id']))
+                    {
+                        send_notice_by_client_id($client_id,1,'注册失败！error:1006');
+                        util_log("db_add_user fail!游戏服务器注册失败!phone: $phone");
+                        return ;
+                    }
+                }
                 if(isset($user['uid'])&&$user['uid']!=null&&$user['uid']!=$xxxx['user_id'])
                 {
                     if(!db_delete_user($user['uid']))
                     {
-                        send_notice_by_client_id($client_id,1,'注册失败！error:1006');
+                        send_notice_by_client_id($client_id,1,'注册失败！error:1007');
                         util_log("db_add_user fail!游戏服务器注册失败!phone: $phone");
                         return ;
                     }
