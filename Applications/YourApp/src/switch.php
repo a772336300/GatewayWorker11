@@ -1434,7 +1434,7 @@ function message_switch($client_id,$mid,$data)
                 $user_info_up->parseFromString($data);
                 $is_success = true;
                 $user=db_user_bWx_mark($_SESSION['uid']);
-                if(!isset($user['bWx'])|| $user['bWx']===null || $user['bWx'])
+                if(!isset($user['bWx'])|| $user['bWx']===null || $user['bWx']==1)
                 {
                     send_pack_user_wx($client_id,false);
                     return;
