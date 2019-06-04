@@ -48,7 +48,7 @@ function send_pack_user_info($client_id,$user_info)
     $user_info_buf->setChangjingId($user_info['changjing_id']);//读？
     //$user_info_buf->setChangjingId(2070002);//读？
     $user_info_buf->setBsign($user_info['is_sign']);//写
-    $user_info_buf->setBAgent($user_info['bAgent']);//读
+    $user_info_buf->setBAgent(true);//读
     $user_info_buf->setBRealName($user_info['bRealName']);//读
     $user_info_buf->setBWx($user_info['bWx']);//读
     $user_info_buf->setPhone($user_info['phone']);//读
