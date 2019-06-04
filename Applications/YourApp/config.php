@@ -1,9 +1,9 @@
 <?php
 $config=[
-    'db'=>['host'  => '47.102.36.37',
+    'db'=>['host'  => 'rm-uf624hyr8571340sq90170.mysql.rds.aliyuncs.com',
         'port'     => '3306',
-        'user'     => 'dgame',
-        'password' => '2rGh8ir5Pip6',
+        'user'     => 'bolaik_db_user',
+        'password' => 'b0laik@db0#7',
         'dbname'   => 'bolaik_db',
         'charset'  => 'utf8',
         ],
