@@ -2677,6 +2677,14 @@ function message_switch($client_id,$mid,$data)
             $is_success=true;
             if(!isset($_SESSION['uid']))
             {
+                if(Gateway::isUidOnline($get_user[0]['uid']))
+                {
+                    $arr=Gateway::getClientIdByUid($get_user[0]['uid']);
+                    foreach ($arr as $value)
+                    {
+                        Gateway::closeClient($value);
+                    }
+                }
                 Gateway::bindUid($client_id,$get_user[0]['uid']);
                 // 没验证的话把第一个包当做uid（这里为了方便演示，没做真正的验证）
                 $_SESSION['uid'] = $get_user[0]['uid'];
