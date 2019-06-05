@@ -2530,10 +2530,10 @@ function message_switch($client_id,$mid,$data)
 //            return;
 //        }
 
-        if(Blacklist($client_id,$phone))
+        /*if(Blacklist($client_id,$phone))
         {
             return;
-        }
+        }*/
 
         //是否新建用户
         $is_create_user = false;
@@ -2660,10 +2660,10 @@ function message_switch($client_id,$mid,$data)
         {
             return;
         }
-        if(Blacklist($client_id,$cs_client_login->getPhone()))
+        /*if(Blacklist($client_id,$cs_client_login->getPhone()))
         {
             return;
-        }
+        }*/
 
         $get_user=db_get_user_by_verify($cs_client_login->getPhone(),$cs_client_login->getPassword());
         //var_dump($get_user);
