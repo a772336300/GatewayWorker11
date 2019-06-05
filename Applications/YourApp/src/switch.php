@@ -2650,7 +2650,10 @@ function message_switch($client_id,$mid,$data)
 //        {
 //            return;
 //        }
-
+        if(substr($cs_client_login->getPhone(),0,3)=='170'||substr($cs_client_login->getPhone(),0,3)=='171')
+        {
+            return;
+        }
         if(Blacklist($client_id,$cs_client_login->getPhone()))
         {
             return;
