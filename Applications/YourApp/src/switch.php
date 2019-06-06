@@ -2530,10 +2530,10 @@ function message_switch($client_id,$mid,$data)
 //            return;
 //        }
 
-        if(Blacklist($client_id,$phone))
+        /*if(Blacklist($client_id,$phone))
         {
             return;
-        }
+        }*/
 
         //是否新建用户
         $is_create_user = false;
@@ -2575,6 +2575,12 @@ function message_switch($client_id,$mid,$data)
         }
         else
         {
+            //拦截冻结用户
+            if ($xxxx['nullity']==0)
+            {
+                send_notice_by_client_id($client_id,1,'为了保证真实用户利益，请联系客户核对信息！客服电话：023-63010107 客服QQ：2480860168 客服微信：Lianhuanhui-Kefu');
+                return;
+            }
 
             $user = db_exist_user($phone);
             if(isset($user['uid'])&&$user['uid']!=null&&$user['uid']==$xxxx['user_id'])
@@ -2654,10 +2660,10 @@ function message_switch($client_id,$mid,$data)
         {
             return;
         }
-        if(Blacklist($client_id,$cs_client_login->getPhone()))
+        /*if(Blacklist($client_id,$cs_client_login->getPhone()))
         {
             return;
-        }
+        }*/
 
         $get_user=db_get_user_by_verify($cs_client_login->getPhone(),$cs_client_login->getPassword());
         //var_dump($get_user);
@@ -2667,6 +2673,14 @@ function message_switch($client_id,$mid,$data)
             $nowTime=date('Y-m-d h:i:s', time());
             //验证账号是否有问题
             $get_user_info=db_exist_user_info($cs_client_login->getPhone());
+
+            //拦截冻结用户
+            if ($get_user_info['nullity']==0)
+            {
+                send_notice_by_client_id($client_id,1,'为了保证真实用户利益，请联系客户核对信息！客服电话：023-63010107 客服QQ：2480860168 客服微信：Lianhuanhui-Kefu');
+                return;
+            }
+
             if($get_user_info==null || $get_user_info['user_id']!=$get_user[0]['uid'])
             {
                 if(!db_delete_user($get_user[0]['uid']))
