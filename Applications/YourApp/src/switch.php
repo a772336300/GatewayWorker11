@@ -2524,6 +2524,7 @@ function message_switch($client_id,$mid,$data)
 
         $cs_get_password->parseFromString($data);
         $phone = $cs_get_password->getPhone();
+        $phone = trim($phone);
 //
 //        if(!test_xxx($client_id,$phone))
 //        {
