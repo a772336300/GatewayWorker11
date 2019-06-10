@@ -100,14 +100,20 @@ function db_add_user($phone,$uid,$password)
     //$tcp_worker->db->query($sql4);
 
 
-    if(!$tcp_worker->db->commitTrans())
+    try
     {
-        $tcp_worker->db->rollBackTrans();
+        if(!$tcp_worker->db->commitTrans())
+        {
+            $tcp_worker->db->rollBackTrans();
+            return false;
+        }// or $db1->rollBackTrans();
+        return true;
+    }
+    catch (\Exception $e)
+    {
+        util_log("添加user_*失败!phone:$phone,user_id:$uid!error: 2002");
         return false;
-    }// or $db1->rollBackTrans();
-
-
-    return true;
+    }
 //    return $db->insert('user')->cols(array(
 //        'phone'=>$phone,
 //        'uid'=>$uid,
