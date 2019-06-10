@@ -35,9 +35,14 @@ function db_add_user_id($phone,$password)
     $sql="select max(user_id+0) maxId from $web_user.user_info";
     $maxUser=$tcp_worker->db->query($sql);
     $user_id=$maxUser[0]['maxId']+1;
-    $sql = "insert into $web_user.user_info(user_account,user_passwd,user_id,user_nick,user_equipment,login_type,b_phone_nu) values('$phone','$password',$user_id,'',2,2,'$phone');";
-    //$sql = "insert into user (phone,password) values('$phone','$password');";
-    $tcp_worker->db->query($sql);
+    try {
+        $sql = "insert into $web_user.user_info(user_account,user_passwd,user_id,user_nick,user_equipment,login_type,b_phone_nu) values('$phone','$password',$user_id,'',2,2,'$phone');";
+        //$sql = "insert into user (phone,password) values('$phone','$password');";
+        $tcp_worker->db->query($sql);
+    } catch (\Exception $e) {
+        util_log("添加user_info失败!phone:$phone,user_id:$user_id!error: 2001");
+    }
+
 }
 function db_delete_user_id($uid)
 {
@@ -95,14 +100,20 @@ function db_add_user($phone,$uid,$password)
     //$tcp_worker->db->query($sql4);
 
 
-    if(!$tcp_worker->db->commitTrans())
+    try
     {
-        $tcp_worker->db->rollBackTrans();
+        if(!$tcp_worker->db->commitTrans())
+        {
+            $tcp_worker->db->rollBackTrans();
+            return false;
+        }// or $db1->rollBackTrans();
+        return true;
+    }
+    catch (\Exception $e)
+    {
+        util_log("添加user_*失败!phone:$phone,user_id:$uid!error: 2002");
         return false;
-    }// or $db1->rollBackTrans();
-
-
-    return true;
+    }
 //    return $db->insert('user')->cols(array(
 //        'phone'=>$phone,
 //        'uid'=>$uid,
