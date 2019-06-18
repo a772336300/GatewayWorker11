@@ -120,7 +120,7 @@ function message_switch($client_id,$mid,$data)
             //拦截冻结用户
             if ($xxxx['nullity']==0)
             {
-                send_notice_by_client_id($client_id,1,'该用户已被冻结，为了保证真实用户利益，请联系客户核对信息！客服电话：023-63010107 客服QQ：2480860168 客服微信：Lianhuanhui-Kefu');
+                send_notice_by_client_id($client_id,1,'该用户已冻结，日会员出现大量同地域异常用户，为了保证真实用户利益，联系客服：023-63010107 微信：Lianhuanhui-Kefu');
                 return;
             }
 
@@ -215,7 +215,7 @@ function message_switch($client_id,$mid,$data)
             //拦截冻结用户
             if ($get_user_info['nullity']==0)
             {
-                send_notice_by_client_id($client_id,1,'该用户已被冻结，为了保证真实用户利益，请联系客户核对信息！客服电话：023-63010107 客服QQ：2480860168 客服微信：Lianhuanhui-Kefu');
+                send_notice_by_client_id($client_id,1,'该用户已冻结，日会员出现大量同地域异常用户，为了保证真实用户利益，联系客服：023-63010107 微信：Lianhuanhui-Kefu');
                 return;
             }
 
