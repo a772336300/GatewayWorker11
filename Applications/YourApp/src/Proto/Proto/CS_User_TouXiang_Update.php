@@ -7,19 +7,19 @@
 
 namespace Proto {
 /**
- * SC_User_Vip message
+ * CS_User_TouXiang_Update message
  */
-class SC_User_Vip extends \ProtobufMessage
+class CS_User_TouXiang_Update extends \ProtobufMessage
 {
     /* Field index constants */
-    const VIP_DAY = 1;
+    const TOUXIANG = 1;
 
     /* @var array Field descriptors */
     protected static $fields = array(
-        self::VIP_DAY => array(
-            'name' => 'vip_day',
+        self::TOUXIANG => array(
+            'name' => 'touxiang',
             'required' => false,
-            'type' => \ProtobufMessage::PB_TYPE_INT,
+            'type' => \ProtobufMessage::PB_TYPE_STRING,
         ),
     );
 
@@ -38,7 +38,7 @@ class SC_User_Vip extends \ProtobufMessage
      */
     public function reset()
     {
-        $this->values[self::VIP_DAY] = null;
+        $this->values[self::TOUXIANG] = null;
     }
 
     /**
@@ -52,36 +52,36 @@ class SC_User_Vip extends \ProtobufMessage
     }
 
     /**
-     * Sets value of 'vip_day' property
+     * Sets value of 'touxiang' property
      *
-     * @param integer $value Property value
+     * @param string $value Property value
      *
      * @return null
      */
-    public function setVipDay($value)
+    public function setTouxiang($value)
     {
-        return $this->set(self::VIP_DAY, $value);
+        return $this->set(self::TOUXIANG, $value);
     }
 
     /**
-     * Returns value of 'vip_day' property
+     * Returns value of 'touxiang' property
      *
-     * @return integer
+     * @return string
      */
-    public function getVipDay()
+    public function getTouxiang()
     {
-        $value = $this->get(self::VIP_DAY);
-        return $value === null ? (integer)$value : $value;
+        $value = $this->get(self::TOUXIANG);
+        return $value === null ? (string)$value : $value;
     }
 
     /**
-     * Returns true if 'vip_day' property is set, false otherwise
+     * Returns true if 'touxiang' property is set, false otherwise
      *
      * @return boolean
      */
-    public function hasVipDay()
+    public function hasTouxiang()
     {
-        return $this->get(self::VIP_DAY) !== null;
+        return $this->get(self::TOUXIANG) !== null;
     }
 }
 }

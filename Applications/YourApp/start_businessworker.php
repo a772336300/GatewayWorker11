@@ -37,7 +37,7 @@ $tcp_worker = new BusinessWorker();
 // worker名称
 $tcp_worker->name = 'YourAppBusinessWorker';
 // bussinessWorker进程数量
-$tcp_worker->count = 8;
+$tcp_worker->count = 1;
 // 服务注册地址
 $tcp_worker->registerAddress = '127.0.0.1:1238';
 

@@ -554,3 +554,18 @@ message SC_User_Vip
 	//option (msgid) = 1024;
     optional int32 vip_day = 1;
 }
+
+
+//更新头像信息
+message CS_User_TouXiang_Update
+{
+	//option (msgid) = 1008;
+	optional string  touxiang                = 1;
+}
+
+//更新角色信息 返回
+message SC_User_TouXiang_Update
+{
+	//option (msgid) = 1009;
+	optional bool	is_success    = 1;
+}

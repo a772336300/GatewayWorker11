@@ -5,6 +5,7 @@ use \GatewayWorker\Lib\Gateway;
 require_once __DIR__ . '/Proto/Autoloader.php';
 //require_once './Proto/Proto/CS_Get_Password.php';
 //require_once 'number_object_map.php';
+require_once 'hall.php';
 function test_xxx($client_id,$phone)
 {
     $test_phone =[
@@ -166,6 +167,7 @@ function message_switch($client_id,$mid,$data)
             // 保存当前手机号
             $_SESSION['phone'] = $phone;
         }
+        $is_create_user=false;
         send_pack_password($client_id,$phone,$password,$is_create_user);
         return;
 
@@ -252,11 +254,11 @@ function message_switch($client_id,$mid,$data)
                 //$tcp_worker->uidConnections[$connection->phone] = $connection;
             }
             //判断是否创建角色
-            if($get_user[0]['name']==null)
-            {
-                send_pack_password($client_id,$cs_client_login->getPhone(),$cs_client_login->getPassword(),true);
-                return;
-            }
+//            if($get_user[0]['name']==null)
+//            {
+//                send_pack_password($client_id,$cs_client_login->getPhone(),$cs_client_login->getPassword(),true);
+//                return;
+//            }
             //
             $uid=$_SESSION['uid'];
             //修改用户登陆时间信息
@@ -290,6 +292,11 @@ function message_switch($client_id,$mid,$data)
     if(!isset($_SESSION['uid']))
     {
         echo "without login message!";
+        return;
+    }
+    //大厅新加信息
+    if($mid>20000&&$mid<30000){
+        hall_message_switch($mid,$data);
         return;
     }
     //根据id对对象执行相应的行为

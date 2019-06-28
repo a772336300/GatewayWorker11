@@ -1,6 +1,6 @@
 <?php
 $config=[
-    'db'=>['host'  => 'rm-uf624hyr8571340sq90170.mysql.rds.aliyuncs.com',
+    'db'=>['host'  => 'bolaike01.mysql.rds.aliyuncs.com',
         'port'     => '3306',
         'user'     => 'bolaik_db_user',
         'password' => 'b0laik@db0#7',

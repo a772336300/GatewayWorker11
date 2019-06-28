@@ -38,4 +38,9 @@ $number_object_map = [
     1017=>'CS_Get_Task_ReWard',
     1018=>'SC_Given_Task_ReWard',
     40000=>'Web_Server',
+
+    //20000--30000大厅新加信息
+    20001=>'CS_User_TouXiang_Update',
+    20002=>'SC_User_TouXiang_Update',
+
 ];

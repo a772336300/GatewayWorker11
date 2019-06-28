@@ -253,3 +253,10 @@ function send_vip_day($uid,$day)
     $message->setVipDay($day);
     \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(1024,$message->serializeToString()));
 }
+
+function send_pack_user_touxiang_update($uid,$is_success)
+{
+    $message = new \Proto\SC_User_TouXiang_Update();
+    $message->setIsSuccess($is_success);
+    \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20002,$message->serializeToString()));
+}
