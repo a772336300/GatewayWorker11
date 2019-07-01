@@ -10,6 +10,7 @@ require_once 'packet.php';
 require_once 'switch.php';
 require_once 'task.php';
 require_once 'db_repository.php';
+require_once 'mongo_db.php';
 //初始化数据库
 //$db= new Connection('192.168.0.200','3306','dgame','123456','mytest','utf8');
 //$db= new Connection($config['db']['host'],$config['db']['port'],$config['db']['user'],$config['db']['password'],$config['db']['dbname'],$config['db']['charset']);
@@ -26,6 +27,9 @@ $tcp_worker->count = 1;
 
 //设置db
 $tcp_worker->db = null;
+
+$tcp_worker->mongo_db = null;
+
 //设置任务服务器连接句柄
 $tcp_worker->taskServerConnections = array();
 //连接数缓存
