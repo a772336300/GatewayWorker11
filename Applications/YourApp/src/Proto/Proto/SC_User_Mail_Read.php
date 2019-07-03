@@ -7,19 +7,19 @@
 
 namespace Proto {
 /**
- * CS_User_TouXiang_Update message
+ * SC_User_Mail_Read message
  */
-class CS_User_TouXiang_Update extends \ProtobufMessage
+class SC_User_Mail_Read extends \ProtobufMessage
 {
     /* Field index constants */
-    const TOUXIANG = 1;
+    const IS_SUCCESS = 1;
 
     /* @var array Field descriptors */
     protected static $fields = array(
-        self::TOUXIANG => array(
-            'name' => 'touxiang',
+        self::IS_SUCCESS => array(
+            'name' => 'is_success',
             'required' => false,
-            'type' => \ProtobufMessage::PB_TYPE_STRING,
+            'type' => \ProtobufMessage::PB_TYPE_BOOL,
         ),
     );
 
@@ -38,7 +38,7 @@ class CS_User_TouXiang_Update extends \ProtobufMessage
      */
     public function reset()
     {
-        $this->values[self::TOUXIANG] = null;
+        $this->values[self::IS_SUCCESS] = null;
     }
 
     /**
@@ -52,36 +52,36 @@ class CS_User_TouXiang_Update extends \ProtobufMessage
     }
 
     /**
-     * Sets value of 'touxiang' property
+     * Sets value of 'is_success' property
      *
-     * @param string $value Property value
+     * @param boolean $value Property value
      *
      * @return null
      */
-    public function setTouxiang($value)
+    public function setIsSuccess($value)
     {
-        return $this->set(self::TOUXIANG, $value);
+        return $this->set(self::IS_SUCCESS, $value);
     }
 
     /**
-     * Returns value of 'touxiang' property
-     *
-     * @return string
-     */
-    public function getTouxiang()
-    {
-        $value = $this->get(self::TOUXIANG);
-        return $value === null ? (string)$value : $value;
-    }
-
-    /**
-     * Returns true if 'touxiang' property is set, false otherwise
+     * Returns value of 'is_success' property
      *
      * @return boolean
      */
-    public function hasTouxiang()
+    public function getIsSuccess()
     {
-        return $this->get(self::TOUXIANG) !== null;
+        $value = $this->get(self::IS_SUCCESS);
+        return $value === null ? (boolean)$value : $value;
+    }
+
+    /**
+     * Returns true if 'is_success' property is set, false otherwise
+     *
+     * @return boolean
+     */
+    public function hasIsSuccess()
+    {
+        return $this->get(self::IS_SUCCESS) !== null;
     }
 }
 }

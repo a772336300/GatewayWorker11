@@ -43,4 +43,13 @@ $number_object_map = [
     20001=>'CS_User_TouXiang_Update',
     20002=>'SC_User_TouXiang_Update',
 
+    20003=>'CS_Get_User_Mail',
+    20004=>'SC_Get_User_Mail',
+
+    20005=>'CS_User_Mail_Read',
+    20006=>'SC_User_Mail_Read',
+
+    20007=>'CS_User_Mail_Delete',
+    20008=>'SC_User_Mail_Delete',
+
 ];
