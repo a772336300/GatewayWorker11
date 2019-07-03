@@ -57,11 +57,11 @@ class room_base{
 
     function user_reenter($variable){
         if (self::$users[$variable[0]['position']]){
-            self::$users[$variable[0]['positions']]->userid=$variable[0]['userid'];
-            self::$users[$variable[0]['positions']]->gender=$variable[0]['gender'];
-            self::$users[$variable[0]['positions']]->position=self::$number;
-            self::$users[$variable[0]['positions']]->integral=$variable[0]['integral'];
-            self::$users[$variable[0]['positions']]->level=$variable[0]['level'];
+            self::$users[$variable[0]['position']]->userid=$variable[0]['userid'];
+            self::$users[$variable[0]['position']]->gender=$variable[0]['gender'];
+            self::$users[$variable[0]['position']]->position=self::$number;
+            self::$users[$variable[0]['position']]->integral=$variable[0]['integral'];
+            self::$users[$variable[0]['position']]->level=$variable[0]['level'];
         }
     }
 
