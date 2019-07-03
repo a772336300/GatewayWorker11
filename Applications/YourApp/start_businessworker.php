@@ -32,6 +32,8 @@ require_once 'src/web_server_message_manager.php';
 require_once 'src/init_equipment.php';
 require_once 'src/jinlian.php';
 require_once 'src/http_client.php';
+require_once 'src/mongo_db.php';
+require_once 'src/hall.php';
 // bussinessWorker 进程
 $tcp_worker = new BusinessWorker();
 // worker名称
@@ -74,6 +76,8 @@ $tcp_worker->onWorkerStart = function ($worker)
     db_query($sql);
     $sql="update bolaik_user.user_stat_time set login_out_time='$nowTime' where login_out_time is null ";
     db_query($sql);
+
+    $worker->mongodb = mongo_db::singleton();
 
     //$worker->db_web= new \Workerman\MySQL\Connection($config['db_web']['host'],$config['db_web']['port'],$config['db_web']['user'],$config['db_web']['password'],$config['db_web']['dbname'],$config['db_web']['charset']);
     //$worker->db= new Connection('192.168.0.200','3306','dgame','123456','mytest','utf8');

@@ -9,7 +9,7 @@
 final class mongo_db {
     //--------------  定义变量  --------------//
     private static $ins     = [];
-    private static $def     = "bolaik_db";
+    private static $def     = "test";
     private $_conn          = null;
     private $_db            = null;
     private static $_config = [
@@ -18,6 +18,9 @@ final class mongo_db {
         "bolaik_user"   => ["url" => "mongodb://dgame:123456@192.168.0.32:27017","dbname" => "bolaik_user"],
         "func_system"   => ["url" => "mongodb://dgame:123456@192.168.0.32:27017","dbname" => "func_system"],
         "mall_system"   => ["url" => "mongodb://dgame:123456@192.168.0.32:27017","dbname" => "mall_system"],
+        "hall_config"   => ["url" => "mongodb://127.0.0.1:27017","dbname" => "hall_config"],
+        "hall_log"      => ["url" => "mongodb://127.0.0.1:27017","dbname" => "hall_log"],
+        "test"   => ["url" => "mongodb://127.0.0.1:27017","dbname" => "test"],
     ];
 
     /**
@@ -109,7 +112,8 @@ final class mongo_db {
             "filter"    => $filter
         ];
         $cmd += $writeOps;
-        return $this->command($cmd);
+        $rs=$this->command($cmd);
+        return $rs->toArray();
     }
 
     /**
