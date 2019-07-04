@@ -260,3 +260,25 @@ function send_pack_user_touxiang_update($uid,$is_success)
     $message->setIsSuccess($is_success);
     \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20002,$message->serializeToString()));
 }
+
+function send_pack_get_user_mail($uid,$is_success,$data)
+{
+    $object= new \Proto\SC_Get_User_Mail();
+    foreach ($data as $value)
+    {
+        $user_mail = new \Proto\E_User_mail();
+        $user_mail->setId($value->_id);
+        $user_mail->setSid($value->sid);
+        $user_mail->setTitle($value->title);
+        $user_mail->setContent($value->content);
+        $user_mail->setStartTime($value->start_time);
+        $user_mail->setEndTime($value->end_time);
+        $user_mail->appendAttach($value->attach);
+        $user_mail->setIsread($value->isread);
+        $user_mail->setIsdelete($value->isdelete);
+        $user_mail->setGetAttach($value->get_attach);
+        $user_mail->setUid($value->uid);
+        $object->appendUserMail($user_mail);
+    }
+    \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20004,$object->serializeToString()));
+}

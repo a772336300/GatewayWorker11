@@ -7,13 +7,13 @@
 
 namespace Proto {
 /**
- * SC__User_BU_Stream message
+ * SC_User_Mail_Delete message
  */
-class SC__User_BU_Stream extends \ProtobufMessage
+class SC_User_Mail_Delete extends \ProtobufMessage
 {
     /* Field index constants */
     const IS_SUCCESS = 1;
-    const ITEM = 2;
+    const _ID = 2;
 
     /* @var array Field descriptors */
     protected static $fields = array(
@@ -22,10 +22,10 @@ class SC__User_BU_Stream extends \ProtobufMessage
             'required' => false,
             'type' => \ProtobufMessage::PB_TYPE_BOOL,
         ),
-        self::ITEM => array(
-            'name' => 'item',
+        self::_ID => array(
+            'name' => '_id',
             'repeated' => true,
-            'type' => '\Proto\User_BU_Stream_Item'
+            'type' => \ProtobufMessage::PB_TYPE_STRING,
         ),
     );
 
@@ -45,7 +45,7 @@ class SC__User_BU_Stream extends \ProtobufMessage
     public function reset()
     {
         $this->values[self::IS_SUCCESS] = null;
-        $this->values[self::ITEM] = array();
+        $this->values[self::_ID] = array();
     }
 
     /**
@@ -92,77 +92,77 @@ class SC__User_BU_Stream extends \ProtobufMessage
     }
 
     /**
-     * Appends value to 'item' list
+     * Appends value to '_id' list
      *
-     * @param \Proto\User_BU_Stream_Item $value Value to append
-     *
-     * @return null
-     */
-    public function appendItem(\Proto\User_BU_Stream_Item $value)
-    {
-        return $this->append(self::ITEM, $value);
-    }
-
-    /**
-     * Clears 'item' list
+     * @param string $value Value to append
      *
      * @return null
      */
-    public function clearItem()
+    public function appendId($value)
     {
-        return $this->clear(self::ITEM);
+        return $this->append(self::_ID, $value);
     }
 
     /**
-     * Returns 'item' list
+     * Clears '_id' list
      *
-     * @return \Proto\User_BU_Stream_Item[]
+     * @return null
      */
-    public function getItem()
+    public function clearId()
     {
-        return $this->get(self::ITEM);
+        return $this->clear(self::_ID);
     }
 
     /**
-     * Returns true if 'item' property is set, false otherwise
+     * Returns '_id' list
+     *
+     * @return string[]
+     */
+    public function getId()
+    {
+        return $this->get(self::_ID);
+    }
+
+    /**
+     * Returns true if '_id' property is set, false otherwise
      *
      * @return boolean
      */
-    public function hasItem()
+    public function hasId()
     {
-        return count($this->get(self::ITEM)) !== 0;
+        return count($this->get(self::_ID)) !== 0;
     }
 
     /**
-     * Returns 'item' iterator
+     * Returns '_id' iterator
      *
      * @return \ArrayIterator
      */
-    public function getItemIterator()
+    public function getIdIterator()
     {
-        return new \ArrayIterator($this->get(self::ITEM));
+        return new \ArrayIterator($this->get(self::_ID));
     }
 
     /**
-     * Returns element from 'item' list at given offset
+     * Returns element from '_id' list at given offset
      *
      * @param int $offset Position in list
      *
-     * @return \Proto\User_BU_Stream_Item
+     * @return string
      */
-    public function getItemAt($offset)
+    public function getIdAt($offset)
     {
-        return $this->get(self::ITEM, $offset);
+        return $this->get(self::_ID, $offset);
     }
 
     /**
-     * Returns count of 'item' list
+     * Returns count of '_id' list
      *
      * @return int
      */
-    public function getItemCount()
+    public function getIdCount()
     {
-        return $this->count(self::ITEM);
+        return $this->count(self::_ID);
     }
 }
 }

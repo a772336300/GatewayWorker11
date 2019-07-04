@@ -1,7 +1,9 @@
 <?php
 function hall_message_switch($mid,$data){
-    $_SESSION['uid']=8823;
+//    $_SESSION['uid']=8823;
     $uid=$_SESSION['uid'];
+    $hall_config = mongo_db::singleton("hall_config");
+    $hall_log = mongo_db::singleton("hall_log");
     switch ($mid){
         case 20001://修改头像信息
             $user_touxiang = new \Proto\CS_User_TouXiang_Update();
@@ -16,7 +18,7 @@ function hall_message_switch($mid,$data){
             break;
         case 20003://获取邮件
             //查询有效期内的系统邮件
-            $hall_config = mongo_db::singleton("hall_config");
+
             //获取系统时间
             $nowTime=date('Y-m-d h:i:s', time());
             $a=time();
@@ -33,10 +35,9 @@ function hall_message_switch($mid,$data){
             $rs = $hall_config->query($collname, $filter, $queryWriteOps);
             $collname='user_mail';
             $rows=array();
-            $hall_log = mongo_db::singleton("hall_log");
             foreach ($rs as $r) {
                 $filter = [
-                    "id" => $r->id,
+                    "sid" => $r->id,
                     "uid" => $uid,
                 ];
                 $queryWriteOps = [
@@ -46,7 +47,7 @@ function hall_message_switch($mid,$data){
                 print_r($rmsg);
                 if(count($rmsg)==0){
                     echo "\n------------ 插入邮件数据 ---------\n";
-                    $newArr=["id" => $r->id,"title"=>$r->title,"content"=>$r->content,"start_time"=>$r->start_time,"end_time"=>$r->end_time,'attach'=>$r->attach,'isread'=>0,'isdelete'=>0,'get_attach'=>0,'uid'=>$uid];
+                    $newArr=["sid" => $r->id,"title"=>$r->title,"content"=>$r->content,"start_time"=>$r->start_time,"end_time"=>$r->end_time,'attach'=>$r->attach,'isread'=>0,'isdelete'=>false,'get_attach'=>false,'uid'=>$uid];
                     array_push($rows,$newArr);
                 }
             }
@@ -55,17 +56,35 @@ function hall_message_switch($mid,$data){
             }
             //获取所有未删除的邮件
             $filter = [
-                "isdelete" => 0,
+                "isdelete" => false,
                 "uid" => $uid,
             ];
             $queryWriteOps = [
-                "projection" => ["_id"=> 0],//不输出_id字段
                 "sort"       => ["isread" => 1],//根据id字段排序 1是升序，-1是降序
             ];
             $rmsg = $hall_log->query($collname, $filter, $queryWriteOps);
             echo "最终输出：\n";
+            echo  $rmsg[0]->_id."\n";
             print_r($rmsg);
-
+            send_pack_get_user_mail($uid,true,$rmsg);
             break;
+        case 2005://已读邮件
+            $user_mail_read = new \Proto\CS_User_Mail_Read();
+            $user_mail_read->parseFromString($data);
+            $_id=$user_mail_read->getId();
+            $updates = [
+                [
+                    "q"     => ["_id" => $_id],
+                    "u"     => ['$set' => ["isread" => 1]],
+                    'multi' => false, 'upsert' => false
+                ]
+            ];
+            $collname="user_mail";
+            $rs = $hall_log->update($collname, $updates);
+            print_r($rs->toArray());
+//
+//
+            break;
+
     }
 }
