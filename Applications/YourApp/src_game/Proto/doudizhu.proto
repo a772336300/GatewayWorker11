@@ -1,0 +1,125 @@
+package proto;
+
+enum Room_Type
+{
+	chuji =1;
+	zhongji =2;
+	gaoji =3;
+}
+enum Play_Data_Type
+{
+    jiaodizhu =1;
+    qiangdizhu =2;
+    pai =3;
+}
+enum Message_Id
+{
+	CS_Join_Id =1;
+	SC_Join_Id =2;
+	CS_Quit_Join_Id =3;
+	SC_Quit_Join_Id =4;
+	SC_Init_Room_Id =5;
+	SC_Init_Cards_Id =6;
+	SC_Bottom_Cards_Id =7;
+	CS_Play_Id =8;
+	SC_Play_Id =9;
+	CS_Go_Out_Id =10;
+	SC_Go_Out_Id =11;
+	CS_Is_Gaming_Id =12;
+	SC_Is_Gaming_Id =13;
+	SC_Game_Result_Id =14;
+}
+message CS_Join
+{
+	optional Room_Type type = 1;
+}
+message SC_Join
+{
+	optional Room_Type type = 1;
+}
+message CS_Quit_Join
+{
+	optional Room_Type type = 1;
+}
+message SC_Quit_Join
+{
+	optional Room_Type type = 1;
+}
+message Play_Data
+{
+	optional int32 type =  1;
+	optional string data =  2;
+}
+message Player_Info
+{
+	optional int32 playerId =  1;
+	optional string name =  2;
+	optional string touxiang =  3;
+	optional int32 gold = 4;
+	optional int32 level =5;
+	optional int32 Cards_count =  6;
+}
+message Player_Order
+{
+	repeated int32 id = 1;
+}
+message SC_Init_Room
+{
+	optional int32 type =  1;
+    optional int32 times = 2;
+    optional int32 dizhu =  3;
+    optional int64 gameStartTime = 4;
+	optional Play_Data currentValue=5;
+	optional string bottomCards =6;
+	optional Player_Order playerOrder = 7;
+	optional int32 turnerId =8;
+	optional int32 turnerLeftTime=9;
+	optional int32 currentValueOwner=10;
+	repeated Player_Info playersInfo=11;
+}
+message SC_Init_Cards
+{
+	optional string cards= 1;
+}
+message SC_Bottom_Cards
+{
+	optional string cards= 1;
+	optional int32 owner = 2;
+}
+message CS_Play
+{
+	optional Play_Data play_data=1;
+}
+message SC_Play
+{
+    optional int32 playerId = 1;
+	optional Play_Data play_data = 2;
+}
+message CS_Go_Out
+{
+	optional int32 type = 1;
+}
+message SC_Go_Out
+{
+	optional int32 type = 1;
+}
+message CS_Is_Gaming
+{
+	optional int32 data = 1;
+}
+message SC_Is_Gaming
+{
+	optional int32 data = 1;
+}
+message Player_Game_Result
+{
+	optional int32 playerId = 1;
+	optional int32 levelUp = 2;
+	optional int32 gold = 3;
+	optional string unPlayCards = 4;
+	//得分加倍
+}
+message SC_Game_Result
+{
+	repeated Player_Game_Result player_game_result=1; 
+}

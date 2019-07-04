@@ -65,9 +65,10 @@ $test_count1=0;
 //worker进程开始
 $tcp_worker->onWorkerStart = function ($worker)
 {
+    global $tcp_worker;
     global $config;
     //初始化数据库
-    $worker->db= new \Workerman\MySQL\Connection($config['db']['host'],$config['db']['port'],$config['db']['user'],$config['db']['password'],$config['db']['dbname'],$config['db']['charset']);
+    $tcp_worker->db= new \Workerman\MySQL\Connection($config['db']['host'],$config['db']['port'],$config['db']['user'],$config['db']['password'],$config['db']['dbname'],$config['db']['charset']);
     refreshUserInit();
 
     //更新没正常推出游戏的用户数据（包含重启服务器，导致用户没退出记录）

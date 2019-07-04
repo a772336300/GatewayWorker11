@@ -16,7 +16,8 @@ use \Workerman\WebServer;
 use \GatewayWorker\Gateway;
 use \GatewayWorker\BusinessWorker;
 use \Workerman\Autoloader;
-
+use GatewayWorker\Protocols\GatewayProtocol;
+require_once 'model_router.php';
 // 自动加载类
 require_once __DIR__ . '/../../vendor/autoload.php';
 
@@ -34,28 +35,41 @@ $gateway->startPort = 2900;
 // 服务注册地址
 $gateway->registerAddress = '127.0.0.1:1238';
 
-// 心跳间隔
-///$gateway->pingInterval = 10;
-// 心跳数据
-//$gateway->pingData = '{"type":"ping"}';
-
-/* 
-// 当客户端连接上来时，设置连接的onWebSocketConnect，即在websocket握手时的回调
-$gateway->onConnect = function($connection)
+$gateway->router = function ($worker_connections, $client_connection, $cmd, $buffer)
 {
-    $connection->onWebSocketConnect = function($connection , $http_header)
+
+
+    global $default_model;
+    global $models;
+    global $model_router;
+    foreach ($models as $model)
     {
-        // 可以在这里判断连接来源是否合法，不合法就关掉连接
-        // $_SERVER['HTTP_ORIGIN']标识来自哪个站点的页面发起的websocket链接
-        if($_SERVER['HTTP_ORIGIN'] != 'http://kedou.workerman.net')
-        {
-            $connection->close();
+        if (!isset($client_connection->model_address[$model]) || !isset($worker_connections[$client_connection->model_address[$model]])) {
+            $add_address_list = [];
+            foreach ($worker_connections as $key =>$value)
+            {
+                list(,$worker_name,)=explode(':',$key,3);
+                if($worker_name==$model)
+                {
+                    $add_address_list[$key]=1;
+                }
+            }
+            $client_connection->model_address[$model] = array_rand($add_address_list);
         }
-        // onWebSocketConnect 里面$_GET $_SERVER是可用的
-        // var_dump($_GET, $_SERVER);
-    };
-}; 
-*/
+    }
+    if($cmd==GatewayProtocol::CMD_ON_MESSAGE)
+    {
+        $mid =unpack('I*',substr($buffer,4,4))[1];
+        if(!isset($model_router[$mid]))
+        {
+            return $worker_connections[$client_connection->model_address[$default_model]];
+        }
+        $model = $model_router[$mid];
+        return $worker_connections[$client_connection->model_address[$model]];
+    }
+    return $worker_connections[$client_connection->model_address[$default_model]];
+};
+
 
 // 如果不是在根目录启动，则运行runAll方法
 if(!defined('GLOBAL_START'))

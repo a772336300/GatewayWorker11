@@ -1,7 +1,20 @@
 <?php
-$default_model= 'base_worker';
-$models = ['game_worker'];
+$default_model= 'YourAppBusinessWorker';
+$models = ['YourAppBusinessWorker','game_worker'];
 $model_router = [
-    701=>'base_worker',
-    2000=>'game_worker',
+    1=>'game_worker',
+    2=>'game_worker',
+    3=>'game_worker',
+    4=>'game_worker',
+    5=>'game_worker',
+    6=>'game_worker',
+    7=>'game_worker',
+    8=>'game_worker',
+    9=>'game_worker',
+    10=>'game_worker',
+    11=>'game_worker',
+    12=>'game_worker',
+    13=>'game_worker',
+    14=>'game_worker',
+
 ];
