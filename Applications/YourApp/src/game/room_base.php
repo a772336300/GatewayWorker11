@@ -7,6 +7,7 @@ class room_base{
     private static $number;     //当前人数
     private static $max;        //最大人数
     private static $users;      //用户容器
+    private static $state;      //状态 0空 1有人 2满人 3满开
     public  static $room_type=['ddz','xzdd'];
 
     function __construct(){
@@ -15,6 +16,7 @@ class room_base{
         self::$code=0;
         self::$number=0;
         self::$max=0;
+        self::$state=0;
     }
 
     function set_gtype($variable){
@@ -40,6 +42,10 @@ class room_base{
         }
     }
 
+    function get_state(){
+        return self::$state;
+    }
+
     function get_max(){
         return self::$max;
     }
@@ -52,6 +58,11 @@ class room_base{
             self::$users[self::$number]->integral=$variable[0]['integral'];
             self::$users[self::$number]->level=$variable[0]['level'];
             self::$number++;
+            if (self::$number==self::$max){
+                self::$state=2;
+            }else{
+                self::$state=1;
+            }
         }
     }
 
@@ -74,6 +85,9 @@ class room_base{
             self::$users[$position]->integral=-1;
             self::$users[$position]->level=-1;
             self::$number--;
+            if (self::$number==0){
+                self::$state=0;
+            }
             return $tmpuser;
         }
     }
