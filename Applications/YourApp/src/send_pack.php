@@ -280,5 +280,53 @@ function send_pack_get_user_mail($uid,$is_success,$data)
         $user_mail->setUid($value->uid);
         $object->appendUserMail($user_mail);
     }
+//    $a=new \Proto\SC_Get_User_Mail();
+//    $a->parseFromString($object->serializeToString());
+//    $b=$a->getUserMail();
+//    echo "------>".$b[0]->getId();
+
     \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20004,$object->serializeToString()));
+}
+
+function send_pack_user_mail_read($uid,$is_success)
+{
+    $message = new \Proto\SC_User_Mail_Read();
+    $message->setIsSuccess($is_success);
+    \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20006,$message->serializeToString()));
+}
+
+function send_pack_user_mail_delete($uid,$is_success)
+{
+    $message = new \Proto\SC_User_Mail_Delete();
+    $message->setIsSuccess($is_success);
+    \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20008,$message->serializeToString()));
+}
+
+function send_pack_user_new_info($uid,$module_id,$_id)
+{
+    $message = new \Proto\SC_User_New_info();
+    $message->setModuleId($module_id);
+    $message->appendId($_id);
+    \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20100,$message->serializeToString()));
+}
+
+function send_pack_user_rank($uid,$obj,$data)
+{
+    $object= new \Proto\SC_User_Get_Rank();
+    foreach ($data as $value)
+    {
+        $user_rank = new \Proto\E_User_Rank();
+        $user_rank->setRank($value->rank);
+        $user_rank->setUid($value->uid);
+        $user_rank->setName($value->name);
+        $user_rank->setTouxiang($value->touxiang);
+        $user_rank->setWinNum($value->win_num);
+        $object->appendUserRank($user_rank);
+    }
+    $object->setUid($uid);
+    $object->setName($obj->name);
+    $object->setTouxiang($obj->touxiang);
+    $object->setWinNum($obj->win_num);
+    $object->setRank($obj->rank);
+    \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20010,$object->serializeToString()));
 }

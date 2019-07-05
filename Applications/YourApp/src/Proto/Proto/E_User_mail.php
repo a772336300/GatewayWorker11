@@ -1,6 +1,6 @@
 <?php
 /**
- * Auto generated from new.proto at 2019-07-03 17:23:45
+ * Auto generated from new.proto at 2019-07-04 15:19:45
  *
  * proto package
  */
@@ -18,10 +18,11 @@ class E_User_mail extends \ProtobufMessage
     const CONTENT = 4;
     const START_TIME = 5;
     const END_TIME = 6;
-    const ISREAD = 7;
-    const ISDELETE = 8;
-    const GET_ATTACH = 9;
-    const UID = 10;
+    const ATTACH = 7;
+    const ISREAD = 8;
+    const ISDELETE = 9;
+    const GET_ATTACH = 10;
+    const UID = 11;
 
     /* @var array Field descriptors */
     protected static $fields = array(
@@ -53,6 +54,11 @@ class E_User_mail extends \ProtobufMessage
         self::END_TIME => array(
             'name' => 'end_time',
             'required' => false,
+            'type' => \ProtobufMessage::PB_TYPE_INT,
+        ),
+        self::ATTACH => array(
+            'name' => 'attach',
+            'repeated' => true,
             'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
         self::ISREAD => array(
@@ -98,6 +104,7 @@ class E_User_mail extends \ProtobufMessage
         $this->values[self::CONTENT] = null;
         $this->values[self::START_TIME] = null;
         $this->values[self::END_TIME] = null;
+        $this->values[self::ATTACH] = array();
         $this->values[self::ISREAD] = null;
         $this->values[self::ISDELETE] = null;
         $this->values[self::GET_ATTACH] = null;
@@ -310,6 +317,80 @@ class E_User_mail extends \ProtobufMessage
     public function hasEndTime()
     {
         return $this->get(self::END_TIME) !== null;
+    }
+
+    /**
+     * Appends value to 'attach' list
+     *
+     * @param integer $value Value to append
+     *
+     * @return null
+     */
+    public function appendAttach($value)
+    {
+        return $this->append(self::ATTACH, $value);
+    }
+
+    /**
+     * Clears 'attach' list
+     *
+     * @return null
+     */
+    public function clearAttach()
+    {
+        return $this->clear(self::ATTACH);
+    }
+
+    /**
+     * Returns 'attach' list
+     *
+     * @return integer[]
+     */
+    public function getAttach()
+    {
+        return $this->get(self::ATTACH);
+    }
+
+    /**
+     * Returns true if 'attach' property is set, false otherwise
+     *
+     * @return boolean
+     */
+    public function hasAttach()
+    {
+        return count($this->get(self::ATTACH)) !== 0;
+    }
+
+    /**
+     * Returns 'attach' iterator
+     *
+     * @return \ArrayIterator
+     */
+    public function getAttachIterator()
+    {
+        return new \ArrayIterator($this->get(self::ATTACH));
+    }
+
+    /**
+     * Returns element from 'attach' list at given offset
+     *
+     * @param int $offset Position in list
+     *
+     * @return integer
+     */
+    public function getAttachAt($offset)
+    {
+        return $this->get(self::ATTACH, $offset);
+    }
+
+    /**
+     * Returns count of 'attach' list
+     *
+     * @return int
+     */
+    public function getAttachCount()
+    {
+        return $this->count(self::ATTACH);
     }
 
     /**

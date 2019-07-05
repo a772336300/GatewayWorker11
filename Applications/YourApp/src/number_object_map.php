@@ -52,4 +52,9 @@ $number_object_map = [
     20007=>'CS_User_Mail_Delete',
     20008=>'SC_User_Mail_Delete',
 
+    20009=>'CS_User_Get_Rank',
+    20010=>'SC_User_Get_Rank',
+
+    20100=>'SC_User_New_info',
+
 ];
