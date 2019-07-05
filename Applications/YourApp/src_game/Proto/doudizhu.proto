@@ -47,7 +47,7 @@ message SC_Quit_Join
 }
 message Play_Data
 {
-	optional int32 type =  1;
+	optional Play_Data_Type type =  1;
 	optional string data =  2;
 }
 message Player_Info
