@@ -1,6 +1,6 @@
 <?php
 /**
- * Auto generated from doudizhu.proto at 2019-06-17 11:27:37
+ * Auto generated from doudizhu.proto at 2019-07-05 15:09:44
  *
  * proto package
  */
@@ -14,7 +14,7 @@ class SC_Init_Room extends \ProtobufMessage
     /* Field index constants */
     const TYPE = 1;
     const TIMES = 2;
-    const DIZHUID = 3;
+    const DIZHU = 3;
     const GAMESTARTTIME = 4;
     const CURRENTVALUE = 5;
     const BOTTOMCARDS = 6;
@@ -36,8 +36,8 @@ class SC_Init_Room extends \ProtobufMessage
             'required' => false,
             'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
-        self::DIZHUID => array(
-            'name' => 'dizhuid',
+        self::DIZHU => array(
+            'name' => 'dizhu',
             'required' => false,
             'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
@@ -100,7 +100,7 @@ class SC_Init_Room extends \ProtobufMessage
     {
         $this->values[self::TYPE] = null;
         $this->values[self::TIMES] = null;
-        $this->values[self::DIZHUID] = null;
+        $this->values[self::DIZHU] = null;
         $this->values[self::GAMESTARTTIME] = null;
         $this->values[self::CURRENTVALUE] = null;
         $this->values[self::BOTTOMCARDS] = null;
@@ -188,36 +188,36 @@ class SC_Init_Room extends \ProtobufMessage
     }
 
     /**
-     * Sets value of 'dizhuid' property
+     * Sets value of 'dizhu' property
      *
      * @param integer $value Property value
      *
      * @return null
      */
-    public function setDizhuid($value)
+    public function setDizhu($value)
     {
-        return $this->set(self::DIZHUID, $value);
+        return $this->set(self::DIZHU, $value);
     }
 
     /**
-     * Returns value of 'dizhuid' property
+     * Returns value of 'dizhu' property
      *
      * @return integer
      */
-    public function getDizhuid()
+    public function getDizhu()
     {
-        $value = $this->get(self::DIZHUID);
+        $value = $this->get(self::DIZHU);
         return $value === null ? (integer)$value : $value;
     }
 
     /**
-     * Returns true if 'dizhuid' property is set, false otherwise
+     * Returns true if 'dizhu' property is set, false otherwise
      *
      * @return boolean
      */
-    public function hasDizhuid()
+    public function hasDizhu()
     {
-        return $this->get(self::DIZHUID) !== null;
+        return $this->get(self::DIZHU) !== null;
     }
 
     /**
