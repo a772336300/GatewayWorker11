@@ -577,13 +577,6 @@ message CS_Get_User_Mail
 //	optional string  uid                = 1;
 }
 
-//获取玩家邮件 返回
-message SC_Get_User_Mail
-{
-	//option (msgid) = 20004;
-	repeated E_User_mail user_mail = 1;
-}
-
 // 用户邮件信息
 message E_User_mail
 {
@@ -598,6 +591,13 @@ message E_User_mail
 	optional bool  isdelete= 9;//是否已删除
 	optional bool  get_attach= 10;//是否领取附件
 	optional int32  uid= 11;//用户id
+}
+
+//获取玩家邮件 返回
+message SC_Get_User_Mail
+{
+	//option (msgid) = 20004;
+	repeated E_User_mail user_mail = 1;
 }
 
 //将邮件改为已读
@@ -627,4 +627,41 @@ message SC_User_Mail_Delete
 	//option (msgid) = 20008;
 	optional bool	is_success = 1;
 	repeated string   _id = 2;
+}
+
+//玩家有新消息通知 服务器主动推送
+message SC_User_New_info
+{
+	//option (msgid) = 20100;
+	optional int32  module_id= 1;//模块 11活动 21道具 31邮件
+	repeated string   _id = 2; //对应的具体id
+}
+
+//获取排行榜
+message CS_User_Get_Rank
+{
+	//option (msgid) = 20009;
+	optional int32  type= 1;//类型 1今日，2本周，3本月
+}
+
+// 用户排行榜信息
+message E_User_Rank
+{
+	optional int32  uid= 1;//用户id
+	optional string  touxiang=2;//头像
+	optional string  name=3;//名称
+	optional int32  win_num= 4;//胜局数
+	optional int32  rank= 5;//排名
+}
+
+//获取排行榜 返回
+message SC_User_Get_Rank
+{
+	//option (msgid) = 20010;
+	optional int32  uid= 1;//用户id
+	optional string  touxiang=2;//头像
+	optional string  name=3;//名称
+	optional int32  win_num= 4;//胜局数
+	optional int32  rank= 5;//排名 0表示未上榜
+	repeated E_User_Rank user_rank = 6;
 }

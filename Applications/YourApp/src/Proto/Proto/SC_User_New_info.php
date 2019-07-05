@@ -7,15 +7,21 @@
 
 namespace Proto {
 /**
- * CS_User_Mail_Delete message
+ * SC_User_New_info message
  */
-class CS_User_Mail_Delete extends \ProtobufMessage
+class SC_User_New_info extends \ProtobufMessage
 {
     /* Field index constants */
-    const _ID = 1;
+    const MODULE_ID = 1;
+    const _ID = 2;
 
     /* @var array Field descriptors */
     protected static $fields = array(
+        self::MODULE_ID => array(
+            'name' => 'module_id',
+            'required' => false,
+            'type' => \ProtobufMessage::PB_TYPE_INT,
+        ),
         self::_ID => array(
             'name' => '_id',
             'repeated' => true,
@@ -38,6 +44,7 @@ class CS_User_Mail_Delete extends \ProtobufMessage
      */
     public function reset()
     {
+        $this->values[self::MODULE_ID] = null;
         $this->values[self::_ID] = array();
     }
 
@@ -49,6 +56,39 @@ class CS_User_Mail_Delete extends \ProtobufMessage
     public function fields()
     {
         return self::$fields;
+    }
+
+    /**
+     * Sets value of 'module_id' property
+     *
+     * @param integer $value Property value
+     *
+     * @return null
+     */
+    public function setModuleId($value)
+    {
+        return $this->set(self::MODULE_ID, $value);
+    }
+
+    /**
+     * Returns value of 'module_id' property
+     *
+     * @return integer
+     */
+    public function getModuleId()
+    {
+        $value = $this->get(self::MODULE_ID);
+        return $value === null ? (integer)$value : $value;
+    }
+
+    /**
+     * Returns true if 'module_id' property is set, false otherwise
+     *
+     * @return boolean
+     */
+    public function hasModuleId()
+    {
+        return $this->get(self::MODULE_ID) !== null;
     }
 
     /**

@@ -117,6 +117,20 @@ final class mongo_db {
     }
 
     /**
+     * 聚合查询
+     * @param $collName
+     * @param array $where
+     * @param array $group
+     * @return \MongoDB\Driver\Cursor
+     */
+    function aggregate($cmd)
+    {
+        $result = $this->command($cmd)->toArray();
+        return $result;
+    }
+
+
+    /**
      * 执行MongoDB命令
      * @param array $param
      * @return \MongoDB\Driver\Cursor

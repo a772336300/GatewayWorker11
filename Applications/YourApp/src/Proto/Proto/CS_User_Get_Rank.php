@@ -7,19 +7,19 @@
 
 namespace Proto {
 /**
- * CS_User_Mail_Read message
+ * CS_User_Get_Rank message
  */
-class CS_User_Mail_Read extends \ProtobufMessage
+class CS_User_Get_Rank extends \ProtobufMessage
 {
     /* Field index constants */
-    const _ID = 1;
+    const TYPE = 1;
 
     /* @var array Field descriptors */
     protected static $fields = array(
-        self::_ID => array(
-            'name' => '_id',
+        self::TYPE => array(
+            'name' => 'type',
             'required' => false,
-            'type' => \ProtobufMessage::PB_TYPE_STRING,
+            'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
     );
 
@@ -38,7 +38,7 @@ class CS_User_Mail_Read extends \ProtobufMessage
      */
     public function reset()
     {
-        $this->values[self::_ID] = null;
+        $this->values[self::TYPE] = null;
     }
 
     /**
@@ -52,36 +52,36 @@ class CS_User_Mail_Read extends \ProtobufMessage
     }
 
     /**
-     * Sets value of '_id' property
+     * Sets value of 'type' property
      *
-     * @param string $value Property value
+     * @param integer $value Property value
      *
      * @return null
      */
-    public function setId($value)
+    public function setType($value)
     {
-        return $this->set(self::_ID, $value);
+        return $this->set(self::TYPE, $value);
     }
 
     /**
-     * Returns value of '_id' property
+     * Returns value of 'type' property
      *
-     * @return string
+     * @return integer
      */
-    public function getId()
+    public function getType()
     {
-        $value = $this->get(self::_ID);
-        return $value === null ? (string)$value : $value;
+        $value = $this->get(self::TYPE);
+        return $value === null ? (integer)$value : $value;
     }
 
     /**
-     * Returns true if '_id' property is set, false otherwise
+     * Returns true if 'type' property is set, false otherwise
      *
      * @return boolean
      */
-    public function hasId()
+    public function hasType()
     {
-        return $this->get(self::_ID) !== null;
+        return $this->get(self::TYPE) !== null;
     }
 }
 }

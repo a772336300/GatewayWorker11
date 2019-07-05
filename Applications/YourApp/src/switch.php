@@ -271,7 +271,7 @@ function message_switch($client_id,$mid,$data)
             $time=date('h:i:s', time());
             $sql="select max_user from bolaik_user.user_online where date_time='$date'";
             $online=db_query($sql);
-            $max=$online[0]['max_user'];
+            $max=count($online)>0?$online[0]['max_user']:1000;
             global $connection_count;
             if($connection_count>$max){
                 $sql="update bolaik_user.user_online set max_user= $connection_count,max_time='$time' where date_time='$date'";
