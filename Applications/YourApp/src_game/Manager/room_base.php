@@ -3,7 +3,7 @@
 use user;
 class room_base{
     private static $gtype;      //房间类型
-    private static $stattime;   //开始时间
+    private static $starttime;   //开始时间
     private static $code;       //房间编号
     private static $number;     //当前人数
     private static $max;        //最大人数
@@ -15,7 +15,7 @@ class room_base{
     function __construct(){
         self::$users=null;
         self::$gtype=self::$room_type[0];
-        self::$stattime=null;
+        self::$starttime=null;
         self::$code=0;
         self::$number=0;
         self::$max=0;
@@ -39,7 +39,11 @@ class room_base{
     }
 
     function set_starttime($vale){
-        self::$stattime=$vale;
+        self::$starttime=$vale;
+    }
+
+    function get_starttime(){
+        return self::starttime;
     }
 
     function set_code($vale){

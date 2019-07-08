@@ -4,6 +4,9 @@ class mj_base{
     private $Card_All;
     private $Play_Count;
 
+    /**
+     * @return 随机点
+     */
     public function Rand_Point(){
         return time() % $this->Play_Count;
     }
