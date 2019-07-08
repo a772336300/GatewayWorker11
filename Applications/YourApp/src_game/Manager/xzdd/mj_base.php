@@ -52,7 +52,7 @@ class mj_base{
     }
 
     /**
-     * @return 所有的牌或剩余的牌
+     * @return 所有的未摸的牌或剩余的牌
      */
     public function Get_All_Card(){
         return self::$Card_All;

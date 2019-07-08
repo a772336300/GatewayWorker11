@@ -28,6 +28,9 @@ class room_manager{
         self::$user_number=0;
     }
 
+    /**
+     * @return 返回房间管理对象
+     */
     static function singleton()
     {
         if (!isset(self::$ins))
@@ -37,52 +40,70 @@ class room_manager{
         return self::$ins;
     }
 
-    //创建房间
-    private function create_room($game_type)
-    {
-        $collname='gmae_Competition';
+    /**
+     * 读取数据库，查询赛制，建立房间
+     */
+    private function room_loop(){
+        $collname='gmae_competition';
         $mongodb=mongo_db::singleton('func_system');
+        $filter = [
+                'starttime'  => ['$gt' => date('Y-m-d H:i:s')] //条件：大于当前时间
+        ];
+        $queryWriteOps = [
+                'projection'    => ['_id'   =>0],//不输出_id字段
+                'sort'          => ['id'    =>1]//根据id字段排序 1是升序，-1是降序
+        ];
+        $rs = $mongodb->query($collname,$filter,$queryWriteOps);
+        foreach ($rs[0] as $data){
+            if (!isset(self::$rooms[$data['id']])){
+                $this->create_room($data);
+            }
+        }
+    }
 
-        switch ($game_type)
+    /**
+     * @param $data =>[
+     *                  'id'=>1,
+     *                  'type'=>'ddz'/'xzdd',
+     *                  'bnumber'=>0/1
+     *                  'number'=>100,
+     *                  'advanced'=>1,
+     *                  'max'=>5,
+     *                  'starttime'=>'2019-07-08 14:49:05'
+     *                  ]
+     */
+    private function create_room($data)
+    {
+        switch ($data['type'])
         {
             case room_base::$room_type[0]:
-                $filter = [
-                    "type" => ['$eq' => room_base::$room_type[0]]//查询条件 type 等于 ddz
-                ];
-                $queryWriteOps = [
-                    "projection" => ["_id"=> 0],//不输出_id字段
-                    "sort"       => ["id" => 1],//根据id字段排序 1是升序，-1是降序
-                    "limit"      => 1
-                ];
-                $rs = $mongodb->query($collname, $filter, $queryWriteOps);
-                for ($i=0;$i<$rs[0]['number'];$i++){
-                    $tmproom=new room_base();
+                $count = $data['number']/3;
+                for ($i=0;$i<$count;$i++){
+                    $tmproom = new room_base();
                     $tmproom->set_code(time());
+                    $tmproom->set_starttime($data['starttime']);
                     $tmproom->set_max(3);
-                    self::$rooms[$tmproom->get_code()]=$tmproom;
+                    $tmproom->set_advanced($data['advanced']);
+                    self::$rooms[$data['id']][$tmproom->get_code()]=$tmproom;
                 }
                 break;
             case room_base::$room_type[1]:
-                $filter = [
-                    "type" => ['$eq' => room_base::$room_type[1]]//查询条件 type 等于 xzdd
-                ];
-                $queryWriteOps = [
-                    "projection" => ["_id"=> 0],//不输出_id字段
-                    "sort"       => ["id" => 1],//根据id字段排序 1是升序，-1是降序
-                    "limit"      => 1
-                ];
-                $rs = $mongodb->query($collname, $filter, $queryWriteOps);
-                for ($i=0;$i<$rs[0]['number'];$i++){
-                    $tmproom=new room_base();
+                $count = $data['number']/4;
+                for ($i=0;$i<$count;$i++){
+                    $tmproom = new room_base();
                     $tmproom->set_code(time());
+                    $tmproom->set_starttime($data['starttime']);
                     $tmproom->set_max(4);
-                    self::$rooms[$tmproom->get_code()] = $tmproom;
+                    $tmproom->set_advanced($data['advanced']);
+                    self::$rooms[$data['id']][$tmproom->get_code()] = $tmproom;
                 }
                 break;
         }
     }
 
-    //获取可用房间
+    /**
+     * @return 获取可用房间
+     */
     private function get_empty_room(){
         foreach (self::$rooms as $room){
             if ($room->get_state()<=1){
@@ -91,7 +112,17 @@ class room_manager{
         }
     }
 
-    //进入房间
+    /**
+     * 进入房间
+     * @param $room_id
+     * @param $user=>[
+     *              'userid'=>12312,
+     *              'gender'=>0/1,
+     *              'position'=>1,
+     *              'integral'=>0,
+     *              'level'=>1
+     *              ]
+     */
     private function enter_room($room_id,$user)
     {
         if (isset(self::$rooms)&&isset(self::$rooms[$room_id])) {
@@ -99,7 +130,17 @@ class room_manager{
         }
     }
 
-    //重新进入房间
+    /**
+     * 重新进入房间
+     * @param $room_id
+     * @param $user=>[
+     *              'userid'=>12312,
+     *              'gender'=>0/1,
+     *              'position'=>1,
+     *              'integral'=>0,
+     *              'level'=>1
+     *              ]
+     */
     private function reenter_room($room_id,$user)
     {
         if (isset(self::$rooms)&&isset(self::$rooms[$room_id])){
