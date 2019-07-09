@@ -69,13 +69,22 @@ class room_base{
         return $this->max;
     }
 
+    /**
+     * @param $vale =>[
+     *                  'userid',   //用户ID
+     *                  'gender',   //性别
+     *                  'position', //坐位
+     *                  'integral', //积分
+     *                  'level'     //等级
+     *                  ]
+     */
     function user_enter($vale){
         if ($this->number<$this->max){
-            $this->users[$this->number]->userid=$vale[0]['userid'];
-            $this->users[$this->number]->gender=$vale[0]['gender'];
+            $this->users[$this->number]->userid=$vale['userid'];
+            $this->users[$this->number]->gender=$vale['gender'];
             $this->users[$this->number]->position=$this->number;
-            $this->users[$this->number]->integral=$vale[0]['integral'];
-            $this->users[$this->number]->level=$vale[0]['level'];
+            $this->users[$this->number]->integral=$vale['integral'];
+            $this->users[$this->number]->level=$vale['level'];
             $this->number++;
             if ($this->number==$this->max){
                 $this->state=2;
@@ -85,16 +94,29 @@ class room_base{
         }
     }
 
+    /**
+     * @param $vale =>[
+     *                  'userid',   //用户ID
+     *                  'gender',   //性别
+     *                  'position', //坐位
+     *                  'integral', //积分
+     *                  'level'     //等级
+     *                  ]
+     */
     function user_reenter($vale){
-        if ($this->users[$vale[0]['position']]){
-            $this->users[$vale[0]['position']]->userid=$vale[0]['userid'];
-            $this->users[$vale[0]['position']]->gender=$vale[0]['gender'];
-            $this->users[$vale[0]['position']]->position=$this->number;
-            $this->users[$vale[0]['position']]->integral=$vale[0]['integral'];
-            $this->users[$vale[0]['position']]->level=$vale[0]['level'];
+        if ($this->users[$vale['position']]){
+            $this->users[$vale['position']]->userid=$vale['userid'];
+            $this->users[$vale['position']]->gender=$vale['gender'];
+            $this->users[$vale['position']]->position=$this->number;
+            $this->users[$vale['position']]->integral=$vale['integral'];
+            $this->users[$vale['position']]->level=$vale['level'];
         }
     }
 
+    /**
+     * @param $position 玩家在桌子中的位置
+     * @return 退出玩家信息
+     */
     function user_exit($position){
         if ($this->number>0){
             $tmpuser=$this->users[$position];
@@ -111,10 +133,17 @@ class room_base{
         }
     }
 
+    /**
+     * @return 返回当前人数
+     */
     function get_number(){
         return $this->number;
     }
 
+    /**
+     * @param $position 玩家在桌子中的位置
+     * @return 玩家信息
+     */
     function get_user($position){
         if ($position>$this->number||$position<0){
             return null;
@@ -123,6 +152,9 @@ class room_base{
         }
     }
 
+    /**
+     * @return 所有玩家信息
+     */
     function get_user_all(){
         return $this->users;
     }
