@@ -7,6 +7,7 @@ use mj_base;
 
 class game_xzdd extends mj_base {
     private static $_handCards;     //玩家手牌
+    private static $_barCards;      //玩家杠牌
     private static $_knownCards;    //所有打出的牌
     private static $_handCardsCountMap;
     private static $_splitArr;
@@ -60,6 +61,14 @@ class game_xzdd extends mj_base {
         }
 */
         self::$_params = $params;
+    }
+
+    private function Start_Game(){
+
+    }
+
+    private function Loop_Game(){
+
     }
 
     /**

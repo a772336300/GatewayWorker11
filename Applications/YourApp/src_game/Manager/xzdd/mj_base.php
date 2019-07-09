@@ -2,6 +2,7 @@
 
 class mj_base{
     private $Card_All;
+    private $type;
     private $Play_Count;
 
     /**
@@ -50,29 +51,37 @@ class mj_base{
                 array_push($tmp_array,$tmpdata[1],$tmpdata[2],$tmpdata[3],$tmpdata[4]);
                 break;
         }
-        self::$Card_All = $this->Multi_To_One_Array($tmp_array);
-        self::$Play_Count = $count;
+        $this->Card_All = $this->Multi_To_One_Array($tmp_array);
+        $this->Play_Count = $count;
     }
 
     /**
      * @return 所有的未摸的牌或剩余的牌
      */
     public function Get_All_Card(){
-        return self::$Card_All;
+        return $this->Card_All;
     }
 
     /**
      * @return 洗牌
      */
     private function Rand_Card(){
-        return shuffle(self::$Card_All);
+        return shuffle($this->Card_All);
     }
 
     /**
      * @return 摸牌
      */
     private function Get_Card(){
-        return array_shift(self::$Card_All);
+        return array_shift($this->Card_All);
+    }
+
+    private function Set_type($vale){
+        $this->type=$vale;
+    }
+
+    private function Get_type(){
+        return $this->type;
     }
 
     /**
@@ -82,7 +91,7 @@ class mj_base{
     private function Get_First_Card_All($count){
         $play_card = null;
         for ($i=0;$i<$count;$i++){
-            for ($j=0;$j<self::$Play_Count;$j++){
+            for ($j=0;$j<$this->Play_Count;$j++){
                 array_push($play_card[$j],$this->Get_Card());
             }
         }
