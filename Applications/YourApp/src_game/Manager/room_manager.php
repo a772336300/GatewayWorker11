@@ -2,38 +2,39 @@
 use Workerman\Lib\Timer;
 use GatewayWorker\Lib\Gateway;
 use Events;
-use room_base;
-use user;
+require_once 'room_base.php';
+require_once 'user.php';
 use mongo_db;
 use game_xzdd;
 
 //global
 
 
-class room_manager{
+final class room_manager{
     /**
      * $rooms[game_type][index]
      */
-    private static $rooms;          //房间容器
-    private static $ins;            //房间管理实例
-    private static $user_number;    //房间人数
-    private static $__timer_id_read;
-    private static $__time_id_start;
+    private $rooms;          //房间容器
+    private static $ins;     //房间管理实例
+    private $user_number;    //房间人数
+    private $__timer_id_read;
+    private $__time_id_start;
 
     private function __construct() {
-        self::$ins=null;
-        self::$user_number=0;
-        self::$rooms=null;          //房间
-        self::$__timer_id_read=Timer::add(20,function (){
+        //self::$ins=null;
+        $this->user_number=0;
+        $this->rooms=null;          //房间
+        $this->__timer_id_read=Timer::add(20,function (){
             $this->room_loop();
         },true);
     }
 
+
     function __destruct() {
         //delete self::$ins;
-        self::$user_number=0;
-        Timer::del(self::$__timer_id_read);
-        Timer::del(self::$__time_id_start);
+        $this->user_number=0;
+        Timer::del($this->__timer_id_read);
+        Timer::del($this->__time_id_start);
     }
 
     /**
@@ -51,9 +52,9 @@ class room_manager{
     /**
      * 开始游戏房间
      */
-    private function start_game(){
-        self::$__timer_id_read=Timer::add(20,function (){
-            foreach (self::$rooms as $room){
+    function start_game_room(){
+        $this->__timer_id_read=Timer::add(20,function (){
+            foreach ($this->rooms as $room){
                 foreach ($room as $tmp){
                     if (strtotime(date("Y-m-d H:i:s")) == strtotime($tmp['starttime'])){
                         //此处添加游戏启动代码
@@ -75,7 +76,7 @@ class room_manager{
                          *           'play_count =>4
                          *      ]
                          */
-                        $game = new game_xzdd();
+                        //$game = new game_xzdd();
                     }
                 }
             }
@@ -85,7 +86,7 @@ class room_manager{
     /**
      * 读取数据库，查询赛制，建立房间
      */
-    private function room_loop(){
+    function room_loop(){
         $collname='gmae_competition';
         $mongodb=mongo_db::singleton('func_system');
         $filter = [
@@ -97,7 +98,7 @@ class room_manager{
         ];
         $rs = $mongodb->query($collname,$filter,$queryWriteOps);
         foreach ($rs[0] as $data){
-            if (!isset(self::$rooms[$data['id']])){
+            if (!isset($this->rooms[$data['id']])){
                 $this->create_room($data);
             }
         }
@@ -114,7 +115,7 @@ class room_manager{
      *                  'starttime'=>'2019-07-08 14:49:05'
      *                  ]
      */
-    private function create_room($data)
+    function create_room($data)
     {
         switch ($data['type'])
         {
@@ -137,7 +138,7 @@ class room_manager{
                     $tmproom->set_starttime($data['starttime']);
                     $tmproom->set_max(4);
                     $tmproom->set_advanced($data['advanced']);
-                    self::$rooms[$data['id']][$tmproom->get_code()] = $tmproom;
+                    $this->rooms[$data['id']][$tmproom->get_code()] = $tmproom;
                 }
                 break;
         }
@@ -146,8 +147,8 @@ class room_manager{
     /**
      * @return 获取可用房间
      */
-    private function get_empty_room(){
-        foreach (self::$rooms as $room){
+    function get_empty_room(){
+        foreach ($this->rooms as $room){
             if ($room->get_state()<=1){
                 return $room;
             }
@@ -165,10 +166,9 @@ class room_manager{
      *              'level'=>1
      *              ]
      */
-    private function enter_room($room_id,$user)
-    {
-        if (isset(self::$rooms)&&isset(self::$rooms[$room_id])) {
-            self::$rooms[$room_id]->user_enter($user);
+    function enter_room($room_id,$user){
+        if (isset($this->rooms)&&isset($this->rooms[$room_id])) {
+            $this->rooms[$room_id]->user_enter($user);
         }
     }
 
@@ -183,10 +183,9 @@ class room_manager{
      *              'level'=>1
      *              ]
      */
-    private function reenter_room($room_id,$user)
-    {
-        if (isset(self::$rooms)&&isset(self::$rooms[$room_id])){
-            self::$rooms[$room_id]->user_reenter($user);
+    function reenter_room($room_id,$user){
+        if (isset($this->rooms)&&isset($this->rooms[$room_id])){
+            $this->rooms[$room_id]->user_reenter($user);
         }
     }
 }
