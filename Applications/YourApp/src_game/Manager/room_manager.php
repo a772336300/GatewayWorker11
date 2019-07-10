@@ -5,6 +5,7 @@ use Events;
 use room_base;
 use user;
 use mongo_db;
+use game_xzdd;
 
 //global
 
@@ -16,16 +17,23 @@ class room_manager{
     private static $rooms;          //房间容器
     private static $ins;            //房间管理实例
     private static $user_number;    //房间人数
+    private static $__timer_id_read;
+    private static $__time_id_start;
 
     private function __construct() {
         self::$ins=null;
         self::$user_number=0;
         self::$rooms=null;          //房间
+        self::$__timer_id_read=Timer::add(20,function (){
+            $this->room_loop();
+        },true);
     }
 
     function __destruct() {
         //delete self::$ins;
         self::$user_number=0;
+        Timer::del(self::$__timer_id_read);
+        Timer::del(self::$__time_id_start);
     }
 
     /**
@@ -38,6 +46,40 @@ class room_manager{
             self::$ins=new room_manager();
         }
         return self::$ins;
+    }
+
+    /**
+     * 开始游戏房间
+     */
+    private function start_game(){
+        self::$__timer_id_read=Timer::add(20,function (){
+            foreach (self::$rooms as $room){
+                foreach ($room as $tmp){
+                    if (strtotime(date("Y-m-d H:i:s")) == strtotime($tmp['starttime'])){
+                        //此处添加游戏启动代码
+                        /**
+                         * @var $params = [
+                         *           'is_last_card' => 1,
+                         *           'is_zi_mo' => 1,
+                         *           'is_gang_mo_pai' => 0,
+                         *           'is_qiang_gang_hu' => 0,
+                         *           'ming_gang_count' => 0,
+                         *           'an_gang_count' => 0,
+                         *           'is_hu_jue_zhang' => 0,
+                         *           'men_fen' => 2,
+                         *           'quan_fen' => 1,
+                         *           'hu_card' => 11,
+                         *           'is_ting' => 0,
+                         *           'flower_count' => 1,
+                         *           'mj_type' => 1,
+                         *           'play_count =>4
+                         *      ]
+                         */
+                        $game = new game_xzdd();
+                    }
+                }
+            }
+        });
     }
 
     /**
