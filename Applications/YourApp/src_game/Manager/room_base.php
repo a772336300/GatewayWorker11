@@ -1,6 +1,6 @@
 <?php
 
-use user;
+require_once 'user.php';
 class room_base{
     private $gtype;      //房间类型
     private $starttime;   //开始时间

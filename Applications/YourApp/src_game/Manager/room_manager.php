@@ -1,11 +1,11 @@
 <?php
 use Workerman\Lib\Timer;
 use GatewayWorker\Lib\Gateway;
-use Events;
+
 require_once 'room_base.php';
 require_once 'user.php';
-use mongo_db;
-use game_xzdd;
+
+//require_once 'xzdd\game_xzdd.php';
 
 //global
 
