@@ -17,12 +17,14 @@ final class room_manager{
     private $rooms;          //房间容器
     private static $ins;     //房间管理实例
     private $user_number;    //房间人数
+    private $users;          //报名用户ID
     private $__timer_id_read;
     private $__time_id_start;
 
     private function __construct() {
         //self::$ins=null;
         $this->user_number=0;
+        $this->user_ids=null;
         $this->rooms=null;          //房间
         $this->__timer_id_read=Timer::add(20,function (){
             $this->room_loop();
@@ -152,6 +154,21 @@ final class room_manager{
             if ($room->get_state()<=1){
                 return $room;
             }
+        }
+    }
+
+    /**
+     * 玩家报名
+     * @param $user_data =>[
+     *                      'competition_id'=>1,
+     *                      'uiser_id'=>1,
+     *                      'game_type'=>'ddz',
+     *                      ]
+     */
+    function competition_sign_up($user_data){
+        if (isset($this->users)&&!isset($this->users[$user_data['competition_id']]['id'])){
+            //
+            $this->users[$user_data['competition_id']['id']]=$user_data;
         }
     }
 
