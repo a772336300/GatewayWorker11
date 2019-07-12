@@ -41,5 +41,9 @@ function switch_game($client_id,$mid,$data)
                 game_is_gaming($client_id);
                 break;
             }
+        case Message_Id::CS_Competition_SignUp_Id:
+            {
+                //room_manager::singleton()->
+            }
     }
 }
