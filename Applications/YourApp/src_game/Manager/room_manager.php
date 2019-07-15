@@ -18,7 +18,7 @@ final class room_manager{
     private static $ins;     //房间管理实例
     private $user_number;    //房间人数
     private $users;          //报名用户ID
-    private $__timer_id_read;
+    private $__time_id_read;
     private $__time_id_start;
 
     private function __construct() {
@@ -26,7 +26,7 @@ final class room_manager{
         $this->user_number=0;
         $this->user_ids=null;
         $this->rooms=null;          //房间
-        $this->__timer_id_read=Timer::add(20,function (){
+        $this->__time_id_read=Timer::add(20,function (){
             $this->room_loop();
         },true);
     }
@@ -35,7 +35,7 @@ final class room_manager{
     function __destruct() {
         //delete self::$ins;
         $this->user_number=0;
-        Timer::del($this->__timer_id_read);
+        Timer::del($this->__time_id_read);
         Timer::del($this->__time_id_start);
     }
 
