@@ -162,7 +162,7 @@ final class room_manager{
      * @param $user_data =>[
      *                      'competition_id'=>1,
      *                      'uiser_id'=>1,
-     *                      'game_type'=>'ddz',
+     *                      'game_type'=>1,
      *                      ]
      */
     function competition_sign_up($user_data){

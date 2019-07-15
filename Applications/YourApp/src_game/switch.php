@@ -43,6 +43,8 @@ function switch_game($client_id,$mid,$data)
             }
         case Message_Id::CS_Competition_SignUp_Id:
             {
+                $Competition = new \Proto\CS_ComPetition_SignUp();
+                $Competition->parseFromString($data);
                 /**
                  * 玩家报名
                  * @param $user_data =>[
@@ -51,7 +53,7 @@ function switch_game($client_id,$mid,$data)
                  *                      'game_type'=>'ddz',
                  *                      ]
                  */
-                room_manager::singleton()->competition_sign_up($data);
+                room_manager::singleton()->competition_sign_up($Competition);
                 break;
             }
     }

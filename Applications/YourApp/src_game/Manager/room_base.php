@@ -10,7 +10,7 @@ class room_base{
     private $users;      //用户容器
     private $advanced;   //进阶比(1、2，3人进阶)
     private $state;      //状态 0空 1有人 2满人 3满开
-    public  static $room_type=['ddz','xzdd'];
+    public  static $room_type=[1,2];
 
     function __construct(){
         $this->users=null;
