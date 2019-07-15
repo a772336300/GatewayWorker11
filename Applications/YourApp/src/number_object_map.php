@@ -55,6 +55,27 @@ $number_object_map = [
     20009=>'CS_User_Get_Rank',
     20010=>'SC_User_Get_Rank',
 
+    20011=>'CS_Get_User_Active',
+    20012=>'SC_Get_User_Active',
+
+    20013=>'CS_Get_Goods',
+    20014=>'SC_Get_Goods',
+
+    20015=>'CS_Get_User_Packet',
+    20016=>'SC_Get_User_Packet',
+
+    20017=>'CS_User_Buy_Goods',
+    20018=>'SC_User_Buy_Goods',
+
+    20019=>'CS_User_Use_Goods',
+    20020=>'SC_User_Use_Goods',
+
+    20021=>'CS_User_Get_Attach',
+    20022=>'SC_User_Get_Attach',
+
+    //用户背包道具变化
+    20101=>'SC_User_Packet_Update',
+
     20100=>'SC_User_New_info',
 
 ];

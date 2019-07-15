@@ -665,3 +665,167 @@ message SC_User_Get_Rank
 	optional int32  rank= 5;//排名 0表示未上榜
 	repeated E_User_Rank user_rank = 6;
 }
+
+//获取活动信息
+message CS_Get_User_Active
+{
+	//option (msgid) = 20011;
+	//	optional string  uid                = 1;
+}
+
+// 用户活动信息
+message E_User_Active
+{
+	optional string  _id= 1;	//主键id
+	optional string  title= 2;	//活动标题
+	optional string  content= 3;	//活动描述
+	optional int32  start_time= 4;//开始时间 时间戳
+	optional int32  end_time= 5;//结束时间 时间戳
+	optional int32  active_type= 6;//活动类型 1中秋节活动模板，2图片活动模板
+	optional int32  skip_type= 7;//跳转类型 0不可跳转，1跳转链接，2跳转ui
+	optional string  skip_url=8;//跳转地址
+	optional string  img_url=9;//活动图片地址
+	optional string  open_time=10;//活动开启时间 空表示全天开放
+	optional string  close_time=11;//活动关闭时间
+	optional string  award_des=12;//获得奖励的条件和奖励描述
+	optional int32  totoal_step= 13;//总步骤 0没有，1只有1步，其他
+	repeated uint32  attach = 14;  //奖励附件  数组为空表示没有附件       // repeated 为数组
+	optional  int32 step= 15;//当前完成
+	optional  int32 state= 16;//当前状态 0未完成，1已完成，2已领取
+}
+
+//获取活动信息 返回
+message SC_Get_User_Active
+{
+	//option (msgid) = 20012;
+	repeated E_User_Active user_active = 1;
+}
+
+
+//获取商城信息
+message CS_Get_Goods
+{
+	//option (msgid) = 20013;
+	//	optional string  uid                = 1;
+}
+
+// 商品信息
+message E_Goods_Info
+{
+	optional string  _id= 1;	//主键id
+	optional string  prop_id= 2;//道具id
+	optional string  name= 3;	//道具名称
+	optional string  des= 4;	//道具描述
+	optional string  img= 5;	//道具图标
+//	optional string  active_id= 6;	//对应的活动
+//	optional int32  prop_type= 7;//1-消耗品（手动使用）2-获得联欢币（获得时立即自动使用）3-收集品
+//	optional int32  use_type= 8;//使用效果1-打开电话输入框2-打开收货人输入框3-获得的物品ID（多个用英文逗号分开）4-跳转UI5-获得联欢币
+//	optional string  detail=9;//成功使用后，针对使用效果，填写对应值
+//	optional int32  duidie= 10;//堆叠1-是2-否
+//	optional int32  active_time = 11;  //有效时限（秒）0表示无限制
+	optional int32  mall_type = 6;  //针对商品类型0-不在商城展示1-实物（BU商城）2-话费（BU商城）3-Q币（BU商城）4-联欢币（游戏商城）5-道具（游戏商城）6-门票（游戏商城）7-礼包（游戏商城）
+	optional  int32 price_type= 7;//价格类型0-不需要1-联欢币2-BU币3-RMB
+	optional  int32 price= 8;//价格
+}
+
+//获取商城信息 返回
+message SC_Get_Goods
+{
+	//option (msgid) = 20014;
+	repeated E_Goods_Info goods_info = 1;
+}
+
+//获取用户背包信息
+message CS_Get_User_Packet
+{
+	//option (msgid) = 20015;
+	//	optional string  uid                = 1;
+}
+
+// 用户背包信息
+message E_User_Packet
+{
+	optional string  _id= 1;	//主键id
+	optional string  prop_id= 2;//道具id
+	optional string  name= 3;	//道具名称
+	optional string  des= 4;	//道具描述
+	optional string  img= 5;	//道具图标
+	optional string  active_id= 6;	//对应的活动
+	optional int32  prop_type= 7;//1-消耗品（手动使用）2-获得联欢币（获得时立即自动使用）3-收集品
+	optional int32  use_type= 8;//使用效果1-打开电话输入框2-打开收货人输入框3-获得的物品ID（多个用英文逗号分开）4-跳转UI 5-获得联欢币
+	optional string  detail=9;//成功使用后，针对使用效果，填写对应值
+	optional int32  active_time = 10;  //有效时限（秒）0表示无限制
+//	optional int32  duidie= 10;//堆叠1-是2-否
+//	optional int32  mall_type = 12;  //针对商品类型0-不在商城展示1-实物（BU商城）2-话费（BU商城）3-Q币（BU商城）4-联欢币（游戏商城）5-道具（游戏商城）6-门票（游戏商城）7-礼包（游戏商城）
+//	optional  int32 price_type= 13;//价格类型0-不需要1-联欢币2-BU币3-RMB
+//	optional  int32 price= 14;//价格
+	optional  int32 num= 11;//拥有的数量
+	optional  int32 over_time= 12;//到期时间
+}
+
+//获取用户背包信息 返回
+message SC_Get_User_Packet
+{
+	//option (msgid) = 20016;
+	repeated E_User_Packet user_packet = 1;
+}
+
+//购买商品
+message CS_User_Buy_Goods
+{
+	//option (msgid) = 20017;
+	optional string   _id = 1;//商品主键
+}
+
+//购买商品 返回
+message SC_User_Buy_Goods
+{
+	//option (msgid) = 20018;
+	optional bool	is_success = 1;
+	optional  int32 code= 2;//错误码  0成功，1商品不存在，2余额不足
+}
+
+//用户背包道具信息变动
+message SC_User_Packet_Update
+{
+    //option (msgid) = 20101;
+	optional E_User_Packet user_packet = 1;//道具信息
+	optional  int32 type= 2;//类型 1添加，2修改，3删除
+
+}
+
+//使用商品
+message CS_User_Use_Goods
+{
+	//option (msgid) = 20019;
+	optional string   _id = 1;//主键
+	optional int32   num = 2;//数量 默认传1
+	optional string   phone = 3;//电话
+	optional string   name = 4;//姓名
+	optional string   address = 5;//地址
+
+}
+//使用商品 返回
+message SC_User_Use_Goods
+{
+	//option (msgid) = 20020;
+	optional  int32 code= 1;//错误码  0成功，1数量错误,2失败
+}
+
+//领取附件
+message CS_User_Get_Attach
+{
+	//option (msgid) = 20021;
+	optional string   _id = 1;//主键
+	optional int32   type = 2;//类型 1活动，2邮件
+}
+//领取附件 返回
+message SC_User_Get_Attach
+{
+	//option (msgid) = 20022;
+	optional  int32 code= 1;//0成功，1附件已领取,2失败
+}
+
+
+
+

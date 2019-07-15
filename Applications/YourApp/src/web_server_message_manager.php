@@ -21,10 +21,10 @@ function web_server_message_manager($data)
         $gold_coin = $dataArr['gold_coin'];
         $strength = $dataArr['strength'];
         db_update_user_money($uid,$u_coin,$gold_coin,$strength);
-        if($u_coin!=0)
+        if($u_coin!=0||$gold_coin!=0)
         {
             //发送帐变
-            send_pack_BU_change($uid,$u_coin);
+            send_pack_BU_change($uid,$u_coin,$gold_coin);
         }
         if($strength!=0)
         {
