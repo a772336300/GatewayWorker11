@@ -1,23 +1,23 @@
 <?php
 /**
- * Auto generated from doudizhu.proto at 2019-07-05 15:09:44
+ * Auto generated from doudizhu.proto at 2019-07-15 14:34:24
  *
  * proto package
  */
 
 namespace Proto {
 /**
- * CS_Join message
+ * SC_ComPetition_SignUp message
  */
-class CS_Join extends \ProtobufMessage
+class SC_ComPetition_SignUp extends \ProtobufMessage
 {
     /* Field index constants */
-    const TYPE = 1;
+    const BCOMPETITION = 1;
 
     /* @var array Field descriptors */
     protected static $fields = array(
-        self::TYPE => array(
-            'name' => 'type',
+        self::BCOMPETITION => array(
+            'name' => 'bCompetition',
             'required' => false,
             'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
@@ -38,7 +38,7 @@ class CS_Join extends \ProtobufMessage
      */
     public function reset()
     {
-        $this->values[self::TYPE] = null;
+        $this->values[self::BCOMPETITION] = null;
     }
 
     /**
@@ -52,36 +52,36 @@ class CS_Join extends \ProtobufMessage
     }
 
     /**
-     * Sets value of 'type' property
+     * Sets value of 'bCompetition' property
      *
      * @param integer $value Property value
      *
      * @return null
      */
-    public function setType($value)
+    public function setBCompetition($value)
     {
-        return $this->set(self::TYPE, $value);
+        return $this->set(self::BCOMPETITION, $value);
     }
 
     /**
-     * Returns value of 'type' property
+     * Returns value of 'bCompetition' property
      *
      * @return integer
      */
-    public function getType()
+    public function getBCompetition()
     {
-        $value = $this->get(self::TYPE);
+        $value = $this->get(self::BCOMPETITION);
         return $value === null ? (integer)$value : $value;
     }
 
     /**
-     * Returns true if 'type' property is set, false otherwise
+     * Returns true if 'bCompetition' property is set, false otherwise
      *
      * @return boolean
      */
-    public function hasType()
+    public function hasBCompetition()
     {
-        return $this->get(self::TYPE) !== null;
+        return $this->get(self::BCOMPETITION) !== null;
     }
 }
 }

@@ -1,15 +1,15 @@
 <?php
 /**
- * Auto generated from doudizhu.proto at 2019-07-05 15:09:44
+ * Auto generated from doudizhu.proto at 2019-07-15 14:34:25
  *
  * proto package
  */
 
 namespace Proto {
 /**
- * CS_Join message
+ * CS_Go_Out message
  */
-class CS_Join extends \ProtobufMessage
+class CS_Go_Out extends \ProtobufMessage
 {
     /* Field index constants */
     const TYPE = 1;

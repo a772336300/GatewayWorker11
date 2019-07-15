@@ -41,5 +41,20 @@ function switch_game($client_id,$mid,$data)
                 game_is_gaming($client_id);
                 break;
             }
+        case Message_Id::CS_Competition_SignUp_Id:
+            {
+                $Competition = new \Proto\CS_ComPetition_SignUp();
+                $Competition->parseFromString($data);
+                /**
+                 * 玩家报名
+                 * @param $user_data =>[
+                 *                      'competition_id'=>1,
+                 *                      'uiser_id'=>1,
+                 *                      'game_type'=>'ddz',
+                 *                      ]
+                 */
+                room_manager::singleton()->competition_sign_up($Competition);
+                break;
+            }
     }
 }

@@ -1,25 +1,25 @@
 <?php
 /**
- * Auto generated from doudizhu.proto at 2019-07-05 15:09:44
+ * Auto generated from doudizhu.proto at 2019-07-15 14:34:25
  *
  * proto package
  */
 
 namespace Proto {
 /**
- * CS_Join message
+ * CS_Play message
  */
-class CS_Join extends \ProtobufMessage
+class CS_Play extends \ProtobufMessage
 {
     /* Field index constants */
-    const TYPE = 1;
+    const PLAY_DATA = 1;
 
     /* @var array Field descriptors */
     protected static $fields = array(
-        self::TYPE => array(
-            'name' => 'type',
+        self::PLAY_DATA => array(
+            'name' => 'play_data',
             'required' => false,
-            'type' => \ProtobufMessage::PB_TYPE_INT,
+            'type' => '\Proto\Play_Data'
         ),
     );
 
@@ -38,7 +38,7 @@ class CS_Join extends \ProtobufMessage
      */
     public function reset()
     {
-        $this->values[self::TYPE] = null;
+        $this->values[self::PLAY_DATA] = null;
     }
 
     /**
@@ -52,36 +52,35 @@ class CS_Join extends \ProtobufMessage
     }
 
     /**
-     * Sets value of 'type' property
+     * Sets value of 'play_data' property
      *
-     * @param integer $value Property value
+     * @param \Proto\Play_Data $value Property value
      *
      * @return null
      */
-    public function setType($value)
+    public function setPlayData(\Proto\Play_Data $value=null)
     {
-        return $this->set(self::TYPE, $value);
+        return $this->set(self::PLAY_DATA, $value);
     }
 
     /**
-     * Returns value of 'type' property
+     * Returns value of 'play_data' property
      *
-     * @return integer
+     * @return \Proto\Play_Data
      */
-    public function getType()
+    public function getPlayData()
     {
-        $value = $this->get(self::TYPE);
-        return $value === null ? (integer)$value : $value;
+        return $this->get(self::PLAY_DATA);
     }
 
     /**
-     * Returns true if 'type' property is set, false otherwise
+     * Returns true if 'play_data' property is set, false otherwise
      *
      * @return boolean
      */
-    public function hasType()
+    public function hasPlayData()
     {
-        return $this->get(self::TYPE) !== null;
+        return $this->get(self::PLAY_DATA) !== null;
     }
 }
 }

@@ -1,25 +1,25 @@
 <?php
 /**
- * Auto generated from doudizhu.proto at 2019-07-05 15:09:44
+ * Auto generated from doudizhu.proto at 2019-07-15 14:34:25
  *
  * proto package
  */
 
 namespace Proto {
 /**
- * CS_Join message
+ * SC_Init_Cards message
  */
-class CS_Join extends \ProtobufMessage
+class SC_Init_Cards extends \ProtobufMessage
 {
     /* Field index constants */
-    const TYPE = 1;
+    const CARDS = 1;
 
     /* @var array Field descriptors */
     protected static $fields = array(
-        self::TYPE => array(
-            'name' => 'type',
+        self::CARDS => array(
+            'name' => 'cards',
             'required' => false,
-            'type' => \ProtobufMessage::PB_TYPE_INT,
+            'type' => \ProtobufMessage::PB_TYPE_STRING,
         ),
     );
 
@@ -38,7 +38,7 @@ class CS_Join extends \ProtobufMessage
      */
     public function reset()
     {
-        $this->values[self::TYPE] = null;
+        $this->values[self::CARDS] = null;
     }
 
     /**
@@ -52,36 +52,36 @@ class CS_Join extends \ProtobufMessage
     }
 
     /**
-     * Sets value of 'type' property
+     * Sets value of 'cards' property
      *
-     * @param integer $value Property value
+     * @param string $value Property value
      *
      * @return null
      */
-    public function setType($value)
+    public function setCards($value)
     {
-        return $this->set(self::TYPE, $value);
+        return $this->set(self::CARDS, $value);
     }
 
     /**
-     * Returns value of 'type' property
+     * Returns value of 'cards' property
      *
-     * @return integer
+     * @return string
      */
-    public function getType()
+    public function getCards()
     {
-        $value = $this->get(self::TYPE);
-        return $value === null ? (integer)$value : $value;
+        $value = $this->get(self::CARDS);
+        return $value === null ? (string)$value : $value;
     }
 
     /**
-     * Returns true if 'type' property is set, false otherwise
+     * Returns true if 'cards' property is set, false otherwise
      *
      * @return boolean
      */
-    public function hasType()
+    public function hasCards()
     {
-        return $this->get(self::TYPE) !== null;
+        return $this->get(self::CARDS) !== null;
     }
 }
 }

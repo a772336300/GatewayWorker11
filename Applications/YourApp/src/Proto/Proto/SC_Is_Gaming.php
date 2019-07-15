@@ -1,23 +1,23 @@
 <?php
 /**
- * Auto generated from doudizhu.proto at 2019-07-05 15:09:44
+ * Auto generated from doudizhu.proto at 2019-07-15 14:34:25
  *
  * proto package
  */
 
 namespace Proto {
 /**
- * CS_Join message
+ * SC_Is_Gaming message
  */
-class CS_Join extends \ProtobufMessage
+class SC_Is_Gaming extends \ProtobufMessage
 {
     /* Field index constants */
-    const TYPE = 1;
+    const DATA = 1;
 
     /* @var array Field descriptors */
     protected static $fields = array(
-        self::TYPE => array(
-            'name' => 'type',
+        self::DATA => array(
+            'name' => 'data',
             'required' => false,
             'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
@@ -38,7 +38,7 @@ class CS_Join extends \ProtobufMessage
      */
     public function reset()
     {
-        $this->values[self::TYPE] = null;
+        $this->values[self::DATA] = null;
     }
 
     /**
@@ -52,36 +52,36 @@ class CS_Join extends \ProtobufMessage
     }
 
     /**
-     * Sets value of 'type' property
+     * Sets value of 'data' property
      *
      * @param integer $value Property value
      *
      * @return null
      */
-    public function setType($value)
+    public function setData($value)
     {
-        return $this->set(self::TYPE, $value);
+        return $this->set(self::DATA, $value);
     }
 
     /**
-     * Returns value of 'type' property
+     * Returns value of 'data' property
      *
      * @return integer
      */
-    public function getType()
+    public function getData()
     {
-        $value = $this->get(self::TYPE);
+        $value = $this->get(self::DATA);
         return $value === null ? (integer)$value : $value;
     }
 
     /**
-     * Returns true if 'type' property is set, false otherwise
+     * Returns true if 'data' property is set, false otherwise
      *
      * @return boolean
      */
-    public function hasType()
+    public function hasData()
     {
-        return $this->get(self::TYPE) !== null;
+        return $this->get(self::DATA) !== null;
     }
 }
 }

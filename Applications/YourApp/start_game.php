@@ -35,6 +35,7 @@ require_once 'src/init_equipment.php';
 require_once 'src/jinlian.php';
 require_once 'src/http_client.php';
 require_once 'src/Proto/Autoloader.php';
+require_once 'src/mongo_db.php';
 require_once 'src_game/Proto/Autoloader.php';
 require_once 'src_game/play.php';
 require_once 'src_game/card.php';
@@ -42,6 +43,7 @@ require_once 'src_game/db_repository.php';
 require_once 'src_game/redis.php';
 require_once 'src_game/send_pack.php';
 require_once 'src_game/proto_arr.php';
+require_once 'src_game/Manager/room_manager.php';
 // bussinessWorker 进程
 $tcp_worker = new BusinessWorker();
 // worker名称
@@ -87,6 +89,7 @@ $tcp_worker->onWorkerStart = function ($worker)
    // $monodb = new MongoDB\Client();
     //$monodb= new MongoDB\Client('mongodb+srv://myTester:xyz123@127.0.0.1:27017/test?retryWrites=true&w=majority');
     //$monodb_test = $monodb->test;
+    room_manager::singleton()->start_game_room();
 };
 
 

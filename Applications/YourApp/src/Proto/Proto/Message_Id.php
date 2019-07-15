@@ -1,6 +1,6 @@
 <?php
 /**
- * Auto generated from doudizhu.proto at 2019-07-05 15:09:44
+ * Auto generated from doudizhu.proto at 2019-07-15 14:34:24
  *
  * proto package
  */
@@ -25,9 +25,9 @@ final class Message_Id
     const CS_Is_Gaming_Id = 12;
     const SC_Is_Gaming_Id = 13;
     const SC_Game_Result_Id = 14;
-    const CS_Competition_SignUp_Id = 15;    //竞技报名ID
-    const SC_Competition_SignUp_Id = 16;    //
-    const SC_ComPetition_Start_ID = 17;     //竞技开始ID
+    const CS_Competition_SignUp_Id = 15;
+    const SC_Competition_SignUp_Id = 16;
+    const SC_ComPetition_Start_ID = 17;
 
     /**
      * Returns defined enum values
@@ -53,7 +53,7 @@ final class Message_Id
             'SC_Game_Result_Id' => self::SC_Game_Result_Id,
             'CS_Competition_SignUp_Id' => self::CS_Competition_SignUp_Id,
             'SC_Competition_SignUp_Id' => self::SC_Competition_SignUp_Id,
-            'SC_ComPetition_Start_ID' => self::SC_ComPetition_Start_ID
+            'SC_ComPetition_Start_ID' => self::SC_ComPetition_Start_ID,
         );
     }
 }
