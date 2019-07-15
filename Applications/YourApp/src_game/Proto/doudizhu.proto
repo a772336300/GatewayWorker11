@@ -95,6 +95,7 @@ message SC_Play
     optional int32 playerId = 1;
 	optional Play_Data play_data = 2;
 }
+
 message CS_Go_Out
 {
 	optional int32 type = 1;
