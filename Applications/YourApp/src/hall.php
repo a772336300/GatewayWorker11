@@ -3,12 +3,13 @@ use MongoDB\BSON\ObjectID;
 require_once 'util.php';
 function hall_message_switch($mid,$data){
 //    $_SESSION['uid']=8823;
-    echo "大厅信息：$mid\n";
     $uid=$_SESSION['uid'];
+    echo "大厅信息：$mid--$uid\n";
     $hall_config = mongo_db::singleton("hall_config");
     $hall_log = mongo_db::singleton("hall_log");
     switch ($mid){
-        case 20001://修改头像信息
+        //修改头像信息
+        case 20001:
             $user_touxiang = new \Proto\CS_User_TouXiang_Update();
             $user_touxiang->parseFromString($data);
             $touxiang=$user_touxiang->getTouxiang();
@@ -19,7 +20,8 @@ function hall_message_switch($mid,$data){
             }
             send_pack_user_touxiang_update($uid,$is_success);
             break;
-        case 20003://获取邮件
+        //获取邮件
+        case 20003:
             //查询有效期内的系统邮件
 
             //获取系统时间
@@ -32,7 +34,7 @@ function hall_message_switch($mid,$data){
             ];
             $queryWriteOps = [
                 "projection" => ["_id"=> 0],//不输出_id字段
-                "sort"       => ["id" => 1],//根据id字段排序 1是升序，-1是降序
+                "sort"       => ["add_time" => -1],//根据添加时间字段排序 1是升序，-1是降序
             ];
             $collname='sys_mail';
             $rs = $hall_config->query($collname, $filter, $queryWriteOps);
@@ -69,11 +71,11 @@ function hall_message_switch($mid,$data){
             ];
             $rmsg = $hall_log->query($collname, $filter, $queryWriteOps);
             echo "最终输出：\n";
-            echo  $rmsg[0]->_id."\n";
             print_r($rmsg);
             send_pack_get_user_mail($uid,true,$rmsg);
             break;
-        case 20005://已读邮件
+        //已读邮件
+        case 20005:
             $user_mail_read = new \Proto\CS_User_Mail_Read();
             $user_mail_read->parseFromString($data);
             $_id=$user_mail_read->getId();
@@ -89,8 +91,8 @@ function hall_message_switch($mid,$data){
             print_r($rs->toArray());
             send_pack_user_mail_read($uid,true);
             break;
-
-        case 20007://一键删除
+        //一键删除
+        case 20007:
             $user_mail_delete = new \Proto\CS_User_Mail_Delete();
             $user_mail_delete->parseFromString($data);
             $_ids=$user_mail_delete->getId();
@@ -108,7 +110,8 @@ function hall_message_switch($mid,$data){
             }
             send_pack_user_mail_delete($uid,true);
             break;
-        case 20009://获取排行榜
+        //获取排行榜
+        case 20009:
             $get_rank_type = new \Proto\CS_User_Get_Rank();
             $get_rank_type->parseFromString($data);
             $type=$get_rank_type->getType();
@@ -177,7 +180,470 @@ function hall_message_switch($mid,$data){
             }
             send_pack_user_rank($uid,$obj,$cursor);
             break;
+        //获取活动
+        case 20011:
+            //获取系统时间
+            $a=time();
+            echo "\n---------- 查询活动数据 -----------\n";
+            $filter = [
+                "start_time" => ['$lt' => $a],//查询条件 开始时间 小于 当前时间
+                "end_time" => ['$gt' => $a]//查询条件 结束时间 大于 当前时间
+            ];
+            $queryWriteOps = [
+                "sort"       => ["add_time" => -1],//根据添加时间字段排序 1是升序，-1是降序
+            ];
+            $collname='active_config';
+            $rs = $hall_config->query($collname, $filter, $queryWriteOps);
+            $collname='user_active';
+            $rows=array();
+            foreach ($rs as $r) {
+                $filter = [
+                    "active_id" => $r->_id,
+                    "uid" => $uid,
+                ];
+                $queryWriteOps = [
+                    "projection" => ["_id"=> 0],//不输出_id字段
+                ];
+                $rmsg = $hall_log->query($collname, $filter, $queryWriteOps);
+                print_r($rmsg);
+                if(count($rmsg)==0){
+                    echo "\n------------ 插入活动数据 ---------\n";
+                    $newArr=["active_id" => $r->_id,"uid"=>$uid,"totoal_step"=>$r->totoal_step,"step"=>0,"attach"=>$r->attach,'state'=>0];
+                    array_push($rows,$newArr);
+                    $r->step=0;
+                    $r->state=0;
+                }else{
+                    $r->step=$rmsg[0]->step;
+                    $r->state=$rmsg[0]->state;
+                }
+            }
+            if(count($rows)>0){
+                $rs = $hall_log->insert($collname, $rows);
+            }
+            echo "最终输出：\n";
+            print_r($rs);
+            send_pack_get_user_active($uid,$rs);
+            break;
+        //获取商城信息
+        case 20013:
+            echo "\n---------- 查询商城信息 -----------\n";
+            $filter = [
+                "mall_type" => ['$gt' => 0]//查询条件 结束时间 大于 当前时间
+            ];
+            $queryWriteOps = [
+                "sort"       => ["mall_type" => -1],//根据添加时间字段排序 1是升序，-1是降序
+            ];
+            $collname='prop_config';
+            $rs = $hall_config->query($collname, $filter, $queryWriteOps);
+            echo "最终输出：\n";
+            print_r($rs);
+            send_pack_get_goods_info($uid,$rs);
+            break;
+        //获取用户背包信息
+        case 20015:
+            echo "\n---------- 查询用户背包信息 -----------\n";
+            //清除过期的活动道具和其他道具
+            $a=time();
+            echo $a."\n";
+            $delets = [
+                ["q" => ["uid"=>$uid,'over_time'=>['$lt'=>$a,'$gt'=>0]
+                    ],
+                    "limit" => 0]
+            ];
+            $collname="user_packet";
+            $rs = $hall_log->del($collname, $delets);
+
+            $filter = [
+                "uid" => $uid
+            ];
+            $queryWriteOps = [
+//                "projection" => ["duidie"=> 0],//不输出_id字段
+            ];
+            $rs = $hall_log->query($collname, $filter, $queryWriteOps);
+            echo "最终输出：\n";
+//            echo $rs[0]->_id."----\n";
+            print_r($rs);
+            send_pack_user_packet($uid,$rs);
+            break;
+        //购买商品
+        case 20017:
+            $goods = new \Proto\CS_User_Buy_Goods();
+            $goods->parseFromString($data);
+            $_id=$goods->getId();
+//            $_id='5d258eda6a4819cceeb909d7';
+            $collname="prop_config";
+            $filter = [
+                "_id" => new ObjectId($_id)
+            ];
+            $queryWriteOps = [
+            ];
+            $rs = $hall_config->query($collname, $filter, $queryWriteOps);
+            $code=0;
+            if(count($rs)>0){
+                $good=$rs[0];
+                $price_type=$good->price_type;
+                $money=0;
+                //价格类型0-不需要，1-联欢币，2-BU币，3-RMB
+                if($price_type==1){
+                    $sql="select * from user_money where uid=$uid";
+                    $rs=db_query($sql);
+                    $money=$rs[0]['gold'];
+                    if($money<$good->price){
+                        $code=2;
+                    }else{
+                        $sql="update user_money set gold=gold-$good->price where uid=$uid";
+                        if(!db_query($sql)){
+                            $code=3;
+                        }
+                    }
+                }
+                else if($price_type==2){
+//                    $_SESSION['phone']='15025383863';
+                    //获取BU信息
+                    $money=getBuRemain($_SESSION['phone']);
+                    if($money<$good->price){
+                        $code=2;
+                    }else{
+                        if(!deal($_SESSION['phone'],$good->price)){
+                            $code=3;
+                        }
+                    }
+                }
+//                else if($price_type==3){
+//
+//                }
+                if($code==0){
+                    add_user_packet($good->prop_id,$uid,$hall_log,$hall_config,$_SESSION['phone']);
+                }
+            }else{
+                $code=1;
+            }
+            if($code==0){
+                //查询玩家货币信息
+                send_user_coin_change($uid,$_SESSION['phone']);
+                //添加购买记录
+
+            }
+            $is_success=$code==0?true:false;
+            send_user_buy_goods($uid,$is_success,$code);
+            break;
+        //使用道具
+        case 20019:
+            $user_packet = new \Proto\CS_User_Use_Goods();
+            $user_packet->parseFromString($data);
+            $_id=$user_packet->getId();
+            $code=0;
+            $collname="user_packet";
+            //查询道具是否存在
+            $filter = [
+                "_id" => new ObjectId($_id)
+            ];
+            $queryWriteOps = [
+            ];
+            $packet_good=null;
+            $rs = $hall_log->query($collname, $filter, $queryWriteOps);
+            if(count($rs)>0&&$rs[0]->num>=$user_packet->getNum()){
+                $packet_good=$rs[0];
+                $use_type=$packet_good->use_type;
+                if ($use_type==1){
+                    //打开电话输入框
+                    if(recharge($uid,$user_packet->getPhone(),$packet_good->detail)==false){
+                        $code=2;
+                    }
+                }else if ($use_type==2){
+                    //打开收货人输入框
+                    use_shiwuquan($uid,$packet_good,$user_packet->getName(),$user_packet->getPhone(),$user_packet->getAddress());
+                }else if ($use_type==3){
+                    //获得的物品ID（多个用英文逗号分开）
+                    $details=$packet_good->detail;
+                    $detail = explode(',',$details);
+
+                    for($index=0;$index<count($detail);$index++){
+                        $prop_id=$detail[$index];
+                        add_user_packet($prop_id,$uid,$hall_log,$hall_config,$_SESSION['phone']);
+                    }
+                }else if ($use_type==4){
+                    //跳转UI 如：比赛场门票，点报名后数量-num
+
+                }
+            }else{
+                $code=1;
+            }
+            if($code==0){
+                //使用后数量-num，是0就直接删除
+                //加数量
+                $packet_good->num=$packet_good->num-$user_packet->getNum();
+                if($packet_good->num==0){
+                    //删除道具
+                    $delets = [
+                        ["q" => ["uid"=>$uid,'prop_id'=>$packet_good->prop_id],"limit" => 0]
+                    ];
+                    $hall_log->del($collname, $delets);
+                    //1添加，2修改，3删除
+                    send_user_packet_update($uid,$packet_good,3);
+                }else{
+                    //修改道具数量
+                    $updates = [
+                        [
+                            "q"     => ["prop_id" => $packet_good->prop_id,
+                                'uid'=>$uid],
+                            "u"     => ['$set' => ['num'=>$packet_good->num]],
+                            'multi' => false, 'upsert' => false
+                        ]
+                    ];
+                    $hall_log->update($collname, $updates);
+                    //1添加，2修改，3删除
+                    send_user_packet_update($uid,$packet_good,2);
+                }
+            }
+            send_user_use_goods($uid,$code);
+            break;
+        //领取附件
+        case 20021:
+            $attach_data = new \Proto\CS_User_Get_Attach();
+            $attach_data->parseFromString($data);
+            $_id=$attach_data->getId();
+            $type=$attach_data->getType();
+            $code=0;
+            $collname="user_mail";
+            if($type==1){
+                //活动附件
+                $collname="user_active";
+            }
+            $filter = [
+                "_id" => new ObjectId($_id)
+            ];
+            $rs = $hall_log->query($collname, $filter, []);
+            if(count($rs)>0){
+                if($type==1){
+                    if($rs[0]->get_attach){
+                        $code=1;
+                    }
+                }else if($type==2){
+                    if($rs[0]->state!=1){
+                        $code=1;
+                    }
+                }
+            }else{
+                $code=2;
+            }
+            if($code=0){
+                //修改状态
+                if($type==1){
+                    $updates = [
+                        [
+                            "q"     => ["_id" => new ObjectId($_id)],
+                            "u"     => ['$set' => ['state'=>2]],
+                            'multi' => false, 'upsert' => false
+                        ]
+                    ];
+                    $hall_log->update($collname, $updates);
+                }else{
+                    $updates = [
+                        [
+                            "q"     => ["_id" => new ObjectId($_id)],
+                            "u"     => ['$set' => ['get_attach'=>true]],
+                            'multi' => false, 'upsert' => false
+                        ]
+                    ];
+                    $hall_log->update($collname, $updates);
+                }
+
+                //添加背包信息
+                $prop_ids=$rs[0]->attach;
+                foreach ($prop_ids as $prop_id) {
+                    add_user_packet($prop_id,$uid,$hall_log,$hall_config,$_SESSION['phone']);
+                }
+            }
+            send_user_get_attach($uid,$code);
+            break;
     }
+}
+
+
+/**话费充值
+ * @param $code
+ * @param $num
+ */
+function recharge($user_id,$code,$num){
+    $orderId=get_order_num();
+    $ip=get_real_ip();
+    //添加充值收到的数据记录
+    $sql="insert into bolaik_order.recharge_request_log(user_id,num,code,ip,type,jimicode,order_id) values('$user_id',$num,'$code','$ip',2,'','$orderId')";
+    db_query($sql);
+    //话费充值
+    $openId="JHcf8bedbe82bf6cb106a9b6aabe83172d";
+    $key="74e411713e9610d12096371b21ec4975";
+    //查询号码是否能充值
+    $url="http://op.juhe.cn/ofpay/mobile/telcheck?cardnum=$num&phoneno=$code&key=$key";
+    $sr=file_get_contents($url);
+
+    $check = json_decode($sr);
+    if($check->error_code==0){
+        //话费直冲
+        $sign=$openId.$key.$code.$num.$orderId;
+        $md5String = md5($sign);
+        $url="http://op.juhe.cn/ofpay/mobile/onlineorder?key=".$key."&phoneno=".$code."&cardnum=".$num."&orderid=".$orderId."&sign=".$md5String;
+        $sr=file_get_contents($url);
+        $recharge = json_decode($sr);
+        echo "话费充值返回：".$sr;
+        if($recharge->error_code!=0){
+
+            $sql="update bolaik_order.recharge_request_log set remsg='充值失败' where order_id='$orderId'";
+            db_query($sql);
+            return false;
+        }
+    }else{
+        $sql="update bolaik_order.recharge_request_log set remsg='该号码不能充值' where order_id='$orderId'";
+        db_query($sql);
+        return false;
+    }
+
+    $sql="update bolaik_order.recharge_request_log set remsg='创建订单成功' where order_id='$orderId'";
+    db_query($sql);
+
+    //充值成功
+    //生成订单
+    $sql="insert into bolaik_order.recharge_log(order_id,user_id,code,rmb,type,u_coin,totalxsf) values('$orderId','$user_id','$code',$num,2,$num,0)";
+    db_query($sql);
+    return true;
+}
+
+/**使用实物券
+ * @param $packet_good
+ * @param $name
+ * @param $phone
+ * @param $address
+ */
+function use_shiwuquan($user_id,$packet_good,$user_name,$user_phone,$u_addr){
+    //查询用户信息
+    $sql="SELECT ui.u_coin,ui.user_nick,b_phone_nu,gold_coin FROM bolaik_user.user_info AS ui WHERE user_id=$user_id";
+    $user = db_query($sql)[0];
+    $order_id=get_order_num();
+    //查询商家联系信息
+    $sqlSJ="SELECT oi.account_name, oi.user_name, oi.phone, oi.addr FROM bolaik_user.oper_info AS oi WHERE oi.oper_id = ".$packet_good->oper_id;
+				$sjObj = db_query($sqlSJ)[0];
+				$link_name="";
+				$phone_number=$sjObj['phone'];
+				$addr=$sjObj['addr'];
+				$account_name=$sjObj['account_name'];
+				$user_nick=$user['user_nick'];
+				$b_phone_nu=$user['b_phone_nu'];
+
+    $sql="insert into bolaik_order.goods_order_pay(order_id,user_id,user_nick,b_phone_nu,".
+        "user_name,user_phone,u_addr,goods_id,goods_icon,goods_name,oper_id,oper_name,link_name,phone_number,addr,num,price,total_price,totalsxf,rate,rmb) ".
+        " values('$order_id','$user_id','$user_nick','$b_phone_nu','$user_name','$user_phone','$u_addr',$packet_good->prop_id,'$packet_good->img','$packet_good->des',$packet_good->oper_id,'$account_name',".
+        "'$link_name','$phone_number','$addr',1,$packet_good->price,$packet_good->price,0,0,0)";
+    db_query($sql);
+    //添加U币商城订单
+    $sql="insert into bolaik_order.ucoin_order_pay(order_id,user_id,user_nick,goods_id,goods_name,goods_icon,num,goods_type,price_type,price,total_price) ".
+        "values('$order_id','$user_id','$user_nick',$packet_good->prop_id,'$packet_good->name','$packet_good->img',1,1,2,$packet_good->price,$packet_good->price)";
+    db_query($sql);
+}
+
+/**添加道具到用户背包
+ * @param $good
+ * @param $uid
+ * @param $hall_log
+ * @param $hall_config
+ */
+function add_user_packet($prop_id,$uid,$hall_log,$hall_config,$phone){
+    $collname="prop_config";
+    $filter = [
+        "prop_id" => (int)$prop_id
+    ];
+    $queryWriteOps = [
+    ];
+    $rs = $hall_config->query($collname, $filter, $queryWriteOps);
+    if(count($rs)>0){
+        $good=$rs[0];
+        if($good->use_type==5){
+            //获得联欢币
+            $sql="update user_money set gold=gold+$good->detail where uid=$uid";
+            db_query($sql);
+            send_user_coin_change($uid,$phone);
+        }else{
+            //查询背包是否有该道具
+            $collname="user_packet";
+            $filter = [
+                "prop_id" => $good->prop_id,
+                'uid'=>$uid
+            ];
+            $rs = $hall_log->query($collname, $filter, []);
+            if(count($rs)==0||$good->duidie==2){
+                //添加背包信息
+                $over_time=0;
+                if($good->active_time>0){
+                    $over_time=time()+$good->active_time;
+                }
+                if($good->active_id!=""){
+                    //查询活动结束时间
+                    $filter = [
+                        "_id" => new ObjectId($good->active_id),
+                    ];
+                    $rs = $hall_config->query("active_config", $filter, []);
+                    if(count($rs)>0){
+                        $over_time=$rs[0]->end_time;
+                    }
+                }
+                $good->num=1;
+                $good->over_time=$over_time;
+                $rows=[['uid'=>$uid,'prop_id'=>$good->prop_id,'name'=>$good->name,'des'=>$good->des,'img'=>$good->img,'active_id'=>$good->active_id,'prop_type'=>$good->prop_type,'use_type'=>$good->use_type,'detail'=>$good->detail,'active_time'=>$good->active_time,'duidie'=>$good->duidie,'mall_type'=>$good->mall_type,'price_type'=>$good->price_type,'price'=>$good->price,'num'=>1,'over_time'=>$over_time,'oper_id'=>$good->oper_id]];
+                $hall_log->insert($collname, $rows);
+                send_user_packet_update($uid,$good,1);
+            }else{
+                //修改背包信息
+                $updates=[];
+                $good=$rs[0];
+                if($good->active_time>0){
+                    //加时间
+                    $updates = [
+                        [
+                            "q"     => ["prop_id" => $good->prop_id,
+                                'uid'=>$uid],
+                            "u"     => ['$set' => ['$inc' =>['over_time'=>$good->active_time]]],
+                            'multi' => false, 'upsert' => false
+                        ]
+                    ];
+                    $newTime=$good->over_time+$good->active_time;
+                    $good->over_time=$newTime;
+                }else{
+                    //加数量
+                    $good->num=$good->num+1;
+                    $updates = [
+                        [
+                            "q"     => ["prop_id" => $good->prop_id,
+                                'uid'=>$uid],
+                            "u"     => ['$set' => ['num'=>$good->num]],
+                            'multi' => false, 'upsert' => false
+                        ]
+                    ];
+
+                }
+                if(count($updates)>0){
+                    $hall_log->update($collname, $updates);
+                    //1添加，2修改，3删除
+                    send_user_packet_update($uid,$good,2);
+                }
+            }
+        }
+    }else{
+        echo "道具不存在\n";
+    }
+}
+
+/**发送玩家货币变化信息
+ * @param $uid
+ * @param $phone
+ */
+function send_user_coin_change($uid,$phone){
+    //查询玩家货币信息
+    $sql="select * from user_money where uid=$uid";
+    $rs=db_query($sql);
+    $money=$rs[0]['gold'];
+    $BU=getBuRemain($phone);
+    //发送帐变
+    send_pack_BU_change($uid,$BU,$money);
 }
 
 /**玩家有新消息，服务器主动推送

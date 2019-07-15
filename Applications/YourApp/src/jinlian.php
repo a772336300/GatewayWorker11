@@ -14,12 +14,14 @@ function get_jinlian_assert($uid,$phone)
             $message->setType(1);
             $message->setTipStr("获取BU余额失败");
             \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(806,$message->serializeToString()));
+            return 0;
         }
         if($buf_arr->code==200)
         {
             $message_BU = new \Proto\SC_User_UB();
             $message_BU->setInitBu(true);
             $message_BU->setBU($buf_arr->asserts);
+            return $buf_arr->asserts;
             \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(1014,$message_BU->serializeToString()));
         }
         else
@@ -28,6 +30,7 @@ function get_jinlian_assert($uid,$phone)
             $message->setType(1);
             $message->setTipStr("获取BU余额失败");
             \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(806,$message->serializeToString()));
+            return 0;
         }
     });
 }
@@ -63,4 +66,32 @@ function get_jinlian_liushui($uid,$phone,$flag,$dateFlag,$page,$pageSize,$unixTi
             \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(806,$message->serializeToString()));
         }
     });
+}
+
+
+function get_jinlian_deal($fromUserMobile,$buAmount)
+{
+    $randomNum=getRandom();//随机字符串，最大长度30
+    $startTime=date('Ymdhis', time());//交易开始时间搓,时间搓格式yyyyMMddHHmmss
+    $outTradeNo = date('Ymd') . str_pad(mt_rand(1, 99999), 5, '0', STR_PAD_LEFT);
+    $add_arr= array('userMobile='.$fromUserMobile,'toUserMobile=15723313021','$randomNum='.$randomNum,'tranBody=buy goods','outTradeNo='.$outTradeNo,'createIp=127.0.0.1','buAmount='.$buAmount,'startTime='.$startTime,'tranTypeCode=015003A023B399');
+    jinlian_http_client('/app/v1/generalTran?',$add_arr, function ($json_data){
+        $buf_arr= json_decode($json_data);
+        if(!isset($buf_arr->code))
+        {
+            echo "BU交易失败1\n";
+            return false;
+        }
+        if($buf_arr->code==200)
+        {
+            echo "BU交易成功\n";
+            return true;
+        }
+        else
+        {
+            echo "BU交易失败2\n";
+            return false;
+        }
+    });
+    return false;
 }
