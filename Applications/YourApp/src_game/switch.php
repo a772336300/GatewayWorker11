@@ -56,5 +56,18 @@ function switch_game($client_id,$mid,$data)
                 room_manager::singleton()->competition_sign_up($Competition);
                 break;
             }
+        case Message_Id::CS_ComPetition_Group_Id:
+            {
+                $db = mongo_db::singleton('func_system');
+                $collname = 'gmae_competition';
+                $filter = [
+                    'starttime'  => ['$gt' => date('Y-m-d H:i:s')] //条件：大于当前时间
+                ];
+                $queryWriteOps = [
+                    'projection'    => ['_id'   =>0],//不输出_id字段
+                    'sort'          => ['id'    =>1]//根据id字段排序 1是升序，-1是降序
+                ];
+                $rs = $db->query($collname,$filter,$queryWriteOps);
+            }
     }
 }
