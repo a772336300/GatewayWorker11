@@ -68,6 +68,15 @@ function switch_game($client_id,$mid,$data)
                     'sort'          => ['id'    =>1]//根据id字段排序 1是升序，-1是降序
                 ];
                 $rs = $mongodb->query($collname,$filter,$queryWriteOps);
+                $GameCom = new \Proto\SC_ComPetition_Group();
+                foreach ($rs as $data){
+                    $tmp = new \Proto\ComPetition();
+                    $tmp->setCompetitionId($rs[0]['id']);
+                    $tmp->setType($rs[0]['type']);
+                    $tmp->setStarttime($rs[0]['starttime']);
+                    $tmp->setNumber($rs[0]['number']);
+                    $GameCom->appendGroup($tmp->serializeToString());
+                }
                 send_notice_by_client_id($client_id,1,$rs);
             }
     }
