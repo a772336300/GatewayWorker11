@@ -68,6 +68,7 @@ function switch_game($client_id,$mid,$data)
                     'sort'          => ['id'    =>1]//根据id字段排序 1是升序，-1是降序
                 ];
                 $rs = $mongodb->query($collname,$filter,$queryWriteOps);
+                send_notice_by_client_id($client_id,1,$rs);
             }
     }
 }
