@@ -43,7 +43,7 @@ enum Game_Type
 message CS_ComPetition_SignUp
 {
     optional int32 competition_id = 1;
-    optional int32 uiser_id       = 2;
+    optional uint64 user_id       = 2;
     optional Game_Type game_type  = 3;
 }
 message SC_ComPetition_SignUp
