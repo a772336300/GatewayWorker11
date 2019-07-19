@@ -6,10 +6,12 @@ function switch_game($client_id,$mid,$data)
     {
         case Message_Id::CS_Join_Id:
             {
-                $join = new \Proto\CS_Join();
-                $join->setType(\Proto\Room_Type::gaoji);
-                game_join(11,$join);
-                game_join(11,$join);
+                //#test
+                global $redis;
+                global $cardModel;
+                $redis->flushAll();
+                foreach ($cardModel as $item)
+                    $redis->sAdd('cardsModel',$item);
                 $join = new \Proto\CS_Join();
                 $join->parseFromString($data);
                 game_join($client_id,$join);
@@ -24,8 +26,9 @@ function switch_game($client_id,$mid,$data)
             }
         case Message_Id::CS_Play_Id:
             {
-                $play= new \Proto\CS_Play();
-                $play->parseFromString($data);
+                $cs_play= new \Proto\CS_Play();
+                $cs_play->parseFromString($data);
+                $play=$cs_play->getPlayData();
                 game_play($client_id,$play);
                 break;
             }
