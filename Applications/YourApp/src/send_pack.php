@@ -79,13 +79,13 @@ function send_pack_user_bag_info($client_id,$user_info_bag)
 function send_pack_task_reward($client_id)
 {
     $sign_reward_list= new \Proto\SC_Task_Sign_Reward();
-    $sign_reward_list->appendUCoin(\Proto\SIGN_REWARD::FRIST_DAY);
-    $sign_reward_list->appendUCoin(\Proto\SIGN_REWARD::SECOND_DAY);
-    $sign_reward_list->appendUCoin(\Proto\SIGN_REWARD::THIRD_DAY);
-    $sign_reward_list->appendUCoin(\Proto\SIGN_REWARD::FOURTH_DAY);
-    $sign_reward_list->appendUCoin(\Proto\SIGN_REWARD::FIFTH_DAY);
-    $sign_reward_list->appendUCoin(\Proto\SIGN_REWARD::SIXTH_DAY);
-    $sign_reward_list->appendUCoin(\Proto\SIGN_REWARD::SEVENTH_DAY);
+    $sign_reward_list->appendUCoin(20);
+    $sign_reward_list->appendUCoin(20);
+    $sign_reward_list->appendUCoin(20);
+    $sign_reward_list->appendUCoin(20);
+    $sign_reward_list->appendUCoin(20);
+    $sign_reward_list->appendUCoin(20);
+    $sign_reward_list->appendUCoin(20);
     \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(804,$sign_reward_list->serializeToString()));
     //$connection->send(my_pack(804,$sign_reward_list->serializeToString()));
 }
