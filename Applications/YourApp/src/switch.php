@@ -342,7 +342,7 @@ function message_switch($client_id,$mid,$data)
                 send_pack_user_bag_info($client_id,$user_info_bag[0]);
                 //发送任务列表
                 get_user_task_list($_SESSION['uid']);
-                if($user_info['b_qq']==null){
+                if($user_info_vip['b_qq']==null){
                     //获取绑定手机的BU奖励
                     $bu=getBuRemain($_SESSION["phone"]);
                     if(getBu($_SESSION["phone"],"015003A031B354",20)){

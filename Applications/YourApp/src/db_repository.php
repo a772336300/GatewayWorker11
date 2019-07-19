@@ -150,7 +150,7 @@ function db_get_user_info_vip($uid)
 {
     global $tcp_worker;
     global $web_user;
-    return $tcp_worker->db->select('vip_num')->from("$web_user.user_info")->where("user_id= '$uid'")->row();
+    return $tcp_worker->db->select('vip_num,b_qq')->from("$web_user.user_info")->where("user_id= '$uid'")->row();
     //echo "SELECT * from `user`,user_money,user_sign where `user`.uid = $uid and `user`.uid = user_money.uid and `user`.uid = user_sign.uid";
     //return $tcp_worker->db->query("SELECT * from `user`,user_money,user_sign where `user`.uid = $uid and `user`.uid = user_money.uid and `user`.uid = user_sign.uid");
 }
