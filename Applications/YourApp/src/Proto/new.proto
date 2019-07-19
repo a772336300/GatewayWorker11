@@ -253,7 +253,7 @@ message SC_Task_Sign_Reward
 message SC_System_Tips_Str
 {
     //option (msgid) = 806;
-    optional uint32	type    = 1; //0 中间提示 1弹出框 2走马灯 3聊天框 
+    optional uint32	type    = 1; //0 中间提示 1弹出框 2走马灯 3聊天框
     optional string	tipStr  = 4; //字符参数1 空值无效
 }
 
