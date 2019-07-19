@@ -7,20 +7,20 @@
 
 namespace Proto {
 /**
- * SC_User_Packet_Update message
+ * SC_User_Email_Update message
  */
-class SC_User_Packet_Update extends \ProtobufMessage
+class SC_User_Email_Update extends \ProtobufMessage
 {
     /* Field index constants */
-    const USER_PACKET = 1;
+    const USER_MAIL = 1;
     const TYPE = 2;
 
     /* @var array Field descriptors */
     protected static $fields = array(
-        self::USER_PACKET => array(
-            'name' => 'user_packet',
+        self::USER_MAIL => array(
+            'name' => 'user_mail',
             'required' => false,
-            'type' => '\Proto\E_User_Packet'
+            'type' => '\Proto\E_User_mail'
         ),
         self::TYPE => array(
             'name' => 'type',
@@ -44,7 +44,7 @@ class SC_User_Packet_Update extends \ProtobufMessage
      */
     public function reset()
     {
-        $this->values[self::USER_PACKET] = null;
+        $this->values[self::USER_MAIL] = null;
         $this->values[self::TYPE] = null;
     }
 
@@ -59,35 +59,35 @@ class SC_User_Packet_Update extends \ProtobufMessage
     }
 
     /**
-     * Sets value of 'user_packet' property
+     * Sets value of 'user_mail' property
      *
-     * @param \Proto\E_User_Packet $value Property value
+     * @param \Proto\E_User_mail $value Property value
      *
      * @return null
      */
-    public function setUserPacket(\Proto\E_User_Packet $value=null)
+    public function setUserMail(\Proto\E_User_mail $value=null)
     {
-        return $this->set(self::USER_PACKET, $value);
+        return $this->set(self::USER_MAIL, $value);
     }
 
     /**
-     * Returns value of 'user_packet' property
+     * Returns value of 'user_mail' property
      *
-     * @return \Proto\E_User_Packet
+     * @return \Proto\E_User_mail
      */
-    public function getUserPacket()
+    public function getUserMail()
     {
-        return $this->get(self::USER_PACKET);
+        return $this->get(self::USER_MAIL);
     }
 
     /**
-     * Returns true if 'user_packet' property is set, false otherwise
+     * Returns true if 'user_mail' property is set, false otherwise
      *
      * @return boolean
      */
-    public function hasUserPacket()
+    public function hasUserMail()
     {
-        return $this->get(self::USER_PACKET) !== null;
+        return $this->get(self::USER_MAIL) !== null;
     }
 
     /**

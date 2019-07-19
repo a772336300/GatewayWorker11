@@ -1,10 +1,11 @@
 <?php
 use MongoDB\BSON\ObjectID;
+use \Workerman\Lib\Timer;
 require_once 'util.php';
 function hall_message_switch($mid,$data){
 //    $_SESSION['uid']=8823;
     $uid=$_SESSION['uid'];
-    echo "大厅信息：$mid--$uid\n";
+    echo "获取大厅信息mid：$mid--uid--$uid\n";
     $hall_config = mongo_db::singleton("hall_config");
     $hall_log = mongo_db::singleton("hall_log");
     switch ($mid){
@@ -23,7 +24,6 @@ function hall_message_switch($mid,$data){
         //获取邮件
         case 20003:
             //查询有效期内的系统邮件
-
             //获取系统时间
             $nowTime=date('Y-m-d h:i:s', time());
             $a=time();
@@ -415,11 +415,11 @@ function hall_message_switch($mid,$data){
             ];
             $rs = $hall_log->query($collname, $filter, []);
             if(count($rs)>0){
-                if($type==1){
+                if($type==2){
                     if($rs[0]->get_attach){
                         $code=1;
                     }
-                }else if($type==2){
+                }else if($type==1){
                     if($rs[0]->state!=1){
                         $code=1;
                     }
@@ -427,7 +427,7 @@ function hall_message_switch($mid,$data){
             }else{
                 $code=2;
             }
-            if($code=0){
+            if($code==0){
                 //修改状态
                 if($type==1){
                     $updates = [
@@ -456,6 +456,59 @@ function hall_message_switch($mid,$data){
                 }
             }
             send_user_get_attach($uid,$code);
+            break;
+        //领取任务奖励
+        case 20023:
+            $task_award = new \Proto\CS_User_Get_Task_Award();
+            $task_award->parseFromString($data);
+            $task_id=$task_award->getTaskId();
+            $code=get_award($task_id,$uid);
+            send_user_get_task_award($uid,$code);
+            break;
+        //绑定邀请码
+        case 20025:
+            $bind_invited_code = new \Proto\CS_User_Bind_Invited_Code();
+            $bind_invited_code->parseFromString($data);
+            $agent_id=$bind_invited_code->getAgentId();
+            $code=0;
+			if($uid==$agent_id){
+                return 1;
+            }
+            $sql="SELECT ui.agent_level, ui.agent_id, ui.user_id,ui.user_type,ui.b_phone_nu FROM bolaik_user.user_info AS ui WHERE ui.user_id = '$uid'";
+            //查询用户信息
+            $user = db_query($sql)[0];
+			if($user["agent_id"]==""){
+                //特殊代理不能绑定其他代理
+                if($user["user_type"]==3){
+                    $code=2;
+                }else{
+                    //查询代理是否存在
+                    $sql="SELECT ui.agent_level, ui.agent_id, ui.user_id,ui.user_type,ui.nullity,user_nick,u_coin,gold_coin FROM bolaik_user.user_info AS ui WHERE ui.user_id = '$agent_id'";
+                    $rs = db_query($sql);
+					if(count($rs)==0){
+                        $code=3;
+                    }else{
+					    $agent=$rs[0];
+                        if($agent["nullity"]==0){
+                            $code=4;
+                        }else{
+                            $sql="update bolaik_user.user_info set agent_id='$agent_id' where user_id='$uid'";
+                            db_query($sql);
+							//查询被绑定的玩家或代理是否能升级和获得奖励
+							if($agent["user_type"]==1){
+                                //普通玩家，查询是否能升级为代理
+                                //玩家升级为代理
+                                $nowTime=date('Y-m-d h:i:s', time());
+                                $sql="update bolaik_user.user_info set agent_level=7,user_type=2,agent_time='$nowTime' where user_id='$agent_id'";
+                                db_query($sql);
+                            }
+						}
+                    }
+				}
+            }else{
+                $code=5;
+            }
+            send_user_bind_invited_code($uid,$code);
             break;
     }
 }
@@ -590,6 +643,14 @@ function add_user_packet($prop_id,$uid,$hall_log,$hall_config,$phone){
                 $good->over_time=$over_time;
                 $rows=[['uid'=>$uid,'prop_id'=>$good->prop_id,'name'=>$good->name,'des'=>$good->des,'img'=>$good->img,'active_id'=>$good->active_id,'prop_type'=>$good->prop_type,'use_type'=>$good->use_type,'detail'=>$good->detail,'active_time'=>$good->active_time,'duidie'=>$good->duidie,'mall_type'=>$good->mall_type,'price_type'=>$good->price_type,'price'=>$good->price,'num'=>1,'over_time'=>$over_time,'oper_id'=>$good->oper_id]];
                 $hall_log->insert($collname, $rows);
+                //查询背包是否有该道具
+                $collname="user_packet";
+                $filter = [
+                    "prop_id" => $good->prop_id,
+                    'uid'=>$uid
+                ];
+                $rs = $hall_log->query($collname, $filter, []);
+                $good=$rs[0];
                 send_user_packet_update($uid,$good,1);
             }else{
                 //修改背包信息
@@ -646,6 +707,19 @@ function send_user_coin_change($uid,$phone){
     send_pack_BU_change($uid,$BU,$money);
 }
 
+/**发送玩家货币变化信息
+ * @param $uid
+ * @param $phone
+ */
+function send_user_coin_change1($uid,$BU){
+    //查询玩家货币信息
+    $sql="select * from user_money where uid=$uid";
+    $rs=db_query($sql);
+    $money=$rs[0]['gold'];
+    //发送帐变
+    send_pack_BU_change($uid,$BU,$money);
+}
+
 /**玩家有新消息，服务器主动推送
  * @param $uids
  * @param $module_id
@@ -658,3 +732,27 @@ function sendNewInfoToUsers($uids,$module_id,$_id){
         }
     }
 }
+
+/**
+ * 每天零点，更新任务状态
+ */
+function zero_update_task(){
+    $sql="update func_system.user_task set state=2,num=0,time_num=0 where task_name_type=1 or task_name_type=4";
+    db_query($sql);
+}
+
+/**
+ * 每天零点定时更新的任务
+ */
+function zero_update(){
+    //
+    $nowTime=date('Y-m-d h:i:s', time());
+    echo "进入定时器任务$nowTime\n";
+    zero_update_task();
+
+    Timer::add(24*60*60, 'zero_update', null, false);
+//    Timer::add(30, 'zero_update', null, false);
+}
+
+
+

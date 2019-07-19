@@ -2,6 +2,7 @@
 /**
  * 获取今日零点的时间戳
  */
+
 function get_today_zero_time(){
     return mktime(0, 0, 0, date('m'), date('d'), date('Y'));
 }
@@ -63,6 +64,10 @@ function getRandom( $length = 30 ) {
     return $password;
 }
 
+/**查询BU余额
+ * @param $phone
+ * @return int
+ */
 function getBuRemain($phone){
     $url="https://ubc.jinvovo.com";
 	$terraceId ="0dae8af09fc4f40eb7e2dbcd38f416e7";//合作平台ID,公钥
@@ -82,11 +87,47 @@ function getBuRemain($phone){
     $path=$sendUrl.$sendString;
     $result=file_get_contents($path);
     $buf_arr= json_decode($result);
-    echo $result."\n";
+    echo "剩余BU:".$result."\n";
     if($buf_arr->code==200){
         return $buf_arr->asserts;
     }else{
         return 0;
+    }
+}
+
+/**获取BU
+ * @param $userMobile
+ * @param $behaviorId
+ * @param $money
+ * @param null $tid
+ * @param null $st
+ * @return bool
+ */
+function getBu($userMobile,$behaviorId,$money,$tid=null,$st=null){
+    //接口参数
+    $url="https://ubc.jinvovo.com";
+    $terraceId =$tid==null?"0dae8af09fc4f40eb7e2dbcd38f416e7":$tid;//合作平台ID,公钥
+    $secret=$st==null?"e44f277a1451b356dd88ac6da1e5a7ee":$st;//私钥
+    $jiekouUrl="/app/v1/singleCreate?";
+    $sendUrl=$url.$jiekouUrl;
+    $orderNum=get_order_num();
+    $originalMoney=1;
+    $extra=1;
+    $add_arr= array('userMobile='.$userMobile,'behaviorId='.$behaviorId,'orderNum='.$orderNum,'money='.$money,'originalMoney='.$originalMoney,'extra='.$extra);
+    $canshu = array('terraceId='.$terraceId,'secret='.$secret, 'signType=MD5','version=v1.0', 'device=ANDROID');
+    $canshu = array_merge($canshu,$add_arr);
+    sort($canshu);
+    $sendString = implode('&',$canshu);
+    $sendString = $sendString.'&sign='.md5($sendString);
+    $path=$sendUrl.$sendString;
+    $result=file_get_contents($path);
+//    $result=do_get($sendUrl,$canshu);
+    $buf_arr= json_decode($result);
+    echo "-获取BU-->".$result."\n";
+    if($buf_arr->code==200){
+        return true;
+    }else{
+        return false;
     }
 }
 

@@ -7,17 +7,17 @@
 
 namespace Proto {
 /**
- * SC_User_Select_changjing message
+ * CS_User_Get_Task_Award message
  */
-class SC_User_Select_changjing extends \ProtobufMessage
+class CS_User_Get_Task_Award extends \ProtobufMessage
 {
     /* Field index constants */
-    const CHANGJING = 1;
+    const TASK_ID = 1;
 
     /* @var array Field descriptors */
     protected static $fields = array(
-        self::CHANGJING => array(
-            'name' => 'changjing',
+        self::TASK_ID => array(
+            'name' => 'task_id',
             'required' => false,
             'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
@@ -38,7 +38,7 @@ class SC_User_Select_changjing extends \ProtobufMessage
      */
     public function reset()
     {
-        $this->values[self::CHANGJING] = null;
+        $this->values[self::TASK_ID] = null;
     }
 
     /**
@@ -52,36 +52,36 @@ class SC_User_Select_changjing extends \ProtobufMessage
     }
 
     /**
-     * Sets value of 'changjing' property
+     * Sets value of 'task_id' property
      *
      * @param integer $value Property value
      *
      * @return null
      */
-    public function setChangjing($value)
+    public function setTaskId($value)
     {
-        return $this->set(self::CHANGJING, $value);
+        return $this->set(self::TASK_ID, $value);
     }
 
     /**
-     * Returns value of 'changjing' property
+     * Returns value of 'task_id' property
      *
      * @return integer
      */
-    public function getChangjing()
+    public function getTaskId()
     {
-        $value = $this->get(self::CHANGJING);
+        $value = $this->get(self::TASK_ID);
         return $value === null ? (integer)$value : $value;
     }
 
     /**
-     * Returns true if 'changjing' property is set, false otherwise
+     * Returns true if 'task_id' property is set, false otherwise
      *
      * @return boolean
      */
-    public function hasChangjing()
+    public function hasTaskId()
     {
-        return $this->get(self::CHANGJING) !== null;
+        return $this->get(self::TASK_ID) !== null;
     }
 }
 }

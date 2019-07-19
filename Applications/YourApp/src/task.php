@@ -242,7 +242,7 @@ function get_user_task_list($user_id){
     $user=db_query($sql);
     $isNormal=$user[0]['user_type']==1?1:0;
     //get user_taskList
-    $sql="select ut.times,tc.id,ut.user_id, ut.task_id, ut.state, ut.num done, tc.total,ut.total total1,tc.task_name,tc.task_content,tc.task_name_type,tc.task_skip_type,tc.skip,tc.u_coin_first,tc.u_coin_agent,tc.u_coin_normal from func_system.user_task ut,func_system.task_config tc where ut.task_id=tc.task_id and ut.state<4 and ut.user_id=".$user_id." order by ut.state desc";
+    $sql="select ut.times,tc.id,ut.user_id, ut.task_id, ut.state, ut.num done, tc.total,ut.total total1,tc.task_name,tc.task_content,tc.task_name_type,tc.task_skip_type,tc.skip,tc.u_coin_first,tc.u_coin_agent,tc.u_coin_normal from func_system.user_task ut,func_system.task_config tc where ut.task_id=tc.task_id and ut.user_id=".$user_id." order by ut.state desc";
     $allDatas=db_query($sql);
     foreach ($allDatas as $key=>$allData) {
         if($allData['total']!=$allData['total1']){
@@ -271,6 +271,88 @@ function get_user_task_list($user_id){
 //    $allDatas=[];
     send_pack_user_task_list($user_id,true,$allDatas);
 }
+//领取任务奖励
+function get_award($task_id,$user_id){
+    $code=0;
+    $sql="select user_account,rmb,user_type,vip_num,nullity from bolaik_user.user_info ui where ui.user_id='$user_id'";
+    $user = db_query($sql)[0];
+    if($user["vip_num"]<1&&$task_id!=299999){
+        return 1;
+    }
+    if($user["nullity"]==0){
+        return 2;
+    }
+    //查询任务是否可以领取
+    $sql="select * from func_system.user_task where user_id=$user_id and task_id=".$task_id;
+    $user_task = db_query($sql)[0];
+    if($user_task["state"]==3){
+        //查询任务奖励
+        $sql="select u_coin_first,u_coin_agent,u_coin_normal,behaviorId_first,behaviorId_agent,behaviorId_normal,task_id,task_name,task_name_type from func_system.task_config where task_id=".$task_id;
+        $task_config = db_query($sql)[0];
+        //查询玩家是否是初次领取
+        $u_oin=$task_config["u_coin_normal"];
+        $behaviorId=$task_config["behaviorId_normal"];
+        if($task_config["task_name_type"]==1){
+            if($user["user_type"]>1||$user["vip_num"]>0){//代理
+                $u_oin=$task_config["u_coin_agent"];
+                $behaviorId=$task_config["behaviorId_agent"];
+            }
+        }
+        $task_name=$task_config["task_name"];
+        //添加任务领取记录
+        $sql="insert into func_system.game_task_log(task_id,task_name,user_id,get_uoin) values($task_id,'$task_name',$user_id,$u_oin)";
+        db_query($sql);
+        $BU=getBuRemain($user["user_account"]);
+        echo "获取BU之前，BU=".$BU."\n";
+        //添加账变
+        if(addLog($user_id,$u_oin,$task_id,$behaviorId) ->suc){
+            //将任务改成完成状态
+            $nowTime=date('Y-m-d h:i:s', time());
+            $sql="update func_system.user_task set state=5,times=times+1,update_time='$nowTime' where user_id=$user_id and task_id=".$task_id;
+            db_query($sql);
+            send_user_coin_change1($user_id,$BU+$u_oin);
+        }else{
+            $code=4;
+        }
+    }else{
+        $code=3;
+    }
+    return $code;
+}
+
+function addLog($user_id,$get_u_coin,$task_id,$behaviorId){
+    $objreturn = new stdClass();
+		//查询用户余额
+		$sql="SELECT ui.id, ui.user_account, ui.user_passwd, ui.`name`, ui.id_type, ui.id_nu, ui.photo, ui.user_id, ui.user_nick, ui.under_write, ui.sex, ui.user_level, ui.agent_level, ui.invitecode, ui.experience, ui.u_coin, ui.gold_coin, ui.rmb, ui.user_equipment, ui.login_type, ui.b_phone_nu, ui.b_qq, ui.b_alipay, ui.diyihh, ui.area, ui.constellation, ui.register_time, ui.update_time, ui.login_time, ui.logout_time, ui.user_type, ui.agent_time, ui.agent_id, ui.nullity, ui.operation, ui.remark FROM bolaik_user.user_info AS ui WHERE ui.user_id = '$user_id'";
+		$user = db_query($sql)[0];
+		if($get_u_coin>0){
+            //查询任务对应的公钥 密钥 行为id
+            $sql="select public_key,private_key from func_system.task_config where task_id=".$task_id;
+            $jsonObjectGame = db_query($sql)[0];
+			$terraceId=$jsonObjectGame["public_key"];
+			$secret=$jsonObjectGame["private_key"];
+			if($terraceId==""){
+                if(getBu($user["user_account"],$behaviorId, $get_u_coin)==false){
+                    echo "金窝窝获取bu失败!\n";
+                    $objreturn->suc=false;
+                    return $objreturn;
+                }
+            }else{
+                if(getBu($user["user_account"],$behaviorId, $get_u_coin,$terraceId,$secret)==false){
+                    echo "金窝窝获取bu失败!\n";
+                    $objreturn->suc=false;
+                    return $objreturn;
+                }
+            }
+		}
+		$lastUChang=$get_u_coin;
+		$lastGChang=0;
+		//改变玩家余额
+		$sql="update bolaik_user.user_info set u_coin=u_coin+".$lastUChang.",gold_coin=gold_coin+".$lastGChang." where user_id='$user_id'";
+		db_query($sql);
+		$objreturn->suc=true;
+		return $objreturn;
+	}
 
 function mytime()
 {

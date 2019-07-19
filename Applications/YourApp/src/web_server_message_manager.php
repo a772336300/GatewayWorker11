@@ -44,6 +44,7 @@ function web_server_message_manager($data)
             util_log("refreshTable notice,id:$id value:$value");
             send_notice_to_all($id,$value);
         }
+        return;
     }
     if($dataArr['f']=='rechargeNotice')
     {
@@ -54,6 +55,30 @@ function web_server_message_manager($data)
         }
         util_log("rechargeNotice uid:$dataArr[user_id] vip_day:$vip_day");
         send_vip_day($dataArr['user_id'],$vip_day);
+        return;
+
+    }
+
+    if($dataArr['f']=='refreshInfo')
+    {
+        //1活动，2邮件，3跑马灯
+        if($dataArr['modle']==1){
+
+        }else if ($dataArr['modle']==2){
+            if($dataArr['type']==1){//指定玩家添加新邮件
+                $uids=$dataArr["uids"];
+                foreach ($uids as $uid) {
+                    if(Gateway::isUidOnline($uid)){
+                        send_user_email_update($uid,$dataArr['data'],1);
+                    }
+                }
+
+            }
+
+        }else if ($dataArr['modle']==3){
+
+        }
+        return;
 
     }
 

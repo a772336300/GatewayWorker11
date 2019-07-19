@@ -826,6 +826,40 @@ message SC_User_Get_Attach
 	optional  int32 code= 1;//0成功，1附件已领取,2失败
 }
 
+//领取任务奖励
+message CS_User_Get_Task_Award
+{
+	//option (msgid) = 20023;
+	optional int32   task_id = 1;//任务
+}
+//领取任务奖励 返回
+message SC_User_Get_Task_Award
+{
+	//option (msgid) = 20024;
+	optional  int32 code= 1;//0成功，1需要成为超级会员，才能领取奖励,2账号已被冻结,3不是可以领取的状态,4失败
+}
+
+//绑定邀请码
+message CS_User_Bind_Invited_Code
+{
+	//option (msgid) = 20025;
+	optional string   agent_id = 1;//邀请码
+}
+//绑定邀请码 返回
+message SC_User_Bind_Invited_Code
+{
+	//option (msgid) = 20026;
+	optional  int32 code= 1;//0成功，1不能绑定自己,2特殊代理不能再绑定其他代理,3代理不存在,4代理已被冻结，5已绑定代理，6失败
+}
+
+//用户邮件变动
+message SC_User_Email_Update
+{
+	//option (msgid) = 20102;
+	optional E_User_mail user_mail = 1;//邮件信息
+	optional  int32 type= 2;//类型 1添加，2修改，3删除
+}
+
 
 
 

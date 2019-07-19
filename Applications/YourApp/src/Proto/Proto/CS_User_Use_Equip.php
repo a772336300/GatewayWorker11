@@ -1,6 +1,6 @@
 <?php
 /**
- * Auto generated from new.proto at 2019-07-15 14:47:39
+ * Auto generated from new.proto at 2019-07-18 18:01:01
  *
  * proto package
  */

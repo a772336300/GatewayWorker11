@@ -40,41 +40,50 @@ $number_object_map = [
     40000=>'Web_Server',
 
     //20000--30000大厅新加信息
+    //修改头像
     20001=>'CS_User_TouXiang_Update',
     20002=>'SC_User_TouXiang_Update',
-
+    //获取邮件
     20003=>'CS_Get_User_Mail',
     20004=>'SC_Get_User_Mail',
-
+    //读取邮件
     20005=>'CS_User_Mail_Read',
     20006=>'SC_User_Mail_Read',
-
+    //删除邮件
     20007=>'CS_User_Mail_Delete',
     20008=>'SC_User_Mail_Delete',
-
+    //获取排行榜
     20009=>'CS_User_Get_Rank',
     20010=>'SC_User_Get_Rank',
-
+    //获取用户任务
     20011=>'CS_Get_User_Active',
     20012=>'SC_Get_User_Active',
-
+    //获取商城信息
     20013=>'CS_Get_Goods',
     20014=>'SC_Get_Goods',
-
+    //获取用户背包信息
     20015=>'CS_Get_User_Packet',
     20016=>'SC_Get_User_Packet',
-
+    //买道具
     20017=>'CS_User_Buy_Goods',
     20018=>'SC_User_Buy_Goods',
-
+    //使用道具
     20019=>'CS_User_Use_Goods',
     20020=>'SC_User_Use_Goods',
-
+    //领取附件
     20021=>'CS_User_Get_Attach',
     20022=>'SC_User_Get_Attach',
+    //领取任务奖励
+    20023=>'CS_User_Get_Task_Award',
+    20024=>'SC_User_Get_Task_Award',
+    //绑定邀请码
+    20025=>'CS_User_Bind_Invited_Code',
+    20026=>'SC_User_Bind_Invited_Code',
 
     //用户背包道具变化
     20101=>'SC_User_Packet_Update',
+    //用户邮件变化
+    20102=>'SC_User_Email_Update',
 
     20100=>'SC_User_New_info',
 

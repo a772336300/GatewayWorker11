@@ -7,17 +7,17 @@
 
 namespace Proto {
 /**
- * SC_User_Select_changjing message
+ * SC_User_Get_Task_Award message
  */
-class SC_User_Select_changjing extends \ProtobufMessage
+class SC_User_Get_Task_Award extends \ProtobufMessage
 {
     /* Field index constants */
-    const CHANGJING = 1;
+    const CODE = 1;
 
     /* @var array Field descriptors */
     protected static $fields = array(
-        self::CHANGJING => array(
-            'name' => 'changjing',
+        self::CODE => array(
+            'name' => 'code',
             'required' => false,
             'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
@@ -38,7 +38,7 @@ class SC_User_Select_changjing extends \ProtobufMessage
      */
     public function reset()
     {
-        $this->values[self::CHANGJING] = null;
+        $this->values[self::CODE] = null;
     }
 
     /**
@@ -52,36 +52,36 @@ class SC_User_Select_changjing extends \ProtobufMessage
     }
 
     /**
-     * Sets value of 'changjing' property
+     * Sets value of 'code' property
      *
      * @param integer $value Property value
      *
      * @return null
      */
-    public function setChangjing($value)
+    public function setCode($value)
     {
-        return $this->set(self::CHANGJING, $value);
+        return $this->set(self::CODE, $value);
     }
 
     /**
-     * Returns value of 'changjing' property
+     * Returns value of 'code' property
      *
      * @return integer
      */
-    public function getChangjing()
+    public function getCode()
     {
-        $value = $this->get(self::CHANGJING);
+        $value = $this->get(self::CODE);
         return $value === null ? (integer)$value : $value;
     }
 
     /**
-     * Returns true if 'changjing' property is set, false otherwise
+     * Returns true if 'code' property is set, false otherwise
      *
      * @return boolean
      */
-    public function hasChangjing()
+    public function hasCode()
     {
-        return $this->get(self::CHANGJING) !== null;
+        return $this->get(self::CODE) !== null;
     }
 }
 }

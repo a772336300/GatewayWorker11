@@ -7,19 +7,19 @@
 
 namespace Proto {
 /**
- * SC_User_Select_changjing message
+ * CS_User_Bind_Invited_Code message
  */
-class SC_User_Select_changjing extends \ProtobufMessage
+class CS_User_Bind_Invited_Code extends \ProtobufMessage
 {
     /* Field index constants */
-    const CHANGJING = 1;
+    const AGENT_ID = 1;
 
     /* @var array Field descriptors */
     protected static $fields = array(
-        self::CHANGJING => array(
-            'name' => 'changjing',
+        self::AGENT_ID => array(
+            'name' => 'agent_id',
             'required' => false,
-            'type' => \ProtobufMessage::PB_TYPE_INT,
+            'type' => \ProtobufMessage::PB_TYPE_STRING,
         ),
     );
 
@@ -38,7 +38,7 @@ class SC_User_Select_changjing extends \ProtobufMessage
      */
     public function reset()
     {
-        $this->values[self::CHANGJING] = null;
+        $this->values[self::AGENT_ID] = null;
     }
 
     /**
@@ -52,36 +52,36 @@ class SC_User_Select_changjing extends \ProtobufMessage
     }
 
     /**
-     * Sets value of 'changjing' property
+     * Sets value of 'agent_id' property
      *
-     * @param integer $value Property value
+     * @param string $value Property value
      *
      * @return null
      */
-    public function setChangjing($value)
+    public function setAgentId($value)
     {
-        return $this->set(self::CHANGJING, $value);
+        return $this->set(self::AGENT_ID, $value);
     }
 
     /**
-     * Returns value of 'changjing' property
+     * Returns value of 'agent_id' property
      *
-     * @return integer
+     * @return string
      */
-    public function getChangjing()
+    public function getAgentId()
     {
-        $value = $this->get(self::CHANGJING);
-        return $value === null ? (integer)$value : $value;
+        $value = $this->get(self::AGENT_ID);
+        return $value === null ? (string)$value : $value;
     }
 
     /**
-     * Returns true if 'changjing' property is set, false otherwise
+     * Returns true if 'agent_id' property is set, false otherwise
      *
      * @return boolean
      */
-    public function hasChangjing()
+    public function hasAgentId()
     {
-        return $this->get(self::CHANGJING) !== null;
+        return $this->get(self::AGENT_ID) !== null;
     }
 }
 }
