@@ -30,7 +30,8 @@ function hall_message_switch($mid,$data){
             echo "\n---------- 查询系统邮件数据 -----------\n";
             $filter = [
                 "start_time" => ['$lt' => $a],//查询条件 开始时间 大于 当前时间
-                "end_time" => ['$gt' => $a]//查询条件 结束时间 小于 当前时间
+                "end_time" => ['$gt' => $a],//查询条件 结束时间 小于 当前时间
+                "uid" => ""//
             ];
             $queryWriteOps = [
                 "projection" => ["_id"=> 0],//不输出_id字段
