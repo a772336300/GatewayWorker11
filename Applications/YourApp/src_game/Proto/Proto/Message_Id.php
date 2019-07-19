@@ -48,6 +48,7 @@ final class Message_Id
             'CS_Is_Gaming_Id' => self::CS_Is_Gaming_Id,
             'SC_Is_Gaming_Id' => self::SC_Is_Gaming_Id,
             'SC_Game_Result_Id' => self::SC_Game_Result_Id,
+            'SC_Turn_Id' => self::SC_Turn_Id,
         );
     }
 }
