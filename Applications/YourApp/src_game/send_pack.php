@@ -23,7 +23,7 @@ function game_send_room_init($init,$roomId,$client_id=null)
     $message->setBottomCards($init['bottomCards']);
 
     $message->setCurrentValueOwner($init['currentValueOwner']);
-    $message->setDizhuid($init['dizhu']);
+    $message->setDizhu($init['dizhu']);
     $message->setGameStartTime($init['gameStartTime']);
     $message->setTimes($init['times']);
     $message->setTurnerId($init['turnerId']);
@@ -75,15 +75,15 @@ function game_send_play($roomId,$playerId,$type,$data)
     $message->setPlayData($play_data);
     Gateway::sendToGroup($roomId,my_pack(\Proto\Message_Id::SC_Play_Id,$message->serializeToString()));
 }
-function game_send_bottom_cards($roomId,$cards)
+function game_send_bottom_cards($roomId,$cards,$dizhu)
 {
-    $message = new \Proto\SC_Init_Cards();
+    $message = new \Proto\SC_Bottom_Cards();
     $message->setCards($cards);
-    Gateway::sendToGroup($roomId,my_pack(\Proto\Message_Id::SC_Init_Cards_Id,$message->serializeToString()));
+    $message->setOwner($dizhu);
+    Gateway::sendToGroup($roomId,my_pack(\Proto\Message_Id::SC_Bottom_Cards_Id,$message->serializeToString()));
 }
 function game_send_game_result($roomId,$result)
 {
-    return;
     $message = new \Proto\SC_Game_Result();
     foreach ($result as $playerId =>$item)
     {
@@ -94,7 +94,7 @@ function game_send_game_result($roomId,$result)
         $player_game_result->setUnPlayCards($item['cardsLeft']);
         $message->appendPlayerGameResult($player_game_result);
     }
-    Gateway::sendToGroup($roomId,my_pack(\Proto\Message_Id::SC_Init_Cards_Id,$message->serializeToString()));
+    Gateway::sendToGroup($roomId,my_pack(\Proto\Message_Id::SC_Game_Result_Id,$message->serializeToString()));
 }
 function game_send_quit_join($client_id,$type)
 {
@@ -113,4 +113,9 @@ function game_send_is_gaming($client_id,$is_gaming)
     $message = new \Proto\SC_Is_Gaming();
     $message->setData($is_gaming);
     Gateway::sendToClient($client_id,my_pack(\Proto\Message_Id::SC_Is_Gaming_Id,$message->serializeToString()));
+}
+function game_send_turn($turnId)
+{
+    $message = new \Proto\SC_Turn();
+    Gateway::sendToUid($turnId,my_pack(\Proto\Message_Id::SC_Turn_Id,$message->serializeToString()));
 }

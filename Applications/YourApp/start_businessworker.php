@@ -41,7 +41,7 @@ $tcp_worker->name = 'YourAppBusinessWorker';
 // bussinessWorker进程数量
 $tcp_worker->count = 1;
 // 服务注册地址
-$tcp_worker->registerAddress = '127.0.0.1:1238';
+$tcp_worker->registerAddress = '127.0.0.1:1239';
 
 
 
@@ -71,15 +71,14 @@ $tcp_worker->onWorkerStart = function ($worker)
     $tcp_worker->db= new \Workerman\MySQL\Connection($config['db']['host'],$config['db']['port'],$config['db']['user'],$config['db']['password'],$config['db']['dbname'],$config['db']['charset']);
     refreshUserInit();
 
-    //更新没正常推出游戏的用户数据（包含重启服务器，导致用户没退出记录）
-    $nowTime=date('Y-m-d h:i:s', time());
-    $sql="update bolaik_user.user_info set rmb=0 where rmb=1";
-    db_query($sql);
-    $sql="update bolaik_user.user_stat_time set login_out_time='$nowTime' where login_out_time is null ";
-    db_query($sql);
+//    //更新没正常推出游戏的用户数据（包含重启服务器，导致用户没退出记录）
+//    $nowTime=date('Y-m-d h:i:s', time());
+//    $sql="update bolaik_user.user_info set rmb=0 where rmb=1";
+//    db_query($sql);
+//    $sql="update bolaik_user.user_stat_time set login_out_time='$nowTime' where login_out_time is null ";
+//    db_query($sql);
 
-    $worker->mongodb = mongo_db::singleton();
-
+    //$worker->mongodb = mongo_db::singleton();
     //$worker->db_web= new \Workerman\MySQL\Connection($config['db_web']['host'],$config['db_web']['port'],$config['db_web']['user'],$config['db_web']['password'],$config['db_web']['dbname'],$config['db_web']['charset']);
     //$worker->db= new Connection('192.168.0.200','3306','dgame','123456','mytest','utf8');
 

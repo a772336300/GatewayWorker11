@@ -28,6 +28,47 @@ enum Message_Id
 	CS_Is_Gaming_Id =12;
 	SC_Is_Gaming_Id =13;
 	SC_Game_Result_Id =14;
+	CS_Competition_SignUp_Id = 15;    //竞技报名ID
+    SC_Competition_SignUp_Id = 16;    //
+    SC_ComPetition_Start_Id = 17;     //竞技开始ID
+    CS_ComPetition_Group_Id = 18;     //请求竞技组信息
+    SC_ComPetition_Group_Id = 19;
+}
+
+enum Game_Type
+{
+    Game_ddz    = 1;
+    Game_xzdd   = 2;
+}
+message CS_ComPetition_SignUp
+{
+    optional int32 competition_id = 1;
+    optional uint64 user_id       = 2;
+    optional Game_Type game_type  = 3;
+}
+message SC_ComPetition_SignUp
+{
+    optional int32 bCompetition   = 1;
+}
+message SC_ComPetition_Start
+{
+    optional int32 competition_id   = 1;
+    optional Game_Type game_type    = 2;
+}
+
+message ComPetition
+{
+    optional int32  competition_id  = 1;
+    optional Game_Type  type        = 2;
+    optional int32      number      = 3;
+    optional string starttime       = 4;
+}
+message CS_ComPetition_Group
+{
+}
+message SC_ComPetition_Group
+{
+    repeated ComPetition    group   = 1;
 }
 message CS_Join
 {

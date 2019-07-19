@@ -7,10 +7,10 @@ $config=[
 //        'dbname'   => 'bolaik_db',
 //        'charset'  => 'utf8',
 //        ],
-        'db'=>['host'  => '47.102.36.37',
+        'db'=>['host'  => '192.168.0.241',
         'port'     => '3306',
         'user'     => 'dgame',
-        'password' => '2rGh8ir5Pip6',
+        'password' => '123456',
         'dbname'   => 'bolaik_db',
         'charset'  => 'utf8',
         ],
@@ -24,3 +24,11 @@ $config=[
     'client_version'=>'1.0.0',
 ];
 $web_user = 'bolaik_user';
+$task_type= [
+    'feiJi'=>1000,
+    'huoJian'=>1001,
+    '3DaoAShunZi'=>1002,
+    'lianDui'=>1003,
+    'zhaDan'=>1004,
+    'sanDaiYi'=>1005,
+];

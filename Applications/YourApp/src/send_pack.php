@@ -20,9 +20,10 @@ function send_pack_create_user($client_id,$is_success)
     \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(704,$create_user_back->serializeToString()));
     //$connection->send(my_pack(704,$create_user_back->serializeToString()));
 }
-function send_pack_login($client_id,$is_success)
+function send_pack_login($client_id,$is_success,$binded)
 {
     $object = new \Proto\SC_Client_Login_Back();
+    $object->setResult($binded);
     $object->setIsSuccess($is_success);
     \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(711,$object->serializeToString()));
     //\GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(711,$object->serializeToString()));
@@ -156,10 +157,11 @@ function send_pack_user_equip_item_changjing($client_id,$items)
         $object->setChangjing($value);
     \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(1005,$object->serializeToString()));
 }
-function send_pack_BU_change($uid,$BU)
+function send_pack_BU_change($uid,$BU,$gold_coin)
 {
     $object = new \Proto\SC_User_UB();
     $object->setBU($BU);
+    $object->setGold($gold_coin);
     \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(1014,$object->serializeToString()));
     //$connection->send(my_pack(802,$object->serializeToString()));
 }
@@ -273,18 +275,16 @@ function send_pack_get_user_mail($uid,$is_success,$data)
         $user_mail->setContent($value->content);
         $user_mail->setStartTime($value->start_time);
         $user_mail->setEndTime($value->end_time);
-        $user_mail->appendAttach($value->attach);
+        $arr=$value->attach;
+        foreach ($arr as $item) {
+            $user_mail->appendAttach($item);
+        }
         $user_mail->setIsread($value->isread);
         $user_mail->setIsdelete($value->isdelete);
         $user_mail->setGetAttach($value->get_attach);
         $user_mail->setUid($value->uid);
         $object->appendUserMail($user_mail);
     }
-//    $a=new \Proto\SC_Get_User_Mail();
-//    $a->parseFromString($object->serializeToString());
-//    $b=$a->getUserMail();
-//    echo "------>".$b[0]->getId();
-
     \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20004,$object->serializeToString()));
 }
 
@@ -329,4 +329,152 @@ function send_pack_user_rank($uid,$obj,$data)
     $object->setWinNum($obj->win_num);
     $object->setRank($obj->rank);
     \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20010,$object->serializeToString()));
+}
+
+function send_pack_get_user_active($uid,$data)
+{
+    $object= new \Proto\SC_Get_User_Active();
+    foreach ($data as $value)
+    {
+        $user_active = new \Proto\E_User_Active();
+        $user_active->setId($value->_id);
+        $user_active->setTitle($value->title);
+        $user_active->setContent($value->content);
+        $user_active->setStartTime($value->start_time);
+        $user_active->setEndTime($value->end_time);
+        $user_active->setActiveType($value->active_type);
+        $user_active->setSkipType($value->skip_type);
+        $user_active->setSkipUrl($value->skip_url);
+        $user_active->setImgUrl($value->img_url);
+        $user_active->setOpenTime($value->open_time);
+        $user_active->setCloseTime($value->close_time);
+        $user_active->setAwardDes($value->award_des);
+        $user_active->setTotoalStep($value->totoal_step);
+        foreach ($value->attach as $attach) {
+            $user_active->appendAttach($attach);
+        }
+        $user_active->setStep($value->step);
+        $user_active->setState($value->state);
+        $object->appendUserActive($user_active);
+    }
+    \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20012,$object->serializeToString()));
+}
+
+function send_pack_get_goods_info($uid,$data)
+{
+    $object= new \Proto\SC_Get_Goods();
+    foreach ($data as $value)
+    {
+        $good_info = new \Proto\E_Goods_Info();
+        $good_info->setId($value->_id);
+        $good_info->setPropId($value->prop_id);
+        $good_info->setName($value->name);
+        $good_info->setDes($value->des);
+        $good_info->setImg($value->img);
+        $good_info->setMallType($value->mall_type);
+        $good_info->setPriceType($value->price_type);
+        $good_info->setPrice($value->price);
+        $object->appendGoodsInfo($good_info);
+    }
+    \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20014,$object->serializeToString()));
+}
+
+function send_pack_user_packet($uid,$data)
+{
+    $object= new \Proto\SC_Get_User_Packet();
+    foreach ($data as $value)
+    {
+        $user_packet = new \Proto\E_User_Packet();
+        $user_packet->setId($value->_id);
+        $user_packet->setPropId($value->prop_id);
+        $user_packet->setName($value->name);
+        $user_packet->setDes($value->des);
+        $user_packet->setImg($value->img);
+        $user_packet->setActiveId($value->active_id);
+        $user_packet->setPropType($value->prop_type);
+        $user_packet->setUseType($value->use_type);
+        $user_packet->setActiveTime($value->active_time);
+        $user_packet->setNum($value->num);
+        $user_packet->setOverTime($value->over_time);
+        $object->appendUserPacket($user_packet);
+    }
+    \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20016,$object->serializeToString()));
+}
+
+function send_user_buy_goods($uid,$is_success,$code)
+{
+    $message = new \Proto\SC_User_Buy_Goods();
+    $message->setIsSuccess($is_success);
+    $message->setCode($code);
+    \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20018,$message->serializeToString()));
+}
+
+function send_user_packet_update($uid,$good,$type)
+{
+    $message = new \Proto\SC_User_Packet_Update();
+    $user_packet = new \Proto\E_User_Packet();
+    $user_packet->setId($good->_id);
+    $user_packet->setPropId($good->prop_id);
+    $user_packet->setName($good->name);
+    $user_packet->setDes($good->des);
+    $user_packet->setImg($good->img);
+    $user_packet->setActiveId($good->active_id);
+    $user_packet->setPropType($good->prop_type);
+    $user_packet->setUseType($good->use_type);
+    $user_packet->setDetail($good->detail);
+    $user_packet->setActiveTime($good->active_time);
+    $user_packet->setNum($good->num);
+    $user_packet->setOverTime($good->over_time);
+    $message->setUserPacket($user_packet);
+    $message->setType($type);
+    \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20101,$message->serializeToString()));
+}
+
+function send_user_email_update($uid,$user_mail,$type)
+{
+    $message = new \Proto\SC_User_Email_Update();
+    $user_packet = new \Proto\E_User_mail();
+    $user_packet->setId($user_mail['_id']);
+    $user_packet->setSid($user_mail['sid']);
+    $user_packet->setTitle($user_mail['title']);
+    $user_packet->setContent($user_mail['content']);
+    $user_packet->setStartTime($user_mail['start_time']);
+    $user_packet->setEndTime($user_mail['end_time']);
+    foreach ($user_mail["attach"] as $attach) {
+        $user_packet->appendAttach($attach);
+    }
+    $user_packet->setIsread($user_mail['isread']);
+    $user_packet->setIsdelete($user_mail['isdelete']);
+    $user_packet->setGetAttach($user_mail['get_attach']);
+    $user_packet->setUid($uid);
+    $message->setType($type);
+    \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20102,$message->serializeToString()));
+}
+
+function send_user_use_goods($uid,$code)
+{
+    $message = new \Proto\SC_User_Use_Goods();
+    $message->setCode($code);
+    \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20020,$message->serializeToString()));
+}
+
+function send_user_get_attach($uid,$code)
+{
+    $message = new \Proto\SC_User_Get_Attach();
+    $message->setCode($code);
+    \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20022,$message->serializeToString()));
+}
+
+function send_user_get_task_award($uid,$code)
+{
+    $message = new \Proto\SC_User_Get_Task_Award();
+    $message->setCode($code);
+    \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20024,$message->serializeToString()));
+}
+
+function send_user_bind_invited_code($uid,$code)
+{
+    $message = new \Proto\SC_User_Bind_Invited_Code();
+    $message->setCode($code);
+    \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20026,$message->serializeToString()));
 }

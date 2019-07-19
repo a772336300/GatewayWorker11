@@ -9,7 +9,6 @@ function game_join($client_id,$join)
     global $redis;
     global $waitingUser;
 
-    $_SESSION['uid']=rand(10000,100000);
     if(!isset($_SESSION['uid']))
     {
         send_notice_by_client_id($client_id,1,"用户id错误");
@@ -17,10 +16,7 @@ function game_join($client_id,$join)
         return;
     }
     $playerId=$_SESSION['uid'];
-    //@test
-    if($client_id!=11)
-        Gateway::bindUid($client_id,$playerId);
-    //#test
+
     $gold=game_db_get_gold($playerId);
     if($redis->exists($playerId))
     {
@@ -163,10 +159,11 @@ function roomInfo($roomId)
         $init['playerInfo'][$playerId]['id']=$redis->hGet('info_'.$playerId,'id');
         $init['playerInfo'][$playerId]['step']=$redis->hGet('info_'.$playerId,'step');
         $init['playerInfo'][$playerId]['name']=$redis->hGet('info_'.$playerId,'name');
-        $init['playerInfo'][$playerId]['cardsCount']=$redis->sCard($playerId.':cards');
         $init['playerInfo'][$playerId]['gold']=$redis->hGet('info_'.$playerId,'gold');
         $init['playerInfo'][$playerId]['touxiang']=$redis->hGet('info_'.$playerId,'touxiang');
         $init['playerInfo'][$playerId]['level']=$redis->hGet('info_'.$playerId,'level');
+
+        $init['playerInfo'][$playerId]['cardsCount']=$redis->sCard($playerId.':cards');
     }
     $init['playerIds']=$playerIds;
     if($redis->hGet($roomId,'turnerId')!='')
@@ -215,7 +212,7 @@ function roomCreate($playerIds,$channel,$channelNumber=-1)
 function GameStart($roomId,$playerIds)
 {
     //设置先出牌者
-    redisSetBeginner($roomId);
+    //redisSetBeginner($roomId);
     //游戏信息初始化
     redisInitGame($roomId);
     //玩家游戏信息初始化
@@ -235,7 +232,7 @@ function GameStart($roomId,$playerIds)
             cardSend($roomId);
             //$redis->hSet($roomId,'xCardController','1');
             initRoomState($roomId,array('type'=>Play_Data_Type::jiaodizhu,'data'=>0),array('type'=>Play_Data_Type::jiaodizhu,'data'=>0));
-            roomTick($roomId,0,60);
+            roomTick($roomId,0);
 
         },array(),false);
     },array(),false);
@@ -273,13 +270,12 @@ function initRoomState($roomId,$compareValue,$currentValue)
     $redis->hSet($roomId,'compareValue',json_encode($compareValue));
     $redis->hSet($roomId,'currentValue',json_encode($currentValue));
 }
-function roomTick($roomId,$times,$timeSecond=21)
+function roomTick($roomId,$times,$timeSecond=1000000000000)
 {
     global $redis;
     $tick=$redis->hIncrBy($roomId,'tick',$times);
-
-    $turnerId=$redis->lIndex($roomId.':playerIds',$tick%3);
-
+    $turnerId=$redis->lIndex($roomId.':playerIds',($tick-1)%3);
+    echo "轮到$turnerId\r\n";
     $redis->hSet($roomId,'turnerId',$turnerId);
     $redis->hSet($roomId,'turner_beginTime',time());
 
@@ -295,6 +291,7 @@ function roomTick($roomId,$times,$timeSecond=21)
     {
         timerTrigger($repeat,$tick,$roomId);
     },array(),false);
+    //game_send_turn($turnerId);
 }
 function timerTrigger($repeat,$currantTick,$roomId)
 {
@@ -415,13 +412,13 @@ function jiaodizhu($playerId,$roomId,$value,$valueCode=null)
         //获取当前玩家的下一家
         $tick = $redis->hGet($roomId, 'tick');
         //通过步数和玩家队列来判断轮到谁
-        $NextId = $redis->lIndex($roomId . ':playerIds', ((int)$tick + 1) % 3);
+        $NextId = $redis->lIndex($roomId . ':playerIds', ((int)$tick) % 3);
         if ($redis->hGet($NextId, 'chance') == false||$value['data']==3) {
             beginPlayCard($playerId, $roomId, 3);
         } else {
-            game_send_play($roomId,$playerId,Play_Data_Type::jiaodizhu,1);
+            game_send_play($roomId,$playerId,Play_Data_Type::jiaodizhu,$value['data']);
             initRoomState($roomId,$value,$value);
-            roomTick($roomId, 1,12);
+            roomTick($roomId, 1);
         }
 
     } else {
@@ -431,7 +428,7 @@ function jiaodizhu($playerId,$roomId,$value,$valueCode=null)
         //如果没有，说明走了一圈没人叫
         $tick = $redis->hGet($roomId, 'tick');
         //通过步数和玩家队列来判断轮到谁
-        $NextId = $redis->lIndex($roomId . ':playerIds', ((int)$tick + 1) % 3);
+        $NextId = $redis->lIndex($roomId . ':playerIds', ((int)$tick) % 3);
         //不叫
         game_send_play($roomId,$playerId,Play_Data_Type::jiaodizhu,0);
         if ($redis->hGet($NextId, 'chance') == false)
@@ -449,7 +446,7 @@ function jiaodizhu($playerId,$roomId,$value,$valueCode=null)
         else//如果下家有机会，当前玩家关闭，轮转玩家
         {
             initRoomState($roomId,$value,$value);
-            roomTick($roomId,1,12);
+            roomTick($roomId,1);
         }
 
     }
@@ -486,7 +483,7 @@ function qiangdizhu($playerId,$roomId,$value,$valueCode=null)
                 if ($redis->hGet($NextId, 'chance') == true) {
                     $isEnd = false;
                     initRoomState($roomId,$value,$value);
-                    roomTick($roomId,  $i,12);
+                    roomTick($roomId,  $i);
                     break;
                 }
             }
@@ -516,7 +513,7 @@ function qiangdizhu($playerId,$roomId,$value,$valueCode=null)
                         break;
                     }
                     initRoomState($roomId,json_decode($redis->hGet($roomId, 'compareValue'), true),json_decode($redis->hGet($roomId, 'currentValue'), true));
-                    roomTick($roomId,$i,12);
+                    roomTick($roomId,$i);
                     break;
                 }
                 if ($NextId == $redis->hGet($roomId, 'dizhu'))
@@ -530,6 +527,31 @@ function qiangdizhu($playerId,$roomId,$value,$valueCode=null)
     } else
         game_send_play($roomId,$playerId,Play_Data_Type::qiangdizhu,1);
 }
+function pai_type_for_task($valueCode)
+{
+    global $task_type;
+    if($valueCode['type']['X']==3&&$valueCode['type']['Y']>=1)
+    {
+        return 'feiJi';
+    }
+    if(isG($valueCode))
+    {
+        return 'zhaDan';
+    }
+    if(isP($valueCode))
+    {
+        return 'huoJian';
+    }
+    if($valueCode['type']['Y']==11)
+    {
+        return $task_type['3DaoAShunZi'];
+    }
+    if($valueCode['type']['X']==3&&$valueCode['type']['Y']>=0&&$valueCode['wings']!=null)
+    {
+        return 'sanDaiYi';
+    }
+    return null;
+}
 function pai($playerId,$roomId,$value,$valueCode=null)
 {
     global $redis;
@@ -538,6 +560,10 @@ function pai($playerId,$roomId,$value,$valueCode=null)
     {
         if (changeCard($playerId, $roomId, $value['data']))
         {
+            if(($type=pai_type_for_task($valueCode))!==null)
+            {
+                game_set_tack($playerId,$type);
+            }
 //            if(!$redis->hGet($roomId, 'xCardController'))
 //            {
 //                $redis->hSet($playerId, 'xCardController','0');
@@ -565,7 +591,7 @@ function pai($playerId,$roomId,$value,$valueCode=null)
             {
                 $redis->hSet($roomId, 'currant_value_owner', $playerId);
                 initRoomState($roomId,['type' => Play_Data_Type::pai, 'data' => $valueCode],$value);
-                roomTick($roomId, 1, 1);
+                roomTick($roomId, 1);
             }
 
         }
@@ -589,10 +615,10 @@ function beginPlayCard($dizhu,$roomId,$times)
     $cards=$redis->sMembers($roomId.':cards');
     //bottomCardTimes($roomId,$cards);
     $cards=implode(',',$cards);
-    game_send_bottom_cards($roomId,$cards);
+    game_send_bottom_cards($roomId,$cards,$dizhu);
     $redis->sUnionStore($dizhu.':cards',$dizhu.':cards',$roomId.':cards');
     initRoomState($roomId,array('type'=>Play_Data_Type::pai,'data'=>array()),array('type'=>Play_Data_Type::pai,'data'=>''));
-    roomTick($roomId,$times,26);
+    roomTick($roomId,$times);
 }
 function gameOver($roomId,$winner=null)
 {
@@ -609,7 +635,7 @@ function gameOver($roomId,$winner=null)
         {
             $redis->hSet($roomId,'ratio',-1);
         }
-        $result=experienceAndGold($roomId,$winner);
+        $result=experienceAndGold($roomId);
 
     }
     game_send_game_result($roomId,$result);
@@ -626,8 +652,26 @@ function gameOver($roomId,$winner=null)
     }
     $redis->exec();
 }
-function experienceAndGold($roomId,$winner)
+function experienceAndGold($roomId)
 {
+    global $redis;
+    $result=array();
+    $players=$redis->lRange($roomId.':playerIds',0,-1);
+    $ratio=$redis->hGet($roomId,'ratio');
+    $dizhu=$redis->hGet($roomId,'dizhu');
+    foreach ($players as $player)
+    {
+        $result[$player]['level']=100;
+        $result[$player]['cardsLeft']=100;
+        if($player==$dizhu)
+        {
+            $result[$player]['gold']=100*$ratio;
+            continue;
+        }
+        $result[$player]['gold']=(-1)*100*$ratio;
+
+    }
+    return $result;
 
 }
 //function experienceAndGold($roomId,$winner)
@@ -974,8 +1018,10 @@ function changeCard($playerId,$roomId,$Cards)
     // print_r($bar);
     return true;
 }
-function game_play($clientId,$payload)
+function game_play($clientId,$payload_buff)
 {
+    $payload['type']=$payload_buff->getType();
+    $payload['data']=$payload_buff->getData();
     global $redis;
     //获取本次适配的对象
     $playerId=$_SESSION['uid'];
@@ -1008,7 +1054,7 @@ function game_play($clientId,$payload)
         if($playerId==$owner)
         {
             //  app1_spaceinputmastar::onSpaceMessage('client','轮到你',$client_id);
-            if($TimerType==Play_Data_Type::jiaodizhu||$TimerType==Play_Data_Type::qiangdizhu)
+            if($TimerType==Play_Data_Type::jiaodizhu)
             {
                 if(compareValueFordizhu($payload,$value))
                 {
@@ -1035,26 +1081,26 @@ function game_play($clientId,$payload)
                         $xCard=$redis->hGet($playerId,'xCard');
                         if($xCard==false)
                         {
-                            send_notice_by_client_id($clientId,1,"类型不匹配1");
+                            send_notice_by_client_id($clientId,4,"类型不匹配1");
                             return ;
                         }
                         //如果只出一张牌不能有任意牌
                         $data=explode(',',$payload['data']);
                         if(count($data)==1)
                         {
-                            send_notice_by_client_id($clientId,1,"类型不匹配2");
+                            send_notice_by_client_id($clientId,4,"类型不匹配2");
                             return ;
                         }
                         $cardMatchValue=substr($cardMatch,1);
                         $xCardValue=substr($xCard,1);
                         if($cardMatchValue==16||$cardMatchValue==17)
                         {
-                            send_notice_by_client_id($clientId,1,"类型不匹配3");
+                            send_notice_by_client_id($clientId,4,"类型不匹配3");
                             return ;
                         }
                         if($messageData['begin']>$cardMatch&&$messageData['begin']+$messageData['begin']['Y']<$cardMatch)
                         {
-                            send_notice_by_client_id($clientId,1,"类型不匹配4");
+                            send_notice_by_client_id($clientId,4,"类型不匹配4");
                             return ;
                         }
                         str_replace($cardMatch,$xCard,$realPayload['data']);
@@ -1072,7 +1118,7 @@ function game_play($clientId,$payload)
                                 //  app1_spaceinputmastar::onSpaceMessage('client', '牌小', $client_id);
                                   break;*/
                             case 0:
-                                send_notice_by_client_id($clientId,1,"牌小");
+                                send_notice_by_client_id($clientId,4,"牌小");
                                 // app1_spaceinputmastar::onSpaceMessage('client', '牌型错误', $client_id);
                                 break;
                             default:
@@ -1082,11 +1128,11 @@ function game_play($clientId,$payload)
                         }
                     }
                     else
-                        send_notice_by_client_id($clientId,1,"非法类型");
+                        send_notice_by_client_id($clientId,4,"非法类型");
                     //  app1_spaceinputmastar::onSpaceMessage('client','非法类型',$client_id);
                 }
                 else
-                    send_notice_by_client_id($clientId,1,"阶段不匹配");
+                    send_notice_by_client_id($clientId,4,"阶段不匹配");
             // app1_spaceinputmastar::onSpaceMessage('client','阶段不匹配，需要'.$value['type'].'发出'.$TimerType,$client_id);
 
             /* else{
@@ -1171,21 +1217,10 @@ function compareValueFordizhu($messageValue,$spacePlayerValue)
 {
     if($spacePlayerValue['type']==Play_Data_Type::jiaodizhu&&$messageValue['type']==Play_Data_Type::jiaodizhu)
     {
-        if(($messageValue['data']==0||$messageValue['data']==1)&&$spacePlayerValue['data']==0)
+        if($spacePlayerValue['data']<=$messageValue['data'])
             return 1;
         else
             return 0;
-    }
-    if($spacePlayerValue['type']==Play_Data_Type::jiaodizhu&&$messageValue['type']==Play_Data_Type::qiangdizhu)
-    {
-        if($spacePlayerValue['data']==1)
-            return 1;
-        else
-            return 0;
-    }
-    if($spacePlayerValue['type']==Play_Data_Type::qiangdizhu&&$messageValue['type']==Play_Data_Type::qiangdizhu)
-    {
-        return 1;
     }
     return 0;
 }
@@ -1195,7 +1230,7 @@ function valueDecode($Data)
     //直接返回结果
     if($Data==null)
         return null;
-    if(count($Data)&&is_array($Data[0])&&is_array($Data[1]))
+    if(is_array($Data)&&count($Data)&&is_array($Data[0])&&is_array($Data[1]))
     {
         $result=valueDecodePart($Data);
         return valueDecodePart($Data);
@@ -1204,8 +1239,8 @@ function valueDecode($Data)
     //$index是否为数值？？ father ?mother
     //过滤花色
     $data=preg_replace('/[rwyb*]/','',$Data);
-    rsort($data);
     $data=explode(',',$data);
+    //rsort($data);
     //确定x,x最高优先级
     //确定begin和y，次高优先级
     //确定wings最后优先级
@@ -1229,7 +1264,7 @@ function valueDecode($Data)
         }
 
     }
-    if(count($Data)>=8)
+    if(count($data)>=8)
     {
         //先看是否是飞机，得出飞机转码
         $result=valueDecodeUp($tmp);
@@ -1265,13 +1300,13 @@ function valueDecode($Data)
     }
     //取得充分条件
     //不能丢失牌数
-    if($wings['type']==4)
+    if(isset($wings['type'])&&$wings['type']==4)
     {
         $wings['type']=2;
         $wings['data'][]=$wings['data'][1];
     }
     //四带一对需要切
-    if($X=4&&$wings['type']==2&&count($wings['data'])==1)
+    if(isset($wings['type'])&&$X==4&&$wings['type']==2&&count($wings['data'])==1)
     {
         $wings['type']=1;
         $wings['data'][]=$wings['data'][1];

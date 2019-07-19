@@ -22,7 +22,7 @@ require_once 'model_router.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 // gateway 进程，这里使用Text协议，可以用telnet测试
-$gateway = new Gateway("tcp://0.0.0.0:8080");
+$gateway = new Gateway("tcp://0.0.0.0:8081");
 // gateway名称，status方便查看
 $gateway->name = 'YourAppGateway';
 // gateway进程数
@@ -33,7 +33,7 @@ $gateway->lanIp = '127.0.0.1';
 // 则一般会使用4000 4001 4002 4003 4个端口作为内部通讯端口 
 $gateway->startPort = 2900;
 // 服务注册地址
-$gateway->registerAddress = '127.0.0.1:1238';
+$gateway->registerAddress = '127.0.0.1:1239';
 
 $gateway->router = function ($worker_connections, $client_connection, $cmd, $buffer)
 {

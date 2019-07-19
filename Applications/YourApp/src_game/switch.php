@@ -44,5 +44,43 @@ function switch_game($client_id,$mid,$data)
                 game_is_gaming($client_id);
                 break;
             }
+        case Message_Id::CS_Competition_SignUp_Id:
+            {
+                $Competition = new \Proto\CS_ComPetition_SignUp();
+                $Competition->parseFromString($data);
+                /**
+                 * 玩家报名
+                 * @param $user_data =>[
+                 *                      'competition_id'=>1,
+                 *                      'uiser_id'=>1,
+                 *                      'game_type'=>'ddz',
+                 *                      ]
+                 */
+                room_manager::singleton()->competition_sign_up($Competition);
+                break;
+            }
+        case Message_Id::CS_ComPetition_Group_Id:
+            {
+                $collname='gmae_competition';
+                $mongodb=mongo_db::singleton('func_system');
+                $filter = [
+                    'starttime'  => ['$gt' => date('Y-m-d H:i:s')] //条件：大于当前时间
+                ];
+                $queryWriteOps = [
+                    'projection'    => ['_id'   =>0],//不输出_id字段
+                    'sort'          => ['id'    =>1]//根据id字段排序 1是升序，-1是降序
+                ];
+                $rs = $mongodb->query($collname,$filter,$queryWriteOps);
+                $GameCom = new \Proto\SC_ComPetition_Group();
+                foreach ($rs as $data){
+                    $tmp = new \Proto\ComPetition();
+                    $tmp->setCompetitionId($rs[0]['id']);
+                    $tmp->setType($rs[0]['type']);
+                    $tmp->setStarttime($rs[0]['starttime']);
+                    $tmp->setNumber($rs[0]['number']);
+                    $GameCom->appendGroup($tmp->serializeToString());
+                }
+                send_notice_by_client_id($client_id,1,$rs);
+            }
     }
 }

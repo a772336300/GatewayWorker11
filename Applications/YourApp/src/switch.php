@@ -208,6 +208,7 @@ function message_switch($client_id,$mid,$data)
         $get_user=db_get_user_by_verify($cs_client_login->getPhone(),$cs_client_login->getPassword());
         //var_dump($get_user);
         $is_success=false;
+        $binded=0;
         if($get_user!=null)
         {
             $nowTime=date('Y-m-d h:i:s', time());
@@ -277,8 +278,14 @@ function message_switch($client_id,$mid,$data)
                 $sql="update bolaik_user.user_online set max_user= $connection_count,max_time='$time' where date_time='$date'";
                 db_query($sql);
             }
+            //判断是否绑定邀请码
+            $sql="SELECT agent_id FROM `bolaik_user`.`user_info` WHERE user_id=$uid";
+            $rs=db_query($sql);
+            if($rs[0]["agent_id"]!=""){
+                $binded=1;
+            }
         }
-        send_pack_login($client_id,$is_success);
+        send_pack_login($client_id,$is_success,$binded);
         return;
     }
     if($mid ==712)
@@ -335,6 +342,17 @@ function message_switch($client_id,$mid,$data)
                 send_pack_user_bag_info($client_id,$user_info_bag[0]);
                 //发送任务列表
                 get_user_task_list($_SESSION['uid']);
+                if($user_info['b_qq']==null){
+                    //获取绑定手机的BU奖励
+                    $bu=getBuRemain($_SESSION["phone"]);
+                    if(getBu($_SESSION["phone"],"015003A031B354",20)){
+                        send_user_coin_change1($_SESSION['uid'],$bu+20);
+                    }
+                    //修改状态
+                    $uid=$_SESSION['uid'];
+                    $sql="update `bolaik_user`.`user_info` set b_qq=1 where user_id='$uid'";
+                    db_query($sql);
+                }
                 break;
             }
         //游戏完成
@@ -451,7 +469,11 @@ function message_switch($client_id,$mid,$data)
                 db_user_update_bRealName($_SESSION['uid']);
                 send_pack_user_real_name($client_id,$is_success);
                 if($is_success){
-                    task_udpate_once($_SESSION['uid'],300034);
+//                    task_udpate_once($_SESSION['uid'],300034);
+                    $bu=getBuRemain($_SESSION["phone"]);
+                    if(getBu($_SESSION["phone"],"015003A004B357",30)){
+                        send_user_coin_change1($_SESSION['uid'],$bu+30);
+                    }
                 }
                 return;
             }
@@ -477,7 +499,11 @@ function message_switch($client_id,$mid,$data)
                 }
                 send_pack_user_wx($client_id,$is_success);
                 if($is_success){
-                    task_udpate_once($_SESSION['uid'],300033);
+//                    task_udpate_once($_SESSION['uid'],300033);
+                    $bu=getBuRemain($_SESSION["phone"]);
+                    if(getBu($_SESSION["phone"],"015003A032B358",20)){
+                        send_user_coin_change1($_SESSION['uid'],$bu+20);
+                    }
                 }
                 return;
             }

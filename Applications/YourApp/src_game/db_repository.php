@@ -26,3 +26,9 @@ function game_db_get_user_game_info($playerId,$recordBar)
     $player=$monodb->test->findOne(['uid'=>$playerId]);
     return $player;
 }
+function game_set_tack($playerId,$type,$count=1)
+{
+    //global $monodb;
+   // $player=$monodb->test->findOne(['uid'=>$playerId]);
+    //return $player;
+}

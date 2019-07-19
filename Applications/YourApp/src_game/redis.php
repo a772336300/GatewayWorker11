@@ -63,11 +63,20 @@ function redisInitRoom($playerIds,$channel,$channelNumber=-1){
             $redis->hSet($tableId,'rent',300);//房间使用费
             $redis->hSet($tableId,'capital',300);//最低本钱,锁定金币
     }
-    //房间玩家信息
     foreach ($playerIds as $playerId)
     {
-        $redis->lPush($tableId.':playerIds',$playerId);
+        //#test
+        //if($playerId!=10086)
+            $redis->lPush($tableId.':playerIds',$playerId);
     }
+//    //房间玩家信息
+//    foreach ($playerIds as $playerId)
+//    {
+//        //#test
+//        if($playerId==10086)
+//        $redis->lPush($tableId.':playerIds',$playerId);
+//    }
+
     return $tableId;
 }
 function redisSetBeginner($tableId)
@@ -113,5 +122,12 @@ function redisInitPlayers($playerIds,$table_id){
         $redis->hSet($playerId,'cards',$cardsId);
         $otherId=$redis->incr('otherINCR');
         $redis->hSet($playerId,'otherINCR',$otherId);
+
+
+        $redis->hSet('info_'.$playerId,'step',66);
+        $redis->hSet('info_'.$playerId,'name','测试xx');
+        $redis->hSet('info_'.$playerId,'gold',100000);
+        $redis->hSet('info_'.$playerId,'touxiang','https://www.workerman.net/img/workerman_logo.png');
+        $redis->hSet('info_'.$playerId,'level',66);
     }
 }
