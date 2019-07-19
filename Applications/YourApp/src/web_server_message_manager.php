@@ -67,7 +67,9 @@ function web_server_message_manager($data)
         }else if ($dataArr['modle']==2){
             if($dataArr['type']==1){//指定玩家添加新邮件
                 $uids=$dataArr["uids"];
-                foreach ($uids as $uid) {
+//                $uids.spli
+                $hello = explode(',',$uids);
+                foreach ($hello as $uid) {
                     if(Gateway::isUidOnline($uid)){
                         send_user_email_update($uid,$dataArr['data'],1);
                     }
