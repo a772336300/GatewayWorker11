@@ -74,13 +74,13 @@ function switch_game($client_id,$mid,$data)
                 $GameCom = new \Proto\SC_ComPetition_Group();
                 foreach ($rs as $data){
                     $tmp = new \Proto\ComPetition();
-                    $tmp->setCompetitionId($rs[0]['id']);
-                    $tmp->setType($rs[0]['type']);
-                    $tmp->setStarttime($rs[0]['starttime']);
-                    $tmp->setNumber($rs[0]['number']);
-                    $GameCom->appendGroup($tmp->serializeToString());
+                    $tmp->setCompetitionId($data->id);
+                    $tmp->setType($data->type);
+                    $tmp->setStarttime($data->starttime);
+                    $tmp->setNumber($data->number);
+                    $GameCom->appendGroup($tmp);
                 }
-                send_notice_by_client_id($client_id,1,$rs);
+                \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(Message_Id::SC_ComPetition_Group_Id,$GameCom->serializeToString()));
             }
     }
 }

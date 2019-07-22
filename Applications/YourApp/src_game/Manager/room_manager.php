@@ -56,29 +56,35 @@ final class room_manager{
      */
     function start_game_room(){
         $this->__timer_id_read=Timer::add(20,function (){
-            foreach ($this->rooms as $room){
-                foreach ($room as $tmp){
-                    if (strtotime(date("Y-m-d H:i:s")) == strtotime($tmp['starttime'])){
-                        //此处添加游戏启动代码
-                        /**
-                         * @var $params = [
-                         *           'is_last_card' => 1,
-                         *           'is_zi_mo' => 1,
-                         *           'is_gang_mo_pai' => 0,
-                         *           'is_qiang_gang_hu' => 0,
-                         *           'ming_gang_count' => 0,
-                         *           'an_gang_count' => 0,
-                         *           'is_hu_jue_zhang' => 0,
-                         *           'men_fen' => 2,
-                         *           'quan_fen' => 1,
-                         *           'hu_card' => 11,
-                         *           'is_ting' => 0,
-                         *           'flower_count' => 1,
-                         *           'mj_type' => 1,
-                         *           'play_count =>4
-                         *      ]
-                         */
-                        //$game = new game_xzdd();
+            if (isset($this->rooms)) {
+                foreach ($this->rooms as $room) {
+                    if(isset($room)) {
+                        foreach ($room as $tmp) {
+                            if (isset($tmp)) {
+                                if (strtotime(date("Y-m-d H:i:s")) == strtotime($tmp['starttime'])) {
+                                    //此处添加游戏启动代码
+                                    /**
+                                     * @var $params = [
+                                     *           'is_last_card' => 1,
+                                     *           'is_zi_mo' => 1,
+                                     *           'is_gang_mo_pai' => 0,
+                                     *           'is_qiang_gang_hu' => 0,
+                                     *           'ming_gang_count' => 0,
+                                     *           'an_gang_count' => 0,
+                                     *           'is_hu_jue_zhang' => 0,
+                                     *           'men_fen' => 2,
+                                     *           'quan_fen' => 1,
+                                     *           'hu_card' => 11,
+                                     *           'is_ting' => 0,
+                                     *           'flower_count' => 1,
+                                     *           'mj_type' => 1,
+                                     *           'play_count =>4
+                                     *      ]
+                                     */
+                                    //$game = new game_xzdd();
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -99,8 +105,8 @@ final class room_manager{
                 'sort'          => ['id'    =>1]//根据id字段排序 1是升序，-1是降序
         ];
         $rs = $mongodb->query($collname,$filter,$queryWriteOps);
-        foreach ($rs[0] as $data){
-            if (!isset($this->rooms[$data['id']])){
+        foreach ($rs as $data){
+            if (!isset($this->rooms[$data->id])){
                 $this->create_room($data);
             }
         }
@@ -119,28 +125,28 @@ final class room_manager{
      */
     function create_room($data)
     {
-        switch ($data['type'])
+        switch ($data->type)
         {
             case room_base::$room_type[0]:
-                $count = $data['number']/3;
+                $count = $data->number/3;
                 for ($i=0;$i<$count;$i++){
                     $tmproom = new room_base();
                     $tmproom->set_code(time());
-                    $tmproom->set_starttime($data['starttime']);
+                    $tmproom->set_starttime($data->starttime);
                     $tmproom->set_max(3);
-                    $tmproom->set_advanced($data['advanced']);
-                    self::$rooms[$data['id']][$tmproom->get_code()]=$tmproom;
+                    $tmproom->set_advanced($data->advanced);
+                    self::$rooms[$data->id][$tmproom->get_code()]=$tmproom;
                 }
                 break;
             case room_base::$room_type[1]:
-                $count = $data['number']/4;
+                $count = $data->number/4;
                 for ($i=0;$i<$count;$i++){
                     $tmproom = new room_base();
                     $tmproom->set_code(time());
-                    $tmproom->set_starttime($data['starttime']);
+                    $tmproom->set_starttime($data->starttime);
                     $tmproom->set_max(4);
-                    $tmproom->set_advanced($data['advanced']);
-                    $this->rooms[$data['id']][$tmproom->get_code()] = $tmproom;
+                    $tmproom->set_advanced($data->advanced);
+                    $this->rooms[$data->id][$tmproom->get_code()] = $tmproom;
                 }
                 break;
         }
