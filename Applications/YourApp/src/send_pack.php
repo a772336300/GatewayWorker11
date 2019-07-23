@@ -478,3 +478,11 @@ function send_user_bind_invited_code($uid,$code)
     $message->setCode($code);
     \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20026,$message->serializeToString()));
 }
+
+function send_pack_chase_info($uid,$content,$state)
+{
+    $object= new \Proto\SC_User_Chase_Info();
+    $object->setContent($content);
+    $object->setState($state);
+    \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20028,$object->serializeToString()));
+}

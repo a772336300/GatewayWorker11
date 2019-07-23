@@ -76,9 +76,12 @@ function web_server_message_manager($data)
                 }
 
             }
-
         }else if ($dataArr['modle']==3){
-
+            //跑马等信息修改
+            $message = new \Proto\SC_User_Chase_Info();
+            $message->setContent($dataArr['data']['content']);
+            $message->setState($dataArr['data']['state']);
+            \GatewayWorker\Lib\Gateway::sendToAll(my_pack(20027,$message->serializeToString()));
         }
         return;
 

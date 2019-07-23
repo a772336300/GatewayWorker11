@@ -7,23 +7,23 @@
 
 namespace Proto {
 /**
- * CS_User_Get_Attach message
+ * SC_User_Chase_Info message
  */
-class CS_User_Get_Attach extends \ProtobufMessage
+class SC_User_Chase_Info extends \ProtobufMessage
 {
     /* Field index constants */
-    const _ID = 1;
-    const TYPE = 2;
+    const CONTENT = 1;
+    const STATE = 2;
 
     /* @var array Field descriptors */
     protected static $fields = array(
-        self::_ID => array(
-            'name' => '_id',
+        self::CONTENT => array(
+            'name' => 'content',
             'required' => false,
             'type' => \ProtobufMessage::PB_TYPE_STRING,
         ),
-        self::TYPE => array(
-            'name' => 'type',
+        self::STATE => array(
+            'name' => 'state',
             'required' => false,
             'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
@@ -44,8 +44,8 @@ class CS_User_Get_Attach extends \ProtobufMessage
      */
     public function reset()
     {
-        $this->values[self::_ID] = null;
-        $this->values[self::TYPE] = null;
+        $this->values[self::CONTENT] = null;
+        $this->values[self::STATE] = null;
     }
 
     /**
@@ -59,69 +59,69 @@ class CS_User_Get_Attach extends \ProtobufMessage
     }
 
     /**
-     * Sets value of '_id' property
+     * Sets value of 'content' property
      *
      * @param string $value Property value
      *
      * @return null
      */
-    public function setId($value)
+    public function setContent($value)
     {
-        return $this->set(self::_ID, $value);
+        return $this->set(self::CONTENT, $value);
     }
 
     /**
-     * Returns value of '_id' property
+     * Returns value of 'content' property
      *
      * @return string
      */
-    public function getId()
+    public function getContent()
     {
-        $value = $this->get(self::_ID);
+        $value = $this->get(self::CONTENT);
         return $value === null ? (string)$value : $value;
     }
 
     /**
-     * Returns true if '_id' property is set, false otherwise
+     * Returns true if 'content' property is set, false otherwise
      *
      * @return boolean
      */
-    public function hasId()
+    public function hasContent()
     {
-        return $this->get(self::_ID) !== null;
+        return $this->get(self::CONTENT) !== null;
     }
 
     /**
-     * Sets value of 'type' property
+     * Sets value of 'state' property
      *
      * @param integer $value Property value
      *
      * @return null
      */
-    public function setType($value)
+    public function setState($value)
     {
-        return $this->set(self::TYPE, $value);
+        return $this->set(self::STATE, $value);
     }
 
     /**
-     * Returns value of 'type' property
+     * Returns value of 'state' property
      *
      * @return integer
      */
-    public function getType()
+    public function getState()
     {
-        $value = $this->get(self::TYPE);
+        $value = $this->get(self::STATE);
         return $value === null ? (integer)$value : $value;
     }
 
     /**
-     * Returns true if 'type' property is set, false otherwise
+     * Returns true if 'state' property is set, false otherwise
      *
      * @return boolean
      */
-    public function hasType()
+    public function hasState()
     {
-        return $this->get(self::TYPE) !== null;
+        return $this->get(self::STATE) !== null;
     }
 }
 }

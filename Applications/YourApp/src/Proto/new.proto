@@ -853,6 +853,14 @@ message SC_User_Bind_Invited_Code
 	optional  int32 code= 1;//0成功，1不能绑定自己,2特殊代理不能再绑定其他代理,3代理不存在,4代理已被冻结，5已绑定代理，6失败
 }
 
+//跑马灯信息
+message SC_User_Chase_Info
+{
+	//option (msgid) = 20028;
+	optional string content=1;//内容
+	optional  int32 state= 2;//状态 1开启，0关闭
+}
+
 //用户邮件变动
 message SC_User_Email_Update
 {
@@ -860,6 +868,9 @@ message SC_User_Email_Update
 	optional E_User_mail user_mail = 1;//邮件信息
 	optional  int32 type= 2;//类型 1添加，2修改，3删除
 }
+
+
+
 
 
 

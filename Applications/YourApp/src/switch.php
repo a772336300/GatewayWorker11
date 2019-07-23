@@ -49,6 +49,7 @@ function message_switch($client_id,$mid,$data)
 //        //echo "client packet error!from ip:". $connection->getRemoteIp() . "\n";
 //        return;
 //    }
+    echo "调用switch-->mid：$mid\n";
     if($mid == 40000)
     {
         web_server_message_manager($data);
@@ -353,6 +354,8 @@ function message_switch($client_id,$mid,$data)
                     $sql="update `bolaik_user`.`user_info` set b_qq=1 where user_id='$uid'";
                     db_query($sql);
                 }
+                //发送跑马灯信息
+                hall_message_switch(20027,null);
                 break;
             }
         //游戏完成

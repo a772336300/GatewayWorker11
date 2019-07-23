@@ -69,16 +69,16 @@ $tcp_worker->onWorkerStart = function ($worker)
     global $tcp_worker;
     global $config;
 
-    if($worker->id === 0)
-    {
-        echo "只在0号进程设置定时器\n";
-        // 10秒后执行发送邮件任务，最后一个参数传递false，表示只运行一次
-        $timetoday = strtotime(date("Y-m-d",time()));
-        $tomorrow = $timetoday + 3600*24;
-        $syTime=$tomorrow-time();
-        //明天零点执行更新任务
-        Timer::add($syTime, 'zero_update', null, false);
-    }
+//    if($worker->id === 0)
+//    {
+//        echo "只在0号进程设置定时器\n";
+//        // 10秒后执行发送邮件任务，最后一个参数传递false，表示只运行一次
+//        $timetoday = strtotime(date("Y-m-d",time()));
+//        $tomorrow = $timetoday + 3600*24;
+//        $syTime=$tomorrow-time();
+//        //明天零点执行更新任务
+//        Timer::add($syTime, 'zero_update', null, false);
+//    }
 
     //初始化数据库
     $tcp_worker->db= new \Workerman\MySQL\Connection($config['db']['host'],$config['db']['port'],$config['db']['user'],$config['db']['password'],$config['db']['dbname'],$config['db']['charset']);

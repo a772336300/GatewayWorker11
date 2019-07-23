@@ -92,7 +92,7 @@ function hall_message_switch($mid,$data){
             print_r($rs->toArray());
             send_pack_user_mail_read($uid,true);
             break;
-        //一键删除
+        //一键删除邮件
         case 20007:
             $user_mail_delete = new \Proto\CS_User_Mail_Delete();
             $user_mail_delete->parseFromString($data);
@@ -511,6 +511,23 @@ function hall_message_switch($mid,$data){
             }
             send_user_bind_invited_code($uid,$code);
             break;
+        //获取跑马灯信息
+        case 20027:
+            echo "\n---------- 获取跑马灯信息 -----------\n";
+            $collname="chase_config";
+            $filter = [
+                "state"=>1
+            ];
+            $queryWriteOps = [
+                "limit"=>1
+            ];
+            $rs = $hall_log->query($collname, $filter, $queryWriteOps);
+            echo "最终输出：\n";
+            print_r($rs);
+            if(count($rs)>0){
+                send_pack_chase_info($uid,$rs[0]->content,$rs[0]->state);
+            }
+            break;
     }
 }
 
@@ -751,7 +768,7 @@ function zero_update(){
     echo "进入定时器任务$nowTime\n";
     zero_update_task();
 
-    Timer::add(24*60*60, 'zero_update', null, false);
+//    Timer::add(24*60*60, 'zero_update', null, false);
 //    Timer::add(30, 'zero_update', null, false);
 }
 
