@@ -314,7 +314,7 @@ function hall_message_switch($mid,$data){
 //
 //                }
                 if($code==0){
-                    add_user_packet($good->prop_id,$uid,$hall_log,$hall_config,$_SESSION['phone']);
+                    add_user_packet($good->prop_id,$uid,$_SESSION['phone']);
                 }
             }else{
                 $code=1;
@@ -361,7 +361,7 @@ function hall_message_switch($mid,$data){
 
                     for($index=0;$index<count($detail);$index++){
                         $prop_id=$detail[$index];
-                        add_user_packet($prop_id,$uid,$hall_log,$hall_config,$_SESSION['phone']);
+                        add_user_packet($prop_id,$uid,$_SESSION['phone']);
                     }
                 }else if ($use_type==4){
                     //跳转UI 如：比赛场门票，点报名后数量-num
@@ -453,7 +453,7 @@ function hall_message_switch($mid,$data){
                 //添加背包信息
                 $prop_ids=$rs[0]->attach;
                 foreach ($prop_ids as $prop_id) {
-                    add_user_packet($prop_id,$uid,$hall_log,$hall_config,$_SESSION['phone']);
+                    add_user_packet($prop_id,$uid,$_SESSION['phone']);
                 }
             }
             send_user_get_attach($uid,$code);
@@ -618,7 +618,10 @@ function use_shiwuquan($user_id,$packet_good,$user_name,$user_phone,$u_addr){
  * @param $hall_log
  * @param $hall_config
  */
-function add_user_packet($prop_id,$uid,$hall_log,$hall_config,$phone){
+function add_user_packet($prop_id,$uid,$phone,$num=1){
+    $hall_config = mongo_db::singleton("hall_config");
+    $hall_log = mongo_db::singleton("hall_log");
+
     $collname="prop_config";
     $filter = [
         "prop_id" => (int)$prop_id
@@ -630,7 +633,7 @@ function add_user_packet($prop_id,$uid,$hall_log,$hall_config,$phone){
         $good=$rs[0];
         if($good->use_type==5){
             //获得联欢币
-            $sql="update user_money set gold=gold+$good->detail where uid=$uid";
+            $sql="update user_money set gold=gold+($good->detail*$num) where uid=$uid";
             db_query($sql);
             send_user_coin_change($uid,$phone);
         }else{
@@ -657,7 +660,7 @@ function add_user_packet($prop_id,$uid,$hall_log,$hall_config,$phone){
                         $over_time=$rs[0]->end_time;
                     }
                 }
-                $good->num=1;
+                $good->num=$num;
                 $good->over_time=$over_time;
                 $rows=[['uid'=>$uid,'prop_id'=>$good->prop_id,'name'=>$good->name,'des'=>$good->des,'img'=>$good->img,'active_id'=>$good->active_id,'prop_type'=>$good->prop_type,'use_type'=>$good->use_type,'detail'=>$good->detail,'active_time'=>$good->active_time,'duidie'=>$good->duidie,'mall_type'=>$good->mall_type,'price_type'=>$good->price_type,'price'=>$good->price,'num'=>1,'over_time'=>$over_time,'oper_id'=>$good->oper_id]];
                 $hall_log->insert($collname, $rows);
@@ -688,7 +691,7 @@ function add_user_packet($prop_id,$uid,$hall_log,$hall_config,$phone){
                     $good->over_time=$newTime;
                 }else{
                     //加数量
-                    $good->num=$good->num+1;
+                    $good->num=$good->num+$num;
                     $updates = [
                         [
                             "q"     => ["prop_id" => $good->prop_id,
