@@ -27,7 +27,7 @@ final class room_manager{
         $this->user_ids=null;
         $this->rooms=null;          //房间
         $this->__time_id_read=Timer::add(20,function (){
-            $this->room_loop();
+         //   $this->room_loop();
         },true);
     }
 

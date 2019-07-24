@@ -32,3 +32,19 @@ function game_set_tack($playerId,$type,$count=1)
    // $player=$monodb->test->findOne(['uid'=>$playerId]);
     //return $player;
 }
+function game_db_user_liansheng_over($playId)
+{
+
+}
+function game_db_user_liansheng_add($playId)
+{
+
+}
+function game_db_user_liansheng_count($playId)
+{
+    return null;
+}
+function game_db_give_jiangli($winCount)
+{
+    return null;
+}

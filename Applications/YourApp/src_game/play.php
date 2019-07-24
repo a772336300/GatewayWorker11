@@ -270,7 +270,7 @@ function initRoomState($roomId,$compareValue,$currentValue)
     $redis->hSet($roomId,'compareValue',json_encode($compareValue));
     $redis->hSet($roomId,'currentValue',json_encode($currentValue));
 }
-function roomTick($roomId,$times,$timeSecond=1000000000000)
+function roomTick($roomId,$times,$timeSecond=1000000000)
 {
     global $redis;
     $tick=$redis->hIncrBy($roomId,'tick',$times);
@@ -394,6 +394,7 @@ function jiaodizhu($playerId,$roomId,$value,$valueCode=null)
     global $redis;
     //叫地主类型
     //说明还没人叫地主
+    echo "xx$playerId:jao";
     if ($value['data']){
 
         $redis->hSet($playerId, 'chance', false);
@@ -433,6 +434,19 @@ function jiaodizhu($playerId,$roomId,$value,$valueCode=null)
         game_send_play($roomId,$playerId,Play_Data_Type::jiaodizhu,0);
         if ($redis->hGet($NextId, 'chance') == false)
         {
+            if($redis->hGet($roomId,'times')>0)
+            {
+                $owner=$redis->hGet($roomId, 'currant_value_owner');
+                $tick_add=0;
+                if($NextId==$owner)
+                {
+                    beginPlayCard($playerId, $roomId, 1);
+                }
+                else
+                {
+                    beginPlayCard($playerId, $roomId, 2);
+                }
+            }
             //没人叫地主重新发牌重新选人
             if($redis->hGet($roomId,'repeat')>=10)
             {
@@ -666,13 +680,13 @@ function experienceAndGold($roomId)
         if($player==$dizhu)
         {
             $result[$player]['gold']=100*$ratio;
+            $result[$player]['liansheng']=game_lianshengjiangli($ratio,0.5*$ratio+0.5);
             continue;
         }
         $result[$player]['gold']=(-1)*100*$ratio;
-
+        $result[$player]['liansheng']=game_lianshengjiangli($ratio,-0.5*$ratio+0.5);
     }
     return $result;
-
 }
 //function experienceAndGold($roomId,$winner)
 //{
@@ -1217,7 +1231,7 @@ function compareValueFordizhu($messageValue,$spacePlayerValue)
 {
     if($spacePlayerValue['type']==Play_Data_Type::jiaodizhu&&$messageValue['type']==Play_Data_Type::jiaodizhu)
     {
-        if($spacePlayerValue['data']<=$messageValue['data'])
+        if($spacePlayerValue['data']<$messageValue['data']||$messageValue['data']==0)
             return 1;
         else
             return 0;
@@ -1226,21 +1240,13 @@ function compareValueFordizhu($messageValue,$spacePlayerValue)
 }
 function valueDecode($Data)
 {
-    //使用result转化结果？
-    //直接返回结果
     if($Data==null)
         return null;
-    if(is_array($Data)&&count($Data)&&is_array($Data[0])&&is_array($Data[1]))
-    {
-        $result=valueDecodePart($Data);
-        return valueDecodePart($Data);
-    }
     //$Data为出牌字符串
     //$index是否为数值？？ father ?mother
     //过滤花色
     $data=preg_replace('/[rwyb*]/','',$Data);
     $data=explode(',',$data);
-    //rsort($data);
     //确定x,x最高优先级
     //确定begin和y，次高优先级
     //确定wings最后优先级
@@ -1264,33 +1270,28 @@ function valueDecode($Data)
         }
 
     }
-    if(count($data)>=8)
-    {
-        //先看是否是飞机，得出飞机转码
-        $result=valueDecodeUp($tmp);
-        if($result!=false)
-            return $result;
-    }
+
     $X=max($tmp);
     $Y=0;
     $begin=0;
     $wings=array();
     //识别一连二连三连四连 并可带翅膀,正确出牌应该只有一个最大区域
-    foreach($tmp as $key=>$value)
+    foreach ($tmp as $key=>$value)
     {
         //识别连值，设置第一个x区域开始值
         if($value==$X&&$begin==0)
         {
             $begin=$key;
         }
+
         //第一个x区域计数
-        if($value==$X&&$key==$begin-$Y)
+        if($value==$X&&$key==$Y+$begin)
         {
             $Y++;
             continue;
         }
         //非第一个x连续区域，加入wings
-        if(!array_key_exists('type',$wings))
+        if (!array_key_exists('type',$wings))
         {
             $wings['type']=$value;
         }
@@ -1298,24 +1299,100 @@ function valueDecode($Data)
             return false;
         $wings['data'][]=$key;
     }
-    //取得充分条件
-    //不能丢失牌数
-    if(isset($wings['type'])&&$wings['type']==4)
-    {
-        $wings['type']=2;
-        $wings['data'][]=$wings['data'][1];
-    }
-    //四带一对需要切
-    if(isset($wings['type'])&&$X==4&&$wings['type']==2&&count($wings['data'])==1)
-    {
-        $wings['type']=1;
-        $wings['data'][]=$wings['data'][1];
-    }
-    //飞机带炸弹？？12 4>16
-    //寻找最大主体区域
-    // 555 666 777 888 9999
-    return array('type'=>['X'=>$X,'Y'=>$Y-1],'begin'=>$begin-$Y+1,'wings'=>$wings);
+    return array('type'=>['X'=>$X,'Y'=>$Y-1],'begin'=>$begin,'wings'=>$wings);
 }
+//function valueDecode($Data)
+//{
+//    //使用result转化结果？
+//    //直接返回结果
+//    if($Data==null)
+//        return null;
+//    if(is_array($Data)&&count($Data)&&is_array($Data[0])&&is_array($Data[1]))
+//    {
+//        $result=valueDecodePart($Data);
+//        return valueDecodePart($Data);
+//    }
+//    //$Data为出牌字符串
+//    //$index是否为数值？？ father ?mother
+//    //过滤花色
+//    $data=preg_replace('/[rwyb*]/','',$Data);
+//    $data=explode(',',$data);
+//    //rsort($data);
+//    //确定x,x最高优先级
+//    //确定begin和y，次高优先级
+//    //确定wings最后优先级
+//    if($data==null)
+//        return false;
+//    sort($data);
+//    //先去除重复的
+//    //存入哈希表
+//    //键名为牌数值，键值为牌数量
+//    $tmp=array();
+//    foreach ($data as $item)
+//    {
+//        if(array_key_exists($item,$tmp))
+//        {
+//            //如果存在则值加一
+//            $tmp[$item]++;
+//        }
+//        else
+//        {
+//            $tmp[$item]=1;
+//        }
+//
+//    }
+//    if(count($data)>=8)
+//    {
+//        //先看是否是飞机，得出飞机转码
+//        $result=valueDecodeUp($tmp);
+//        if($result!=false)
+//            return $result;
+//    }
+//    $X=max($tmp);
+//    $Y=0;
+//    $begin=0;
+//    $wings=array();
+//    //识别一连二连三连四连 并可带翅膀,正确出牌应该只有一个最大区域
+//    foreach($tmp as $key=>$value)
+//    {
+//        //识别连值，设置第一个x区域开始值
+//        if($value==$X&&$begin==0)
+//        {
+//            $begin=$key;
+//        }
+//        //第一个x区域计数
+//        if($value==$X&&$key==$begin-$Y)
+//        {
+//            $Y++;
+//            continue;
+//        }
+//        //非第一个x连续区域，加入wings
+//        if(!array_key_exists('type',$wings))
+//        {
+//            $wings['type']=$value;
+//        }
+//        if($wings['type']!=$value)
+//            return false;
+//        $wings['data'][]=$key;
+//    }
+//    //取得充分条件
+//    //不能丢失牌数
+//    if(isset($wings['type'])&&$wings['type']==4)
+//    {
+//        $wings['type']=2;
+//        $wings['data'][]=$wings['data'][1];
+//    }
+//    //四带一对需要切
+//    if(isset($wings['type'])&&$X==4&&$wings['type']==2&&count($wings['data'])==1)
+//    {
+//        $wings['type']=1;
+//        $wings['data'][]=$wings['data'][1];
+//    }
+//    //飞机带炸弹？？12 4>16
+//    //寻找最大主体区域
+//    // 555 666 777 888 9999
+//    return array('type'=>['X'=>$X,'Y'=>$Y-1],'begin'=>$begin-$Y+1,'wings'=>$wings);
+//}
 function valueDecodePart($Data)
 {
     $body=$Data[0];
@@ -1425,7 +1502,7 @@ function valueDecodePartWings($bodyCount,$wingsData)
 function valueDecodeUp($tmp)
 {
     //最大主体不适用
-    rsort($data);
+    //rsort($data);
     //小于8张不找最大面积
     $container=[0,0,0];
     $closed=1;
@@ -1469,7 +1546,7 @@ function valueDecodeUp($tmp)
     $count=0;
     foreach($tmp as $key=>$value)
     {
-        if($key>$container[3]||$key<$container[3]-$container[2])
+        if($key>$container[2]||$key<$container[2]-$container[1])
         {
             $tmp1[$key]=$value;
             $count+=$value;
@@ -1791,4 +1868,17 @@ function game_is_gaming($client_id)
     }
     game_send_is_gaming($client_id,false);
 
+}
+function game_lianshengjiangli($playId,$isWin)
+{
+    if(!$isWin)
+    {
+        game_db_user_liansheng_over($playId);
+    }
+    if($isWin)
+    {
+        game_db_user_liansheng_add($playId);
+    }
+    $winCount=game_db_user_liansheng_count($playId);
+    return array_merge(game_db_give_jiangli($winCount),['count'=>$winCount]);
 }

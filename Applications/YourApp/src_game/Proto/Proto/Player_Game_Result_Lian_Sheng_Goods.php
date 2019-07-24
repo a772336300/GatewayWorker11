@@ -7,23 +7,23 @@
 
 namespace Proto {
 /**
- * SC_ComPetition_Start message
+ * Goods message embedded in Lian_Sheng/Player_Game_Result message
  */
-class SC_ComPetition_Start extends \ProtobufMessage
+class Player_Game_Result_Lian_Sheng_Goods extends \ProtobufMessage
 {
     /* Field index constants */
-    const COMPETITION_ID = 1;
-    const GAME_TYPE = 2;
+    const ID = 1;
+    const COUNT = 2;
 
     /* @var array Field descriptors */
     protected static $fields = array(
-        self::COMPETITION_ID => array(
-            'name' => 'competition_id',
+        self::ID => array(
+            'name' => 'id',
             'required' => false,
             'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
-        self::GAME_TYPE => array(
-            'name' => 'game_type',
+        self::COUNT => array(
+            'name' => 'count',
             'required' => false,
             'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
@@ -44,8 +44,8 @@ class SC_ComPetition_Start extends \ProtobufMessage
      */
     public function reset()
     {
-        $this->values[self::COMPETITION_ID] = null;
-        $this->values[self::GAME_TYPE] = null;
+        $this->values[self::ID] = null;
+        $this->values[self::COUNT] = null;
     }
 
     /**
@@ -59,69 +59,69 @@ class SC_ComPetition_Start extends \ProtobufMessage
     }
 
     /**
-     * Sets value of 'competition_id' property
+     * Sets value of 'id' property
      *
      * @param integer $value Property value
      *
      * @return null
      */
-    public function setCompetitionId($value)
+    public function setId($value)
     {
-        return $this->set(self::COMPETITION_ID, $value);
+        return $this->set(self::ID, $value);
     }
 
     /**
-     * Returns value of 'competition_id' property
+     * Returns value of 'id' property
      *
      * @return integer
      */
-    public function getCompetitionId()
+    public function getId()
     {
-        $value = $this->get(self::COMPETITION_ID);
+        $value = $this->get(self::ID);
         return $value === null ? (integer)$value : $value;
     }
 
     /**
-     * Returns true if 'competition_id' property is set, false otherwise
+     * Returns true if 'id' property is set, false otherwise
      *
      * @return boolean
      */
-    public function hasCompetitionId()
+    public function hasId()
     {
-        return $this->get(self::COMPETITION_ID) !== null;
+        return $this->get(self::ID) !== null;
     }
 
     /**
-     * Sets value of 'game_type' property
+     * Sets value of 'count' property
      *
      * @param integer $value Property value
      *
      * @return null
      */
-    public function setGameType($value)
+    public function setCount($value)
     {
-        return $this->set(self::GAME_TYPE, $value);
+        return $this->set(self::COUNT, $value);
     }
 
     /**
-     * Returns value of 'game_type' property
+     * Returns value of 'count' property
      *
      * @return integer
      */
-    public function getGameType()
+    public function getCount()
     {
-        $value = $this->get(self::GAME_TYPE);
+        $value = $this->get(self::COUNT);
         return $value === null ? (integer)$value : $value;
     }
 
     /**
-     * Returns true if 'game_type' property is set, false otherwise
+     * Returns true if 'count' property is set, false otherwise
      *
      * @return boolean
      */
-    public function hasGameType()
+    public function hasCount()
     {
-        return $this->get(self::GAME_TYPE) !== null;
+        return $this->get(self::COUNT) !== null;
     }
 }
 }

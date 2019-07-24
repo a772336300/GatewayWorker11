@@ -159,6 +159,19 @@ message Player_Game_Result
 	optional int32 levelUp = 2;
 	optional int32 gold = 3;
 	optional string unPlayCards = 4;
+	message Lian_Sheng
+	{
+		optional int32 count = 1;//连胜次数
+		optional int32 base_BU = 2;//胜利BU奖励
+		optional int32 extra_BU = 3;//额外BU奖励
+		message Goods
+		{
+			optional int32 id=1;
+			optional int32 count=2;
+		}
+		repeated Goods extra_goods=4;
+	}
+	optional Lian_Sheng lianSheng = 5;
 	//得分加倍
 }
 message SC_Game_Result

@@ -1,6 +1,6 @@
 <?php
 /**
- * Auto generated from doudizhu.proto at 2019-07-15 17:21:58
+ * Auto generated from doudizhu.proto at 2019-07-24 15:16:42
  *
  * proto package
  */
@@ -13,7 +13,7 @@ class CS_ComPetition_SignUp extends \ProtobufMessage
 {
     /* Field index constants */
     const COMPETITION_ID = 1;
-    const UISER_ID = 2;
+    const USER_ID = 2;
     const GAME_TYPE = 3;
 
     /* @var array Field descriptors */
@@ -23,8 +23,8 @@ class CS_ComPetition_SignUp extends \ProtobufMessage
             'required' => false,
             'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
-        self::UISER_ID => array(
-            'name' => 'uiser_id',
+        self::USER_ID => array(
+            'name' => 'user_id',
             'required' => false,
             'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
@@ -51,7 +51,7 @@ class CS_ComPetition_SignUp extends \ProtobufMessage
     public function reset()
     {
         $this->values[self::COMPETITION_ID] = null;
-        $this->values[self::UISER_ID] = null;
+        $this->values[self::USER_ID] = null;
         $this->values[self::GAME_TYPE] = null;
     }
 
@@ -99,36 +99,36 @@ class CS_ComPetition_SignUp extends \ProtobufMessage
     }
 
     /**
-     * Sets value of 'uiser_id' property
+     * Sets value of 'user_id' property
      *
      * @param integer $value Property value
      *
      * @return null
      */
-    public function setUiserId($value)
+    public function setUserId($value)
     {
-        return $this->set(self::UISER_ID, $value);
+        return $this->set(self::USER_ID, $value);
     }
 
     /**
-     * Returns value of 'uiser_id' property
+     * Returns value of 'user_id' property
      *
      * @return integer
      */
-    public function getUiserId()
+    public function getUserId()
     {
-        $value = $this->get(self::UISER_ID);
+        $value = $this->get(self::USER_ID);
         return $value === null ? (integer)$value : $value;
     }
 
     /**
-     * Returns true if 'uiser_id' property is set, false otherwise
+     * Returns true if 'user_id' property is set, false otherwise
      *
      * @return boolean
      */
-    public function hasUiserId()
+    public function hasUserId()
     {
-        return $this->get(self::UISER_ID) !== null;
+        return $this->get(self::USER_ID) !== null;
     }
 
     /**

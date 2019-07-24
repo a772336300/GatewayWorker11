@@ -1,6 +1,6 @@
 <?php
 /**
- * Auto generated from doudizhu.proto at 2019-07-15 17:21:59
+ * Auto generated from doudizhu.proto at 2019-07-24 15:16:42
  *
  * proto package
  */
@@ -16,6 +16,7 @@ class Player_Game_Result extends \ProtobufMessage
     const LEVELUP = 2;
     const GOLD = 3;
     const UNPLAYCARDS = 4;
+    const LIANSHENG = 5;
 
     /* @var array Field descriptors */
     protected static $fields = array(
@@ -39,6 +40,11 @@ class Player_Game_Result extends \ProtobufMessage
             'required' => false,
             'type' => \ProtobufMessage::PB_TYPE_STRING,
         ),
+        self::LIANSHENG => array(
+            'name' => 'lianSheng',
+            'required' => false,
+            'type' => '\Proto\Player_Game_Result_Lian_Sheng'
+        ),
     );
 
     /**
@@ -60,6 +66,7 @@ class Player_Game_Result extends \ProtobufMessage
         $this->values[self::LEVELUP] = null;
         $this->values[self::GOLD] = null;
         $this->values[self::UNPLAYCARDS] = null;
+        $this->values[self::LIANSHENG] = null;
     }
 
     /**
@@ -202,6 +209,38 @@ class Player_Game_Result extends \ProtobufMessage
     public function hasUnPlayCards()
     {
         return $this->get(self::UNPLAYCARDS) !== null;
+    }
+
+    /**
+     * Sets value of 'lianSheng' property
+     *
+     * @param \Proto\Player_Game_Result_Lian_Sheng $value Property value
+     *
+     * @return null
+     */
+    public function setLianSheng(\Proto\Player_Game_Result_Lian_Sheng $value=null)
+    {
+        return $this->set(self::LIANSHENG, $value);
+    }
+
+    /**
+     * Returns value of 'lianSheng' property
+     *
+     * @return \Proto\Player_Game_Result_Lian_Sheng
+     */
+    public function getLianSheng()
+    {
+        return $this->get(self::LIANSHENG);
+    }
+
+    /**
+     * Returns true if 'lianSheng' property is set, false otherwise
+     *
+     * @return boolean
+     */
+    public function hasLianSheng()
+    {
+        return $this->get(self::LIANSHENG) !== null;
     }
 }
 }

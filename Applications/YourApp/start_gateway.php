@@ -22,7 +22,7 @@ require_once 'model_router.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 // gateway 进程，这里使用Text协议，可以用telnet测试
-$gateway = new Gateway("tcp://0.0.0.0:8080");
+$gateway = new Gateway("tcp://0.0.0.0:8081");
 // gateway名称，status方便查看
 $gateway->name = 'YourAppGateway';
 // gateway进程数
