@@ -396,6 +396,10 @@ function hall_message_switch($mid,$data){
                     //1添加，2修改，3删除
                     send_user_packet_update($uid,$packet_good,2);
                 }
+                //添加道具使用记录
+                $nowTime=date('Y-m-d h:i:s', time());
+                $rows=[['uid'=>$uid,'phone'=>$_SESSION['phone'],'prop_id'=>$packet_good->prop_id,'name'=>$packet_good->name,'num'=>1,'add_time'=>$nowTime]];
+                $hall_log->insert("use_goods_log", $rows);
             }
             send_user_use_goods($uid,$code);
             break;
