@@ -89,7 +89,7 @@ $tcp_worker->onWorkerStart = function ($worker)
    // $monodb = new MongoDB\Client();
     //$monodb= new MongoDB\Client('mongodb+srv://myTester:xyz123@127.0.0.1:27017/test?retryWrites=true&w=majority');
     //$monodb_test = $monodb->test;
-    room_manager::singleton()->start_game_room();
+    //room_manager::singleton()->start_game_room();
 };
 
 

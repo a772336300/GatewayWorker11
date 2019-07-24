@@ -436,16 +436,17 @@ function jiaodizhu($playerId,$roomId,$value,$valueCode=null)
         {
             if($redis->hGet($roomId,'times')>0)
             {
-                $owner=$redis->hGet($roomId, 'currant_value_owner');
-                $tick_add=0;
+                $owner=$redis->hGet($roomId, 'dizhu');
                 if($NextId==$owner)
                 {
-                    beginPlayCard($playerId, $roomId, 1);
+                    beginPlayCard($NextId, $roomId, 1);
                 }
                 else
                 {
-                    beginPlayCard($playerId, $roomId, 2);
+                    $NextNextId = $redis->lIndex($roomId . ':playerIds', ((int)$tick+1) % 3);
+                    beginPlayCard($NextNextId, $roomId, 2);
                 }
+                return;
             }
             //没人叫地主重新发牌重新选人
             if($redis->hGet($roomId,'repeat')>=10)

@@ -46,6 +46,7 @@ function switch_game($client_id,$mid,$data)
             }
         case Message_Id::CS_Competition_SignUp_Id:
             {
+                break;
                 $Competition = new \Proto\CS_ComPetition_SignUp();
                 $Competition->parseFromString($data);
                 /**
@@ -61,6 +62,7 @@ function switch_game($client_id,$mid,$data)
             }
         case Message_Id::CS_ComPetition_Group_Id:
             {
+                break;
                 $collname='gmae_competition';
                 $mongodb=mongo_db::singleton('func_system');
                 $filter = [
