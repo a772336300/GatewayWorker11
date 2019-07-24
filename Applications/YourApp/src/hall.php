@@ -314,7 +314,7 @@ function hall_message_switch($mid,$data){
 //
 //                }
                 if($code==0){
-                    add_user_packet($good->prop_id,$uid,$_SESSION['phone']);
+                    add_user_packet($good->prop_id,$uid,$_SESSION['phone'],"商城购买商品");
                 }
             }else{
                 $code=1;
@@ -361,7 +361,7 @@ function hall_message_switch($mid,$data){
 
                     for($index=0;$index<count($detail);$index++){
                         $prop_id=$detail[$index];
-                        add_user_packet($prop_id,$uid,$_SESSION['phone']);
+                        add_user_packet($prop_id,$uid,$_SESSION['phone'],"使用道具");
                     }
                 }else if ($use_type==4){
                     //跳转UI 如：比赛场门票，点报名后数量-num
@@ -453,7 +453,7 @@ function hall_message_switch($mid,$data){
                 //添加背包信息
                 $prop_ids=$rs[0]->attach;
                 foreach ($prop_ids as $prop_id) {
-                    add_user_packet($prop_id,$uid,$_SESSION['phone']);
+                    add_user_packet($prop_id,$uid,$_SESSION['phone'],"领取附件");
                 }
             }
             send_user_get_attach($uid,$code);
@@ -615,10 +615,10 @@ function use_shiwuquan($user_id,$packet_good,$user_name,$user_phone,$u_addr){
 /**添加道具到用户背包
  * @param $good
  * @param $uid
- * @param $hall_log
- * @param $hall_config
+ * @param $phone
+ * @param $des 描述，如：商城购买,使用道具,比赛奖励,领取附件
  */
-function add_user_packet($prop_id,$uid,$phone,$num=1){
+function add_user_packet($prop_id,$uid,$phone,$des,$num=1){
     $hall_config = mongo_db::singleton("hall_config");
     $hall_log = mongo_db::singleton("hall_log");
 
@@ -631,6 +631,10 @@ function add_user_packet($prop_id,$uid,$phone,$num=1){
     $rs = $hall_config->query($collname, $filter, $queryWriteOps);
     if(count($rs)>0){
         $good=$rs[0];
+        //添加道具获得记录
+        $nowTime=date('Y-m-d h:i:s', time());
+        $rows=[['uid'=>$uid,'phone'=>$phone,'prop_id'=>$good->prop_id,'name'=>$good->name,'num'=>$num,'des'=>$des,'add_time'=>$nowTime]];
+        $hall_log->insert("get_goods_log", $rows);
         if($good->use_type==5){
             //获得联欢币
             $sql="update user_money set gold=gold+($good->detail*$num) where uid=$uid";
