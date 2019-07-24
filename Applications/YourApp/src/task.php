@@ -170,12 +170,9 @@ function task_udpate_game($play_game_result,$uid)
             break;
     }
 }
-function update($taskIds,$value,$uid,$gameTime){
+function update($taskIds,$value,$uid,$gameTime=60){
     //更新分数任务
     //查询任务
-    if($gameTime==null){
-        $gameTime=60;
-    }
     $sql="select * from func_system.user_task where user_id=$uid and task_id in $taskIds ";
     $user_tasks=db_query($sql);
     global $tcp_worker;
