@@ -1,6 +1,7 @@
 <?php
 $default_model= 'YourAppBusinessWorker';
-$models = ['YourAppBusinessWorker','game_worker'];
+//$models = ['YourAppBusinessWorker','game_worker'];
+$models = ['YourAppBusinessWorker'];
 $model_router = [
     1=>'game_worker',
     2=>'game_worker',

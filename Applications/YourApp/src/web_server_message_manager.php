@@ -1,4 +1,5 @@
 <?php
+use MongoDB\BSON\ObjectID;
 function web_server_message_manager($data)
 {
     global $task_sign_map;
@@ -66,21 +67,39 @@ function web_server_message_manager($data)
 
         }else if ($dataArr['modle']==2){
             if($dataArr['type']==1){//指定玩家添加新邮件
-                $uids=$dataArr["uids"];
-//                $uids.spli
-                $hello = explode(',',$uids);
-                foreach ($hello as $uid) {
-                    if(Gateway::isUidOnline($uid)){
-                        send_user_email_update($uid,$dataArr['data'],1);
+                $_id=$dataArr["_id"];
+                $hall_config = mongo_db::singleton("hall_config");
+                $filter = [
+                    "_id"=>new ObjectId($dataArr['_id'])
+                ];
+                $rmsg = $hall_config->query("sys_mail", $filter, []);
+                $data=$rmsg[0];
+                $data->sid=$data->id;
+                $data->isread=0;
+                $data->isdelete=false;
+                $data->get_attach=false;
+                if($data->uid!=""){
+                    $hello = explode(',',$data->uid);
+                    foreach ($hello as $uid) {
+                        if(Gateway::isUidOnline($uid)){
+                            send_user_email_update($uid,$data,1);
+                        }
                     }
                 }
-
             }
         }else if ($dataArr['modle']==3){
             //跑马等信息修改
+            $hall_config = mongo_db::singleton("hall_config");
+            $filter = [
+                "_id"=>new ObjectId($dataArr['_id'])
+            ];
+            $queryWriteOps = [
+            ];
+            $rmsg = $hall_config->query("chase_config", $filter, $queryWriteOps);
+
             $message = new \Proto\SC_User_Chase_Info();
-            $message->setContent($dataArr['data']['content']);
-            $message->setState($dataArr['data']['state']);
+            $message->setContent($rmsg[0]->content);
+            $message->setState($rmsg[0]->state);
             \GatewayWorker\Lib\Gateway::sendToAll(my_pack(20027,$message->serializeToString()));
         }
         return;
