@@ -1,5 +1,6 @@
 <?php
 use MongoDB\BSON\ObjectID;
+use \GatewayWorker\Lib\Gateway;
 function web_server_message_manager($data)
 {
     global $task_sign_map;
@@ -75,14 +76,17 @@ function web_server_message_manager($data)
                 $rmsg = $hall_config->query("sys_mail", $filter, []);
                 $data=$rmsg[0];
                 $data->sid=$data->id;
-                $data->isread=0;
-                $data->isdelete=false;
-                $data->get_attach=false;
                 if($data->uid!=""){
                     $hello = explode(',',$data->uid);
                     foreach ($hello as $uid) {
                         if(Gateway::isUidOnline($uid)){
-                            send_user_email_update($uid,$data,1);
+                            $hall_log = mongo_db::singleton("hall_log");
+                            $filter = [
+                                "sid"=>$data->sid,
+                                "uid"=> (int)$uid,
+                            ];
+                            $rs = $hall_log->query("user_mail", $filter, []);
+                            send_user_email_update($uid,$rs[0],1);
                         }
                     }
                 }
@@ -100,7 +104,7 @@ function web_server_message_manager($data)
             $message = new \Proto\SC_User_Chase_Info();
             $message->setContent($rmsg[0]->content);
             $message->setState($rmsg[0]->state);
-            \GatewayWorker\Lib\Gateway::sendToAll(my_pack(20027,$message->serializeToString()));
+            \GatewayWorker\Lib\Gateway::sendToAll(my_pack(20028,$message->serializeToString()));
         }
         return;
 
