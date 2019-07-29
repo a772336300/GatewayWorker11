@@ -128,9 +128,9 @@ function hall_message_switch($mid,$data){
                 'aggregate' => 'game_log',
                 'pipeline' => [
                     ['$match' => [ 'game_time' => ['$gte'=>$start_time],'score'=>['$gt'=>0]]],
-                    ['$group' => [ '_id' => ['uid'=>'$uid','name'=>'$name','touxiang'=>'$touxiang'], 'win_num' => ['$sum'=>1] ] ],
+                    ['$group' => [ '_id' => ['uid'=>'$uid'], 'win_num' => ['$sum'=>1] ] ],
                     ['$limit' => 100],
-                    ['$project'=>['uid'=>'$_id.uid','name'=>'$_id.name','touxiang'=>'$_id.touxiang','win_num'=>'$win_num']],
+                    ['$project'=>['uid'=>'$_id.uid','win_num'=>'$win_num']],
                     ['$sort'=>['win_num'=>-1]]
                 ],
                 'cursor' => new \stdClass,
@@ -143,6 +143,10 @@ function hall_message_switch($mid,$data){
             foreach ($cursor as $document) {
                 print_r($document);
                 $document->rank=$i;
+                $sql="select name,touxiang from bolaik_db.user where uid=$document->uid";
+                $user_info=db_query($sql)[0];
+                $document->name=$user_info['name'];
+                $document->touxiang=$user_info['touxiang'];
                 if($document->uid==$uid){
                     $obj->rank=$i;
                     $obj->uid=$document->uid;
@@ -398,7 +402,7 @@ function hall_message_switch($mid,$data){
                 }
                 //添加道具使用记录
                 $nowTime=date('Y-m-d h:i:s', time());
-                $rows=[['uid'=>$uid,'phone'=>$_SESSION['phone'],'prop_id'=>$packet_good->prop_id,'name'=>$packet_good->name,'num'=>$user_packet->getNum(),'add_time'=>$nowTime]];
+                $rows=[['uid'=>$uid,'phone'=>$_SESSION['phone'],'prop_id'=>$packet_good->prop_id,'name'=>$packet_good->name,'num'=>$user_packet->getNum(),'add_time'=>$nowTime,'times'=>time()]];
                 $hall_log->insert("use_goods_log", $rows);
             }
             send_user_use_goods($uid,$code);
@@ -637,7 +641,7 @@ function add_user_packet($prop_id,$uid,$phone,$des,$num=1){
         $good=$rs[0];
         //添加道具获得记录
         $nowTime=date('Y-m-d h:i:s', time());
-        $rows=[['uid'=>$uid,'phone'=>$phone,'prop_id'=>$good->prop_id,'name'=>$good->name,'num'=>$num,'des'=>$des,'add_time'=>$nowTime]];
+        $rows=[['uid'=>$uid,'phone'=>$phone,'prop_id'=>$good->prop_id,'name'=>$good->name,'num'=>$num,'des'=>$des,'add_time'=>$nowTime,'times'=>time()]];
         $hall_log->insert("get_goods_log", $rows);
         if($good->use_type==5){
             //获得联欢币
