@@ -1,31 +1,25 @@
 <?php
 /**
- * Auto generated from new.proto at 2019-07-30 16:58:52
+ * Auto generated from new.proto at 2019-07-30 16:58:53
  *
  * proto package
  */
 
 namespace Proto {
 /**
- * CS_User_Real_Name message
+ * SC_User_Get_Spread_Award message
  */
-class CS_User_Real_Name extends \ProtobufMessage
+class SC_User_Get_Spread_Award extends \ProtobufMessage
 {
     /* Field index constants */
-    const NAME = 1;
-    const CODE = 2;
+    const CODE = 1;
 
     /* @var array Field descriptors */
     protected static $fields = array(
-        self::NAME => array(
-            'name' => 'name',
-            'required' => false,
-            'type' => \ProtobufMessage::PB_TYPE_STRING,
-        ),
         self::CODE => array(
             'name' => 'code',
             'required' => false,
-            'type' => \ProtobufMessage::PB_TYPE_STRING,
+            'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
     );
 
@@ -44,7 +38,6 @@ class CS_User_Real_Name extends \ProtobufMessage
      */
     public function reset()
     {
-        $this->values[self::NAME] = null;
         $this->values[self::CODE] = null;
     }
 
@@ -59,42 +52,9 @@ class CS_User_Real_Name extends \ProtobufMessage
     }
 
     /**
-     * Sets value of 'name' property
-     *
-     * @param string $value Property value
-     *
-     * @return null
-     */
-    public function setName($value)
-    {
-        return $this->set(self::NAME, $value);
-    }
-
-    /**
-     * Returns value of 'name' property
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        $value = $this->get(self::NAME);
-        return $value === null ? (string)$value : $value;
-    }
-
-    /**
-     * Returns true if 'name' property is set, false otherwise
-     *
-     * @return boolean
-     */
-    public function hasName()
-    {
-        return $this->get(self::NAME) !== null;
-    }
-
-    /**
      * Sets value of 'code' property
      *
-     * @param string $value Property value
+     * @param integer $value Property value
      *
      * @return null
      */
@@ -106,12 +66,12 @@ class CS_User_Real_Name extends \ProtobufMessage
     /**
      * Returns value of 'code' property
      *
-     * @return string
+     * @return integer
      */
     public function getCode()
     {
         $value = $this->get(self::CODE);
-        return $value === null ? (string)$value : $value;
+        return $value === null ? (integer)$value : $value;
     }
 
     /**

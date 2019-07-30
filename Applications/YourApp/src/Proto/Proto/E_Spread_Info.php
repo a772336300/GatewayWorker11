@@ -7,16 +7,17 @@
 
 namespace Proto {
 /**
- * E_User_Rank message
+ * E_Spread_Info message
  */
-class E_User_Rank extends \ProtobufMessage
+class E_Spread_Info extends \ProtobufMessage
 {
     /* Field index constants */
     const UID = 1;
-    const TOUXIANG = 2;
-    const NAME = 3;
-    const WIN_NUM = 4;
-    const RANK = 5;
+    const NAME = 2;
+    const TOUXIANG = 3;
+    const BIND_TIME = 4;
+    const STATE = 5;
+    const VICTORY_NUM = 6;
 
     /* @var array Field descriptors */
     protected static $fields = array(
@@ -25,23 +26,28 @@ class E_User_Rank extends \ProtobufMessage
             'required' => false,
             'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
-        self::TOUXIANG => array(
-            'name' => 'touxiang',
-            'required' => false,
-            'type' => \ProtobufMessage::PB_TYPE_STRING,
-        ),
         self::NAME => array(
             'name' => 'name',
             'required' => false,
             'type' => \ProtobufMessage::PB_TYPE_STRING,
         ),
-        self::WIN_NUM => array(
-            'name' => 'win_num',
+        self::TOUXIANG => array(
+            'name' => 'touxiang',
+            'required' => false,
+            'type' => \ProtobufMessage::PB_TYPE_STRING,
+        ),
+        self::BIND_TIME => array(
+            'name' => 'bind_time',
+            'required' => false,
+            'type' => \ProtobufMessage::PB_TYPE_STRING,
+        ),
+        self::STATE => array(
+            'name' => 'state',
             'required' => false,
             'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
-        self::RANK => array(
-            'name' => 'rank',
+        self::VICTORY_NUM => array(
+            'name' => 'victory_num',
             'required' => false,
             'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
@@ -63,10 +69,11 @@ class E_User_Rank extends \ProtobufMessage
     public function reset()
     {
         $this->values[self::UID] = null;
-        $this->values[self::TOUXIANG] = null;
         $this->values[self::NAME] = null;
-        $this->values[self::WIN_NUM] = null;
-        $this->values[self::RANK] = null;
+        $this->values[self::TOUXIANG] = null;
+        $this->values[self::BIND_TIME] = null;
+        $this->values[self::STATE] = null;
+        $this->values[self::VICTORY_NUM] = null;
     }
 
     /**
@@ -113,39 +120,6 @@ class E_User_Rank extends \ProtobufMessage
     }
 
     /**
-     * Sets value of 'touxiang' property
-     *
-     * @param string $value Property value
-     *
-     * @return null
-     */
-    public function setTouxiang($value)
-    {
-        return $this->set(self::TOUXIANG, $value);
-    }
-
-    /**
-     * Returns value of 'touxiang' property
-     *
-     * @return string
-     */
-    public function getTouxiang()
-    {
-        $value = $this->get(self::TOUXIANG);
-        return $value === null ? (string)$value : $value;
-    }
-
-    /**
-     * Returns true if 'touxiang' property is set, false otherwise
-     *
-     * @return boolean
-     */
-    public function hasTouxiang()
-    {
-        return $this->get(self::TOUXIANG) !== null;
-    }
-
-    /**
      * Sets value of 'name' property
      *
      * @param string $value Property value
@@ -179,69 +153,135 @@ class E_User_Rank extends \ProtobufMessage
     }
 
     /**
-     * Sets value of 'win_num' property
+     * Sets value of 'touxiang' property
+     *
+     * @param string $value Property value
+     *
+     * @return null
+     */
+    public function setTouxiang($value)
+    {
+        return $this->set(self::TOUXIANG, $value);
+    }
+
+    /**
+     * Returns value of 'touxiang' property
+     *
+     * @return string
+     */
+    public function getTouxiang()
+    {
+        $value = $this->get(self::TOUXIANG);
+        return $value === null ? (string)$value : $value;
+    }
+
+    /**
+     * Returns true if 'touxiang' property is set, false otherwise
+     *
+     * @return boolean
+     */
+    public function hasTouxiang()
+    {
+        return $this->get(self::TOUXIANG) !== null;
+    }
+
+    /**
+     * Sets value of 'bind_time' property
+     *
+     * @param string $value Property value
+     *
+     * @return null
+     */
+    public function setBindTime($value)
+    {
+        return $this->set(self::BIND_TIME, $value);
+    }
+
+    /**
+     * Returns value of 'bind_time' property
+     *
+     * @return string
+     */
+    public function getBindTime()
+    {
+        $value = $this->get(self::BIND_TIME);
+        return $value === null ? (string)$value : $value;
+    }
+
+    /**
+     * Returns true if 'bind_time' property is set, false otherwise
+     *
+     * @return boolean
+     */
+    public function hasBindTime()
+    {
+        return $this->get(self::BIND_TIME) !== null;
+    }
+
+    /**
+     * Sets value of 'state' property
      *
      * @param integer $value Property value
      *
      * @return null
      */
-    public function setWinNum($value)
+    public function setState($value)
     {
-        return $this->set(self::WIN_NUM, $value);
+        return $this->set(self::STATE, $value);
     }
 
     /**
-     * Returns value of 'win_num' property
+     * Returns value of 'state' property
      *
      * @return integer
      */
-    public function getWinNum()
+    public function getState()
     {
-        $value = $this->get(self::WIN_NUM);
+        $value = $this->get(self::STATE);
         return $value === null ? (integer)$value : $value;
     }
 
     /**
-     * Returns true if 'win_num' property is set, false otherwise
+     * Returns true if 'state' property is set, false otherwise
      *
      * @return boolean
      */
-    public function hasWinNum()
+    public function hasState()
     {
-        return $this->get(self::WIN_NUM) !== null;
+        return $this->get(self::STATE) !== null;
     }
 
     /**
-     * Sets value of 'rank' property
+     * Sets value of 'victory_num' property
      *
      * @param integer $value Property value
      *
      * @return null
      */
-    public function setRank($value)
+    public function setVictoryNum($value)
     {
-        return $this->set(self::RANK, $value);
+        return $this->set(self::VICTORY_NUM, $value);
     }
 
     /**
-     * Returns value of 'rank' property
+     * Returns value of 'victory_num' property
      *
      * @return integer
      */
-    public function getRank()
+    public function getVictoryNum()
     {
-        $value = $this->get(self::RANK);
+        $value = $this->get(self::VICTORY_NUM);
         return $value === null ? (integer)$value : $value;
     }
 
     /**
-     * Returns true if 'rank' property is set, false otherwise
+     * Returns true if 'victory_num' property is set, false otherwise
      *
      * @return boolean
      */
-    public function hasRank()
+    public function hasVictoryNum()
     {
-        return $this->get(self::RANK) !== null;
+        return $this->get(self::VICTORY_NUM) !== null;
     }
 }
 }

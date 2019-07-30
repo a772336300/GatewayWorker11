@@ -18,9 +18,9 @@ final class mongo_db {
         "bolaik_user"   => ["url" => "mongodb://dgame:123456@192.168.0.32:27017","dbname" => "bolaik_user"],
         "func_system"   => ["url" => "mongodb://dgame:123456@192.168.0.32:27017","dbname" => "func_system"],
         "mall_system"   => ["url" => "mongodb://dgame:123456@192.168.0.32:27017","dbname" => "mall_system"],
-        "hall_config"   => ["url" => "mongodb://192.168.0.35:27017","dbname" => "hall_config"],
-        "hall_log"      => ["url" => "mongodb://192.168.0.35:27017","dbname" => "hall_log"],
-        "test"   => ["url" => "mongodb://192.168.0.35:27017","dbname" => "test"],
+        "hall_config"   => ["url" => "mongodb://47.103.66.221:27017","dbname" => "hall_config"],
+        "hall_log"      => ["url" => "mongodb://47.103.66.221:27017","dbname" => "hall_log"],
+        "test"   => ["url" => "mongodb://47.103.66.221:27017","dbname" => "test"],
     ];
 
     /**

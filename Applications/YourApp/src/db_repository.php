@@ -86,7 +86,7 @@ function db_add_user($phone,$uid,$password)
     $init_equipment_json = json_encode($init_equipment);
     $init_equipment_having_json = json_encode($init_equipment_having);
     $tcp_worker->db->beginTrans();
-    $sql = "insert into user (uid,phone,password) values($uid,'$phone','$password');";
+    $sql = "insert into user (uid,phone,password,name,gender,constellation) values($uid,'$phone','$password',substr($phone,7),0,0);";
     $sql1 = "insert into user_money (uid,gold,vigour) values($uid,$init_user_config[gold],$init_user_config[vigour]);";
     $sql2 = "insert into user_sign (uid) values($uid);";
     $sql3 = "insert into user_bag (uid,equipmenting_item,having_item) values($uid,'$init_equipment_json','$init_equipment_having_json');";

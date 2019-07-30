@@ -853,6 +853,47 @@ message SC_User_Bind_Invited_Code
 	optional  int32 code= 1;//0成功，1不能绑定自己,2特殊代理不能再绑定其他代理,3代理不存在,4代理已被冻结，5已绑定代理，6失败
 }
 
+//获取推广信息
+message CS_User_Spread_info
+{
+    //option (msgid) = 20029;
+}
+
+// 推广信息
+message E_Spread_Info
+{
+    optional int32  uid  = 1;	//用户id
+    optional string  name= 2;	//用户名称
+    optional string  touxiang= 3;	//用户头像
+//    optional int32  agent_id= 4;//被绑定用户id
+    optional string  bind_time= 4;	//绑定时间
+    optional int32  state = 5;	//状态 0未完成 1已完成 2已领取
+    optional int32  victory_num= 6;	//胜利次数
+}
+
+//获取推广信息 返回
+message SC_User_Spread_info
+{
+    //option (msgid) = 20030;
+    optional int32  invited_code= 1;//我的邀请码
+    optional int32  agent_id= 2;	//我绑定的邀请码
+    repeated E_Spread_Info spread_info = 3;
+}
+
+//领取推广奖励
+message CS_User_Get_Spread_Award
+{
+	//option (msgid) = 20031;
+	optional int32   uid = 1;//被邀请人的用户id
+}
+//领取推广奖励 返回
+message SC_User_Get_Spread_Award
+{
+	//option (msgid) = 20032;
+	optional  int32 code= 1;//0成功，1当前状态不能领取，2失败
+}
+
+
 //跑马灯信息
 message SC_User_Chase_Info
 {

@@ -7,9 +7,9 @@
 
 namespace Proto {
 /**
- * CS_Get_User_Active message
+ * CS_User_Spread_info message
  */
-class CS_Get_User_Active extends \ProtobufMessage
+class CS_User_Spread_info extends \ProtobufMessage
 {
     /* Field index constants */
 

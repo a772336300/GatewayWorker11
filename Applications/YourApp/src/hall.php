@@ -128,9 +128,9 @@ function hall_message_switch($mid,$data){
                 'aggregate' => 'game_log',
                 'pipeline' => [
                     ['$match' => [ 'game_time' => ['$gte'=>$start_time],'score'=>['$gt'=>0]]],
-                    ['$group' => [ '_id' => ['uid'=>'$uid','name'=>'$name','touxiang'=>'$touxiang'], 'win_num' => ['$sum'=>1] ] ],
+                    ['$group' => [ '_id' => ['uid'=>'$uid'], 'win_num' => ['$sum'=>1] ] ],
                     ['$limit' => 100],
-                    ['$project'=>['uid'=>'$_id.uid','name'=>'$_id.name','touxiang'=>'$_id.touxiang','win_num'=>'$win_num']],
+                    ['$project'=>['uid'=>'$_id.uid','win_num'=>'$win_num']],
                     ['$sort'=>['win_num'=>-1]]
                 ],
                 'cursor' => new \stdClass,
@@ -143,6 +143,10 @@ function hall_message_switch($mid,$data){
             foreach ($cursor as $document) {
                 print_r($document);
                 $document->rank=$i;
+                $sql="select name,touxiang from bolaik_db.user where uid=$document->uid";
+                $user_info=db_query($sql)[0];
+                $document->name=$user_info['name'];
+                $document->touxiang=$user_info['touxiang'];
                 if($document->uid==$uid){
                     $obj->rank=$i;
                     $obj->uid=$document->uid;
@@ -398,7 +402,7 @@ function hall_message_switch($mid,$data){
                 }
                 //添加道具使用记录
                 $nowTime=date('Y-m-d h:i:s', time());
-                $rows=[['uid'=>$uid,'phone'=>$_SESSION['phone'],'prop_id'=>$packet_good->prop_id,'name'=>$packet_good->name,'num'=>$user_packet->getNum(),'add_time'=>$nowTime]];
+                $rows=[['uid'=>$uid,'phone'=>$_SESSION['phone'],'prop_id'=>$packet_good->prop_id,'name'=>$packet_good->name,'num'=>$user_packet->getNum(),'add_time'=>$nowTime,'times'=>time()]];
                 $hall_log->insert("use_goods_log", $rows);
             }
             send_user_use_goods($uid,$code);
@@ -499,6 +503,13 @@ function hall_message_switch($mid,$data){
                         }else{
                             $sql="update bolaik_user.user_info set agent_id='$agent_id' where user_id='$uid'";
                             db_query($sql);
+                            //添加绑定记录
+                            $nowTime=date('Y-m-d', time());
+                            //查询用户信息
+                            $sql="SELECT * FROM `bolaik_db`.`user` WHERE uid=$uid";
+                            $user_info=db_query($sql)[0];
+                            $rows=[['uid'=>$uid,'name'=>$user_info['name'],'touxiang'=>$user_info['touxiang'],'agent_id'=>(int)$agent_id,'bind_time'=>$nowTime,'state'=>0]];
+                            $hall_log->insert("spread_log", $rows);
 							//查询被绑定的玩家或代理是否能升级和获得奖励
 							if($agent["user_type"]==1){
                                 //普通玩家，查询是否能升级为代理
@@ -531,6 +542,84 @@ function hall_message_switch($mid,$data){
             if(count($rs)>0){
                 send_pack_chase_info($uid,$rs[0]->content,$rs[0]->state);
             }
+            break;
+        //获取推广信息
+        case 20029:
+            echo "\n---------- 获取推广信息 -----------\n";
+            //查询用户信息
+            $sql="SELECT ui.agent_id,ui.user_id FROM bolaik_user.user_info AS ui WHERE ui.user_id = '$uid'";
+            $user = db_query($sql)[0];
+            $collname="spread_log";
+            $filter = [
+                "agent_id"=>$uid
+            ];
+            $rs = $hall_log->query($collname, $filter, []);
+            //查询每个用户的胜局
+            foreach ($rs as $r) {
+                if($r->state==0){
+                    $filter = [
+                        "uid"=>$r->uid,
+                        "score"=>['$gt' => 0]
+                    ];
+                    $log = $hall_log->query('game_log', $filter, []);
+                    $num=count($log)>10?10:count($log);
+                    if($num>=10){
+                        //修改状态
+                        $updates = [
+                            [
+                                "q"     => ["_id" => new ObjectId($r->_id)],
+                                "u"     => ['$set' => ['state'=>1]],
+                                'multi' => false, 'upsert' => false
+                            ]
+                        ];
+                        $hall_log->update($collname, $updates);
+                        $r->state=1;
+                    }
+                    $r->victory_num=$num;
+                }
+            }
+            echo "最终输出：\n";
+            print_r($rs);
+            send_pack_spread_info($uid,$user,$rs);
+            break;
+        //领取推广奖励
+        case 20031:
+            $spread_award = new \Proto\CS_User_Get_Spread_Award();
+            $spread_award->parseFromString($data);
+            $user_id=$spread_award->getUid();
+            $code=0;
+            //获取BU
+            $rmsg=getBu($_SESSION['phone'],"",10);
+            if($rmsg){
+                //查询当前状态是否可以领取
+                $collname="spread_log";
+                $filter = [
+                    "uid"=>$user_id,
+                    "agent_id"=>$uid
+                ];
+                $rs = $hall_log->query($collname, $filter, []);
+                if(count($rs)>0){
+                    $state=$rs[0]->state;
+                    if($state=1){
+                        //修改状态
+                        $updates = [
+                            [
+                                "q"     => ["_id" => new ObjectId($rs[0]->_id)],
+                                "u"     => ['$set' => ['state'=>2]],
+                                'multi' => false, 'upsert' => false
+                            ]
+                        ];
+                        $hall_log->update($collname, $updates);
+                    }else{
+                        $code=1;
+                    }
+                }else{
+                    $code=2;
+                }
+            }else{
+                $code=2;
+            }
+            send_user_get_spread_award($uid,$code);
             break;
     }
 }
@@ -637,7 +726,7 @@ function add_user_packet($prop_id,$uid,$phone,$des,$num=1){
         $good=$rs[0];
         //添加道具获得记录
         $nowTime=date('Y-m-d h:i:s', time());
-        $rows=[['uid'=>$uid,'phone'=>$phone,'prop_id'=>$good->prop_id,'name'=>$good->name,'num'=>$num,'des'=>$des,'add_time'=>$nowTime]];
+        $rows=[['uid'=>$uid,'phone'=>$phone,'prop_id'=>$good->prop_id,'name'=>$good->name,'num'=>$num,'des'=>$des,'add_time'=>$nowTime,'times'=>time()]];
         $hall_log->insert("get_goods_log", $rows);
         if($good->use_type==5){
             //获得联欢币

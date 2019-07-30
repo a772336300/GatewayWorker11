@@ -434,20 +434,21 @@ function send_user_email_update($uid,$user_mail,$type)
 {
     $message = new \Proto\SC_User_Email_Update();
     $user_packet = new \Proto\E_User_mail();
-    $user_packet->setId($user_mail['_id']);
-    $user_packet->setSid($user_mail['sid']);
-    $user_packet->setTitle($user_mail['title']);
-    $user_packet->setContent($user_mail['content']);
-    $user_packet->setStartTime($user_mail['start_time']);
-    $user_packet->setEndTime($user_mail['end_time']);
-    foreach ($user_mail["attach"] as $attach) {
+    $user_packet->setId($user_mail->_id);
+    $user_packet->setSid($user_mail->sid);
+    $user_packet->setTitle($user_mail->title);
+    $user_packet->setContent($user_mail->content);
+    $user_packet->setStartTime($user_mail->start_time);
+    $user_packet->setEndTime($user_mail->end_time);
+    foreach ($user_mail->attach as $attach) {
         $user_packet->appendAttach($attach);
     }
-    $user_packet->setIsread($user_mail['isread']);
-    $user_packet->setIsdelete($user_mail['isdelete']);
-    $user_packet->setGetAttach($user_mail['get_attach']);
+    $user_packet->setIsread($user_mail->isread);
+    $user_packet->setIsdelete($user_mail->isdelete);
+    $user_packet->setGetAttach($user_mail->get_attach);
     $user_packet->setUid($uid);
     $message->setType($type);
+    $message->setUserMail($user_packet);
     \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20102,$message->serializeToString()));
 }
 
@@ -485,4 +486,30 @@ function send_pack_chase_info($uid,$content,$state)
     $object->setContent($content);
     $object->setState($state);
     \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20028,$object->serializeToString()));
+}
+
+function send_pack_spread_info($uid,$user,$data)
+{
+    $object= new \Proto\SC_User_Spread_info();
+    $object->setAgentId($user['agent_id']);
+    $object->setInvitedCode($user['user_id']);
+    foreach ($data as $value)
+    {
+        $spread_info = new \Proto\E_Spread_Info();
+        $spread_info->setUid($value->uid);
+        $spread_info->setName($value->name);
+        $spread_info->setTouxiang($value->touxiang);
+        $spread_info->setVictoryNum($value->victory_num);
+        $spread_info->setBindTime($value->bind_time);
+        $spread_info->setState($value->state);
+        $object->appendSpreadInfo($spread_info);
+    }
+    \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20030,$object->serializeToString()));
+}
+
+function send_user_get_spread_award($uid,$code)
+{
+    $message = new \Proto\SC_User_Get_Spread_Award();
+    $message->setCode($code);
+    \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20032,$message->serializeToString()));
 }
