@@ -12,7 +12,7 @@
  * @license http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
-use MongoDB\Client;
+use \MongoDB\Client;
 use \Workerman\Worker;
 use \Workerman\WebServer;
 use \GatewayWorker\Gateway;
@@ -81,13 +81,15 @@ $tcp_worker->onWorkerStart = function ($worker)
     global $tcp_worker;
     global $config;
     global $redis;
+    global $monodb;
     //初始化数据库
     $tcp_worker->db= new \Workerman\MySQL\Connection($config['db']['host'],$config['db']['port'],$config['db']['user'],$config['db']['password'],$config['db']['dbname'],$config['db']['charset']);
 
     $redis = new Redis();
     $redisCon=$redis->pconnect('127.0.0.1');
    // $monodb = new MongoDB\Client();
-    //$monodb= new MongoDB\Client('mongodb+srv://myTester:xyz123@127.0.0.1:27017/test?retryWrites=true&w=majority');
+    $monodb= new MongoDB\Client("mongodb://{$config['mongodb']['address']}");
+    //$monodb= new MongoDB\Client("mongodb+srv://myTester:xyz123@{$config['mongodb']['address']}?retryWrites=true&w=majority");
     //$monodb_test = $monodb->test;
     //room_manager::singleton()->start_game_room();
 };

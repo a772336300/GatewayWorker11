@@ -6,10 +6,18 @@ namespace Composer\Autoload;
 
 class ComposerStaticInite47f46ff15e6316733f712f11c607b70
 {
+    public static $files = array (
+        '3a37ebac017bc098e9a86b35401e7a68' => __DIR__ . '/..' . '/mongodb/mongodb/src/functions.php',
+    );
+
     public static $prefixLengthsPsr4 = array (
         'W' => 
         array (
             'Workerman\\' => 10,
+        ),
+        'M' => 
+        array (
+            'MongoDB\\' => 8,
         ),
         'G' => 
         array (
@@ -21,6 +29,10 @@ class ComposerStaticInite47f46ff15e6316733f712f11c607b70
         'Workerman\\' => 
         array (
             0 => __DIR__ . '/..' . '/workerman/workerman',
+        ),
+        'MongoDB\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/mongodb/mongodb/src',
         ),
         'GatewayWorker\\' => 
         array (

@@ -93,6 +93,19 @@ function game_send_game_result($roomId,$result)
         $player_game_result->setLevelUp($item['level']);
         $player_game_result->setUnPlayCards($item['cardsLeft']);
         $message->appendPlayerGameResult($player_game_result);
+
+        $player_liansheng= new \Proto\Player_Game_Result_Lian_Sheng();
+        $player_liansheng->setBaseBU($item['liansheng']['baseBU']);
+        $player_liansheng->setCount($item['liansheng']['count']);
+        $player_liansheng->setExtraBU($item['liansheng']['extraBU']);
+        foreach($item['liansheng']['goods'] as $id=>$count)
+        {
+            $goods=new \Proto\Player_Game_Result_Lian_Sheng_Goods();
+            $goods->setId($id);
+            $goods->setCount($count);
+            $player_liansheng->appendExtraGoods($goods);
+        }
+        $player_game_result->setLianSheng($player_liansheng);
     }
     Gateway::sendToGroup($roomId,my_pack(\Proto\Message_Id::SC_Game_Result_Id,$message->serializeToString()));
 }

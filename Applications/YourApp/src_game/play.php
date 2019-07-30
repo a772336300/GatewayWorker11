@@ -557,9 +557,9 @@ function pai_type_for_task($valueCode)
     {
         return 'huoJian';
     }
-    if($valueCode['type']['Y']==11)
+    if($valueCode['type']['X']==1&&$valueCode['type']['Y']>=4)
     {
-        return $task_type['3DaoAShunZi'];
+        return $task_type['ShunZi'];
     }
     if($valueCode['type']['X']==3&&$valueCode['type']['Y']>=0&&$valueCode['wings']!=null)
     {
@@ -598,7 +598,7 @@ function pai($playerId,$roomId,$value,$valueCode=null)
                 {
                     // Events::sendOutByPublicChannel($roomId,'xx','chuntian','system','春天');
                     // Events::sendOutByPublicChannel($roomId,'xx','timesAdd','system',2);
-                    $redis->hSet($roomId,'times',$redis->hGet($roomId,'times')*2);
+                    $redis->hSet($roomId,'times',$redis->hGet($roomId,'times')+2);
                 }
                 gameOver($roomId, $playerId);
             }
@@ -651,6 +651,9 @@ function gameOver($roomId,$winner=null)
             $redis->hSet($roomId,'ratio',-1);
         }
         $result=experienceAndGold($roomId);
+        game_db_store_game_result($roomId,$result,$redis->hGet($roomId,'channel'));
+        //游戏结果任务
+        game_over_task($roomId);
 
     }
     game_send_game_result($roomId,$result);
@@ -667,6 +670,22 @@ function gameOver($roomId,$winner=null)
     }
     $redis->exec();
 }
+function game_over_task($roomId)
+{
+    global $redis;
+    global $task_type;
+    $players=$redis->lRange($roomId.':playerIds',0,-1);
+    $dizhu=$redis->hGet($roomId,'dizhu');
+    foreach ($players as $player)
+    {
+        if($player==$dizhu)
+        {
+            game_set_tack($player,$task_type['dangdizhu']);
+            continue;
+        }
+        game_set_tack($player,$task_type['dangnongmin']);
+    }
+}
 function experienceAndGold($roomId)
 {
     global $redis;
@@ -674,17 +693,18 @@ function experienceAndGold($roomId)
     $players=$redis->lRange($roomId.':playerIds',0,-1);
     $ratio=$redis->hGet($roomId,'ratio');
     $dizhu=$redis->hGet($roomId,'dizhu');
+    $times=$redis->hGet($roomId,'$times');
     foreach ($players as $player)
     {
         $result[$player]['level']=100;
         $result[$player]['cardsLeft']=100;
         if($player==$dizhu)
         {
-            $result[$player]['gold']=100*$ratio;
+            $result[$player]['gold']=200*$ratio*$times;
             $result[$player]['liansheng']=game_lianshengjiangli($ratio,0.5*$ratio+0.5);
             continue;
         }
-        $result[$player]['gold']=(-1)*100*$ratio;
+        $result[$player]['gold']=(-1)*100*$ratio*$times;
         $result[$player]['liansheng']=game_lianshengjiangli($ratio,-0.5*$ratio+0.5);
     }
     return $result;
@@ -1881,5 +1901,5 @@ function game_lianshengjiangli($playId,$isWin)
         game_db_user_liansheng_add($playId);
     }
     $winCount=game_db_user_liansheng_count($playId);
-    return array_merge(game_db_give_jiangli($winCount),['count'=>$winCount]);
+    return array_merge(game_db_give_jiangli($winCount,$playId),['count'=>$winCount]);
 }
