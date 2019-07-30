@@ -80,6 +80,14 @@ $number_object_map = [
     20025=>'CS_User_Bind_Invited_Code',
     20026=>'SC_User_Bind_Invited_Code',
 
+    //获取推广信息
+    20029=>'CS_User_Spread_info',
+    20030=>'SC_User_Spread_info',
+
+    //领取推广奖励
+    20031=>'CS_User_Get_Spread_Award',
+    20032=>'SC_User_Get_Spread_Award',
+
     //用户背包道具变化
     20101=>'SC_User_Packet_Update',
     //用户邮件变化

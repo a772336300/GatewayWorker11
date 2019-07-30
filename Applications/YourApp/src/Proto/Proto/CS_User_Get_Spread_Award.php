@@ -7,17 +7,17 @@
 
 namespace Proto {
 /**
- * SC_User_Get_Task_Award message
+ * CS_User_Get_Spread_Award message
  */
-class SC_User_Get_Task_Award extends \ProtobufMessage
+class CS_User_Get_Spread_Award extends \ProtobufMessage
 {
     /* Field index constants */
-    const CODE = 1;
+    const UID = 1;
 
     /* @var array Field descriptors */
     protected static $fields = array(
-        self::CODE => array(
-            'name' => 'code',
+        self::UID => array(
+            'name' => 'uid',
             'required' => false,
             'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
@@ -38,7 +38,7 @@ class SC_User_Get_Task_Award extends \ProtobufMessage
      */
     public function reset()
     {
-        $this->values[self::CODE] = null;
+        $this->values[self::UID] = null;
     }
 
     /**
@@ -52,36 +52,36 @@ class SC_User_Get_Task_Award extends \ProtobufMessage
     }
 
     /**
-     * Sets value of 'code' property
+     * Sets value of 'uid' property
      *
      * @param integer $value Property value
      *
      * @return null
      */
-    public function setCode($value)
+    public function setUid($value)
     {
-        return $this->set(self::CODE, $value);
+        return $this->set(self::UID, $value);
     }
 
     /**
-     * Returns value of 'code' property
+     * Returns value of 'uid' property
      *
      * @return integer
      */
-    public function getCode()
+    public function getUid()
     {
-        $value = $this->get(self::CODE);
+        $value = $this->get(self::UID);
         return $value === null ? (integer)$value : $value;
     }
 
     /**
-     * Returns true if 'code' property is set, false otherwise
+     * Returns true if 'uid' property is set, false otherwise
      *
      * @return boolean
      */
-    public function hasCode()
+    public function hasUid()
     {
-        return $this->get(self::CODE) !== null;
+        return $this->get(self::UID) !== null;
     }
 }
 }

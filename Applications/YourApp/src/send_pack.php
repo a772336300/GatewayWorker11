@@ -487,3 +487,29 @@ function send_pack_chase_info($uid,$content,$state)
     $object->setState($state);
     \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20028,$object->serializeToString()));
 }
+
+function send_pack_spread_info($uid,$user,$data)
+{
+    $object= new \Proto\SC_User_Spread_info();
+    $object->setAgentId($user['agent_id']);
+    $object->setInvitedCode($user['user_id']);
+    foreach ($data as $value)
+    {
+        $spread_info = new \Proto\E_Spread_Info();
+        $spread_info->setUid($value->uid);
+        $spread_info->setName($value->name);
+        $spread_info->setTouxiang($value->touxiang);
+        $spread_info->setVictoryNum($value->victory_num);
+        $spread_info->setBindTime($value->bind_time);
+        $spread_info->setState($value->state);
+        $object->appendSpreadInfo($spread_info);
+    }
+    \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20030,$object->serializeToString()));
+}
+
+function send_user_get_spread_award($uid,$code)
+{
+    $message = new \Proto\SC_User_Get_Spread_Award();
+    $message->setCode($code);
+    \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20032,$message->serializeToString()));
+}
