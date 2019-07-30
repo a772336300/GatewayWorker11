@@ -35861,3 +35861,7 @@ Stack trace:
 2019-07-30 10:59:25 pid:82874 worker[game_worker:82876] exit with status 64000
 2019-07-30 10:59:25 pid:82874 Workerman[start.php] has been stopped
 2019-07-30 10:59:39 pid:82907 Workerman[start.php] start in DEBUG mode
+2019-07-30 11:31:39 pid:82907 Workerman[start.php] stopping ...
+2019-07-30 11:31:41 pid:82907 worker[YourAppBusinessWorker:82908] exit with status 9
+2019-07-30 11:31:41 pid:82907 Workerman[start.php] has been stopped
+2019-07-30 11:31:43 pid:86301 Workerman[start.php] start in DEBUG mode
