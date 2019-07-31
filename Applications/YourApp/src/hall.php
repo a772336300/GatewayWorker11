@@ -576,6 +576,8 @@ function hall_message_switch($mid,$data){
                         $r->state=1;
                     }
                     $r->victory_num=$num;
+                }else{
+                    $r->victory_num=10;
                 }
             }
             echo "最终输出：\n";
@@ -588,8 +590,10 @@ function hall_message_switch($mid,$data){
             $spread_award->parseFromString($data);
             $user_id=$spread_award->getUid();
             $code=0;
+            global $behaverids;
             //获取BU
-            $rmsg=getBu($_SESSION['phone'],"",10);
+            $rmsg=getBu($_SESSION['phone'],$behaverids["tuiguang"],10);
+//            $rmsg=true;
             if($rmsg){
                 //查询当前状态是否可以领取
                 $collname="spread_log";

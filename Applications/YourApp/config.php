@@ -32,3 +32,6 @@ $task_type= [
     'zhaDan'=>1004,
     'sanDaiYi'=>1005,
 ];
+$behaverids=[
+    "tuiguang"=>"",//推广奖励的behaverid
+];
