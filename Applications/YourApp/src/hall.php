@@ -3,7 +3,7 @@ use MongoDB\BSON\ObjectID;
 use \Workerman\Lib\Timer;
 require_once 'util.php';
 function hall_message_switch($mid,$data){
-    $_SESSION['uid']=8823;
+//    $_SESSION['uid']=8823;
     $uid=$_SESSION['uid'];
     echo "获取大厅信息mid：$mid--uid--$uid\n";
     $hall_config = mongo_db::singleton("hall_config");
