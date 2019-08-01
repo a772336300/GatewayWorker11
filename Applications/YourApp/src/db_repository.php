@@ -28,7 +28,7 @@ function db_exist_user_info($phone)
     global $web_user;
     return $tcp_worker->db->select('user_id,user_passwd,nullity')->from("$web_user.user_info")->where("user_account= '$phone'")->row();
 }
-function db_add_user_id($phone,$password)
+function db_add_user_id($phone,$password,$channel_id)
 {
     global $tcp_worker;
     global $web_user;
@@ -36,7 +36,7 @@ function db_add_user_id($phone,$password)
     $maxUser=$tcp_worker->db->query($sql);
     $user_id=$maxUser[0]['maxId']+1;
     try {
-        $sql = "insert into $web_user.user_info(user_account,user_passwd,user_id,user_nick,user_equipment,login_type,b_phone_nu) values('$phone','$password',$user_id,'',2,2,'$phone');";
+        $sql = "insert into $web_user.user_info(user_account,user_passwd,user_id,user_nick,user_equipment,login_type,b_phone_nu,experience) values('$phone','$password',$user_id,'',2,2,'$phone',$channel_id)";
         //$sql = "insert into user (phone,password) values('$phone','$password');";
         $tcp_worker->db->query($sql);
     } catch (\Exception $e) {

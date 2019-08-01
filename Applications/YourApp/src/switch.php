@@ -73,6 +73,7 @@ function message_switch($client_id,$mid,$data)
 
         $cs_get_password->parseFromString($data);
         $phone = $cs_get_password->getPhone();
+        $channel_id=$cs_get_password->getChannelId();
         $phone = trim($phone);
 //
 //        if(!test_xxx($client_id,$phone))
@@ -90,7 +91,7 @@ function message_switch($client_id,$mid,$data)
         if($xxxx==null)
         {
             //新增用户
-            db_add_user_id($phone,$password);
+            db_add_user_id($phone,$password,$channel_id);
             $new_user = db_exist_user_info($phone);
             $is_create_user=true;
             if(!isset($new_user['user_id']))
