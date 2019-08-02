@@ -32,11 +32,11 @@ function game_join($client_id,$join)
         //发送手牌到客户端
         $cards=$redis->Smembers($playerId.':cards');
         $cards=implode(',',$cards);
-        game_send_cards($client_id,$cards);
         //Events::sendOutByProtectChannel($playerId,'selfCards','initCards','system',$cards);
         //房间信息
         $init=roomInfo($roomId);
         game_send_room_init($init,$roomId,$client_id);
+        game_send_cards($client_id,$cards);
         return ;
     }
     else
@@ -249,20 +249,75 @@ function cardSend($roomId)
     $begin=0;
     foreach($playerIds as $playerId)
     {
-        $redis->delete($playerId.':cards');
-        $scope=$begin+17;
+        $redis->delete($playerId . ':cards');
+    }
+    $mapZhaDan = makeZhaDan($playerIds,4);
+    foreach($playerIds as $playerId)
+    {
+        $mapZhaDanScope=0;
+        foreach ($mapZhaDan as $item)
+        {
+            if($item == $playerId)
+            {
+                $mapZhaDanScope=$mapZhaDanScope+4;
+            }
+        }
+        $scope=$begin+17-$mapZhaDanScope;
         //剩余几张牌，假设为16
         for($i=$begin;$i<$scope;$i++)
         {
+            if(array_key_exists($key=substr($cardsLeaved[$i],1),$mapZhaDan))
+            {
+                $redis->sMove($roomId.':cards',$mapZhaDan[$key].':cards',$cardsLeaved[$i]);
+                $scope++;
+                continue;
+            }
             //从牌池移动到手牌
             $redis->sMove($roomId.':cards',$playerId.':cards',$cardsLeaved[$i]);
         }
         $begin=$scope;
+    }
+    for($i=$begin;$i<54;$i++)
+    {
+        if(array_key_exists($key=substr($cardsLeaved[$i],1),$mapZhaDan))
+        {
+            $redis->sMove($roomId.':cards',$mapZhaDan[$key].':cards',$cardsLeaved[$i]);
+        }
+    }
+    foreach($playerIds as $playerId)
+    {
         $cards=$redis->Smembers($playerId.':cards');
         $cards=implode(',',$cards);
         game_send_cards_by_uid($playerId,$cards);
     }
 
+}
+function makeZhaDan($playerIds,$count)
+{
+    $mapZhaDan=array();
+    $cards=array(3,4,5,6,7,8,9,10,11,12,13,14,15);
+    shuffle($cards);
+    shuffle($cards);
+    for ($i=0;$i<$count;$i++)
+    {
+        if($playerIds==null)
+            break;
+        $randPlayerKey= array_rand($playerIds);
+        if(isset($mapZhaDan[$randPlayerKey])&&$mapZhaDan[$randPlayerKey]>=4)
+        {
+            unset($playerIds[$randPlayerKey]);
+            $i--;
+            continue;
+        }
+        $mapZhaDan[$cards[$i]] = $playerIds[$randPlayerKey];
+        if(!isset($mapZhaDan[$randPlayerKey]))
+        {
+            $mapZhaDan[$randPlayerKey]=1;
+            continue;
+        }
+        $mapZhaDan[$randPlayerKey]++;
+    }
+    return $mapZhaDan;
 }
 function initRoomState($roomId,$compareValue,$currentValue)
 {
@@ -434,7 +489,7 @@ function jiaodizhu($playerId,$roomId,$value,$valueCode=null)
         game_send_play($roomId,$playerId,Play_Data_Type::jiaodizhu,0);
         if ($redis->hGet($NextId, 'chance') == false)
         {
-            if($redis->hGet($roomId,'times')>0)
+            if($redis->hGet($roomId,'times')>1)
             {
                 $owner=$redis->hGet($roomId, 'dizhu');
                 if($NextId==$owner)
@@ -547,23 +602,23 @@ function pai_type_for_task($valueCode)
     global $task_type;
     if($valueCode['type']['X']==3&&$valueCode['type']['Y']>=1)
     {
-        return 'feiJi';
+        return $task_type['feiJi'];
     }
     if(isG($valueCode))
     {
-        return 'zhaDan';
+        return $task_type['zhaDan'];
     }
     if(isP($valueCode))
     {
-        return 'huoJian';
+        return $task_type['huoJian'];
     }
     if($valueCode['type']['X']==1&&$valueCode['type']['Y']>=4)
     {
-        return $task_type['ShunZi'];
+        return $task_type['shunZi'];
     }
     if($valueCode['type']['X']==3&&$valueCode['type']['Y']>=0&&$valueCode['wings']!=null)
     {
-        return 'sanDaiYi';
+        return $task_type['sanDaiYi'];
     }
     return null;
 }
