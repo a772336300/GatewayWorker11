@@ -14,14 +14,12 @@ function get_jinlian_assert($uid,$phone)
             $message->setType(1);
             $message->setTipStr("获取BU余额失败");
             \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(806,$message->serializeToString()));
-            return 0;
         }
         if($buf_arr->code==200)
         {
             $message_BU = new \Proto\SC_User_UB();
             $message_BU->setInitBu(true);
             $message_BU->setBU($buf_arr->asserts);
-            return $buf_arr->asserts;
             \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(1014,$message_BU->serializeToString()));
         }
         else
@@ -30,7 +28,6 @@ function get_jinlian_assert($uid,$phone)
             $message->setType(1);
             $message->setTipStr("获取BU余额失败");
             \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(806,$message->serializeToString()));
-            return 0;
         }
     });
 }
