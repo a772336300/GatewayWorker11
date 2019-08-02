@@ -62,8 +62,8 @@ function switch_game($client_id,$mid,$data)
             }
         case Message_Id::CS_ComPetition_Group_Id:
             {
-                break;
-                $collname='gmae_competition';
+                #break;
+                $collname='game_competition';
                 $mongodb=mongo_db::singleton('func_system');
                 $filter = [
                     'starttime'  => ['$gt' => date('Y-m-d H:i:s')] //条件：大于当前时间

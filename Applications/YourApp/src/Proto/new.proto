@@ -8,6 +8,7 @@ message CS_Get_Password
 {
 	//option (msgid) = 701;
 	optional string phone	= 1;
+	optional int32 channel_id	= 2;//渠道id 0博来客
 }
 
 
