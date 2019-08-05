@@ -326,7 +326,7 @@ function initRoomState($roomId,$compareValue,$currentValue)
     $redis->hSet($roomId,'compareValue',json_encode($compareValue));
     $redis->hSet($roomId,'currentValue',json_encode($currentValue));
 }
-function roomTick($roomId,$times,$timeSecond=1000000000)
+function roomTick($roomId,$times,$timeSecond=20)
 {
     global $redis;
     $tick=$redis->hIncrBy($roomId,'tick',$times);
