@@ -62,7 +62,7 @@ function switch_game($client_id,$mid,$data)
             }
         case Message_Id::CS_ComPetition_Group_Id:
             {
-                #break;
+                break;
                 $collname='game_competition';
                 $mongodb=mongo_db::singleton('func_system');
                 $filter = [

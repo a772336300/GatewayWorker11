@@ -16,7 +16,7 @@ function game_join($client_id,$join)
         return;
     }
     $playerId=$_SESSION['uid'];
-
+    echo "id:$playerId\n";
     $gold=game_db_get_gold($playerId);
     if($redis->exists($playerId))
     {
@@ -74,7 +74,8 @@ function game_join($client_id,$join)
                 $waitingUser[Room_Type::zhongji][]=$_SESSION['uid'];
                 break;
             case Room_Type::gaoji:
-                if($gold<10000)
+                echo "xxx";
+                if($gold<0)
                 {
                     send_notice_by_client_id($client_id,1,"金币不足");
                     //Events::sendOutByPrivateChannel($client_id,'xx','Join','system',"金币不足");
@@ -251,7 +252,7 @@ function cardSend($roomId)
     {
         $redis->delete($playerId . ':cards');
     }
-    $mapZhaDan = makeZhaDan($playerIds,4);
+    $mapZhaDan = makeZhaDan($playerIds,0);
     foreach($playerIds as $playerId)
     {
         $mapZhaDanScope=0;
