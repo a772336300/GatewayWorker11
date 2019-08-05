@@ -1279,7 +1279,6 @@ function xCardGetByEffect($spaceIndex,$cards,$effect)
 function xCardLevelRoute($playerId){
     $person=Events::$db->row("select effect_range from person,x_card_effect where identifier=$playerId and xCardLevel=level");
     return $person['effect_range'];
-
 }
 function xCardUseGoods($spaceIndex,$playerId)
 {
