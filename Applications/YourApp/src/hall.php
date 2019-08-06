@@ -233,7 +233,8 @@ function hall_message_switch($mid,$data){
         case 20013:
             echo "\n---------- 查询商城信息 -----------\n";
             $filter = [
-                "mall_type" => ['$gt' => 0]//查询条件 结束时间 大于 当前时间
+                "mall_type" => ['$gt' => 0],//查询条件 结束时间 大于 当前时间
+                "mall_type" => ['$lt' => 8],//查询条件 结束时间 大于 当前时间
             ];
             $queryWriteOps = [
                 "sort"       => ["mall_type" => -1],//根据添加时间字段排序 1是升序，-1是降序
