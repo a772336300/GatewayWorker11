@@ -132,6 +132,17 @@ class Events
                $sql="update bolaik_user.user_stat_time set login_out_time='$nowTime',time_length=$num where user_id=$uid order by id desc limit 1 ";
                db_query($sql);
            }
+           //修改在线人数
+           $hall_config = mongo_db::singleton("hall_config");
+           $updates = [
+               [
+                   "q"     => ["id" => 1],
+                   "u"     => ['$inc' => ["hall_num"=>-1]],
+                   'multi' => false, 'upsert' => false
+               ]
+           ];
+           $collname="online_statics";
+           $rs = $hall_config->update($collname, $updates);
        }
 
    }
