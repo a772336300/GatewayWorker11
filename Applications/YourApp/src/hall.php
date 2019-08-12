@@ -877,5 +877,49 @@ function zero_update(){
 //    Timer::add(30, 'zero_update', null, false);
 }
 
+/**修改在线人数
+ * @param $type 1大厅登陆，2大厅退出，3斗地主登陆，4斗地主退出
+ */
+function update_online_num($type){
+    //修改在线人数
+    $hall_config = mongo_db::singleton("hall_config");
+    $updates=[];
+    if($type==1){
+        $updates = [
+            [
+                "q"     => ["id" => 1],
+                "u"     => ['$inc' => ["hall_num"=>1]],
+                'multi' => false, 'upsert' => false
+            ]
+        ];
+    }else if($type==2){
+        $updates = [
+            [
+                "q"     => ["id" => 1],
+                "u"     => ['$inc' => ["hall_num"=>-1]],
+                'multi' => false, 'upsert' => false
+            ]
+        ];
+    }else if($type==3){
+        $updates = [
+            [
+                "q"     => ["id" => 1],
+                "u"     => ['$inc' => ["hall_num"=>-1,"doudizhu_num"=>1]],
+                'multi' => false, 'upsert' => false
+            ]
+        ];
+    }else if($type==4){
+        $updates = [
+            [
+                "q"     => ["id" => 1],
+                "u"     => ['$inc' => ["hall_num"=>1,"doudizhu_num"=>-1]],
+                'multi' => false, 'upsert' => false
+            ]
+        ];
+    }
+    $collname="online_statics";
+    $hall_config->update($collname, $updates);
+}
+
 
 

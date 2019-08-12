@@ -287,17 +287,7 @@ function message_switch($client_id,$mid,$data)
             if($rs[0]["agent_id"]!=""){
                 $binded=1;
             }
-            //修改在线人数
-            $hall_config = mongo_db::singleton("hall_config");
-            $updates = [
-                [
-                    "q"     => ["id" => 1],
-                    "u"     => ['$inc' => ["hall_num"=>1]],
-                    'multi' => false, 'upsert' => false
-                ]
-            ];
-            $collname="online_statics";
-            $rs = $hall_config->update($collname, $updates);
+            update_online_num(1);
         }
         send_pack_login($client_id,$is_success,$binded);
         return;
