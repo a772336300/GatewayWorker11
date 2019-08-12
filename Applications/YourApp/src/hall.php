@@ -785,7 +785,7 @@ function add_user_packet($prop_id,$uid,$phone,$des,$num=1){
                         [
                             "q"     => ["prop_id" => $good->prop_id,
                                 'uid'=>$uid],
-                            "u"     => ['$set' => ['$inc' =>['over_time'=>$good->active_time]]],
+                            "u"     => ['$inc' =>['over_time'=>$good->active_time]],
                             'multi' => false, 'upsert' => false
                         ]
                     ];
