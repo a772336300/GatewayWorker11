@@ -21,6 +21,7 @@
 
 use \GatewayWorker\Lib\Gateway;
 require_once 'src/switch.php';
+require_once 'src/hall.php';
 /**
  * 主逻辑
  * 主要是处理 onConnect onMessage onClose 三个方法
