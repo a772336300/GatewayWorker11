@@ -33,6 +33,8 @@ enum Message_Id
     SC_ComPetition_Start_Id = 17;     //竞技开始ID
     CS_ComPetition_Group_Id = 18;     //请求竞技组信息
     SC_ComPetition_Group_Id = 19;
+	CS_Tuo_Guan_Id = 20;     //请求竞技组信息
+	SC_Tuo_Guan_Id = 21;
 }
 
 enum Game_Type
@@ -177,4 +179,13 @@ message Player_Game_Result
 message SC_Game_Result
 {
 	repeated Player_Game_Result player_game_result=1; 
+}
+message CS_Tuo_Guan
+{
+	optional bool data = 1;//是否托管
+}
+message SC_Tuo_Guan
+{
+	optional int32 playerId = 1;
+	optional bool data = 2;//是否托管
 }

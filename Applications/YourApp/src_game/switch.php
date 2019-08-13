@@ -32,6 +32,13 @@ function switch_game($client_id,$mid,$data)
                 game_play($client_id,$play);
                 break;
             }
+        case Message_Id::CS_Tuo_Guan_Id:
+            {
+                $cs_tuo_guan = new \Proto\CS_Tuo_Guan();
+                $cs_tuo_guan->parseFromString($data);
+                gameTuoGuan($_SESSION['uid'],$cs_tuo_guan->getData());
+                break;
+            }
         case Message_Id::CS_Go_Out_Id:
             {
                 $go_out= new \Proto\CS_Play();

@@ -4,8 +4,15 @@ use Proto\Room_Type;
 use Proto\Play_Data_Type;
 use Workerman\Lib\Timer;
 $waitingUser=array();
+$join_count=0;
 function game_join($client_id,$join)
 {
+    //test
+    global $join_count;
+    $join_count++;
+    echo "\n玩家加入匹配数量：";
+    echo "$join_count\n";
+
     global $redis;
     global $waitingUser;
 
@@ -17,7 +24,7 @@ function game_join($client_id,$join)
     }
     $playerId=$_SESSION['uid'];
     echo "id:$playerId\n";
-    $gold=game_db_get_gold($playerId);
+    //$gold=game_db_get_gold($playerId);
     if($redis->exists($playerId))
     {
         //如果当前角色和代理角色不一致,返回不能游戏
@@ -54,34 +61,34 @@ function game_join($client_id,$join)
             //判断金币
             //加入等待队列
             case Room_Type::chuji:
-                if($gold<300)
-                {
-                    send_notice_by_client_id($client_id,1,"金币不足");
-                    //Events::sendOutByPrivateChannel($client_id,'xx','Join','system',"金币不足");
-                    return ;
-                }
-                game_db_lock_gold($playerId,300);
+                //if($gold<300)
+//                {
+//                    send_notice_by_client_id($client_id,1,"金币不足");
+//                    //Events::sendOutByPrivateChannel($client_id,'xx','Join','system',"金币不足");
+//                    return ;
+//                }///
+                //game_db_lock_gold($playerId,300);
                 $waitingUser[Room_Type::chuji][]=$_SESSION['uid'];
                 break;
             case Room_Type::zhongji:
-                if($gold<1000)
-                {
-                    send_notice_by_client_id($client_id,1,"金币不足");
-                    //Events::sendOutByPrivateChannel($client_id,'xx','Join','system',"金币不足");
-                    return ;
-                }
-                game_db_lock_gold($playerId,300);
+                ///if($gold<1000)
+//                {
+//                    send_notice_by_client_id($client_id,1,"金币不足");
+//                    //Events::sendOutByPrivateChannel($client_id,'xx','Join','system',"金币不足");
+//                    return ;
+//                }
+                //game_db_lock_gold($playerId,300);
                 $waitingUser[Room_Type::zhongji][]=$_SESSION['uid'];
                 break;
             case Room_Type::gaoji:
                 echo "xxx";
-                if($gold<0)
-                {
-                    send_notice_by_client_id($client_id,1,"金币不足");
-                    //Events::sendOutByPrivateChannel($client_id,'xx','Join','system',"金币不足");
-                    return ;
-                }
-                game_db_lock_gold($playerId,300);
+                //if($gold<0)
+//                {
+//                    send_notice_by_client_id($client_id,1,"金币不足");
+//                    //Events::sendOutByPrivateChannel($client_id,'xx','Join','system',"金币不足");
+//                    return ;
+//                }
+                //game_db_lock_gold($playerId,300);
                 $waitingUser[Room_Type::gaoji][]=$_SESSION['uid'];
                 break;
             case 4:
@@ -187,7 +194,7 @@ function roomInit($playerIds,$channel,$channelNumber=-1)
     global $redis;
     // TODO: Implement onmessage() method.
     //有状态
-    shuffle($playerIds);
+    //shuffle($playerIds);
     $roomId=roomCreate($playerIds,$channel,$channelNumber);
     echo "房间创建成功\r\n";
     //设置房间消息发送器
@@ -326,7 +333,7 @@ function initRoomState($roomId,$compareValue,$currentValue)
     $redis->hSet($roomId,'compareValue',json_encode($compareValue));
     $redis->hSet($roomId,'currentValue',json_encode($currentValue));
 }
-function roomTick($roomId,$times,$timeSecond=20)
+function roomTick($roomId,$times,$timeSecond=16)
 {
     global $redis;
     $tick=$redis->hIncrBy($roomId,'tick',$times);
@@ -343,14 +350,34 @@ function roomTick($roomId,$times,$timeSecond=20)
 //    //#test
 //    timerTrigger($repeat,$tick,$roomId);
 //    //#test
+    if($redis->hGet($turnerId,'time_out_count')>=2)
+    {
+        game_send_tuo_guan($roomId,$turnerId,true);
+        $timeSecond=0.5;
+    }
     Timer::add($timeSecond, function()use($roomId,$repeat,$tick)
     {
         timerTrigger($repeat,$tick,$roomId);
     },array(),false);
     //game_send_turn($turnerId);
 }
+function gameTuoGuan($playerId,$data)
+{
+    global $redis;
+    if($data)
+    {
+        $redis->hSet($playerId,'time_out_count',2);
+        $roomId= $redis->hGet($playerId,'roomId');
+        game_send_tuo_guan($roomId,$playerId,true);
+        return;
+    }
+    $redis->hSet($playerId,'time_out_count',0);
+    $roomId= $redis->hGet($playerId,'roomId');
+    game_send_tuo_guan($roomId,$playerId,false);
+}
 function timerTrigger($repeat,$currantTick,$roomId)
 {
+
     global $redis;
     $compareValue = $redis->hGet($roomId,'compareValue');
     $compareValue = json_decode($compareValue,true);
@@ -359,6 +386,7 @@ function timerTrigger($repeat,$currantTick,$roomId)
     //判断之前的步数是否已经走过
     if($repeat==$redis->hGet($roomId,'repeat')&&$currantTick==$redis->hGet($roomId,'tick'))
     {
+        $redis->hIncrBy($turnerId,'time_out_count',1);
         //如果没有走过，触发触发器
         //如果没有叫地主，则不叫地主
         if($compareValue['type']==Play_Data_Type::jiaodizhu&&$compareValue['data']==0){
@@ -490,7 +518,7 @@ function jiaodizhu($playerId,$roomId,$value,$valueCode=null)
         game_send_play($roomId,$playerId,Play_Data_Type::jiaodizhu,0);
         if ($redis->hGet($NextId, 'chance') == false)
         {
-            if($redis->hGet($roomId,'times')>1)
+            if($redis->hGet($roomId,'times')>=1)
             {
                 $owner=$redis->hGet($roomId, 'dizhu');
                 if($NextId==$owner)
@@ -633,7 +661,9 @@ function pai($playerId,$roomId,$value,$valueCode=null)
         {
             if(($type=pai_type_for_task($valueCode))!==null)
             {
+                echo "发送更新中：\n";
                 game_set_tack($playerId,$type);
+                echo "更新返回";
             }
 //            if(!$redis->hGet($roomId, 'xCardController'))
 //            {
@@ -744,24 +774,27 @@ function game_over_task($roomId)
 }
 function experienceAndGold($roomId)
 {
+    $fangfei=20;
     global $redis;
     $result=array();
     $players=$redis->lRange($roomId.':playerIds',0,-1);
     $ratio=$redis->hGet($roomId,'ratio');
     $dizhu=$redis->hGet($roomId,'dizhu');
-    $times=$redis->hGet($roomId,'$times');
+    $times=$redis->hGet($roomId,'times');
     foreach ($players as $player)
     {
         $result[$player]['level']=100;
         $result[$player]['cardsLeft']=100;
         if($player==$dizhu)
         {
-            $result[$player]['gold']=200*$ratio*$times;
-            $result[$player]['liansheng']=game_lianshengjiangli($ratio,0.5*$ratio+0.5);
+            $result[$player]['gold']=200*$ratio*$times-$fangfei;
+            game_db_update_gold($player,$result[$player]['gold']);
+            $result[$player]['liansheng']=game_lianshengjiangli($player,0.5*$ratio+0.5);
             continue;
         }
-        $result[$player]['gold']=(-1)*100*$ratio*$times;
-        $result[$player]['liansheng']=game_lianshengjiangli($ratio,-0.5*$ratio+0.5);
+        $result[$player]['gold']=(-1)*100*$ratio*$times-$fangfei;
+        game_db_update_gold($player,$result[$player]['gold']);
+        $result[$player]['liansheng']=game_lianshengjiangli($player,-0.5*$ratio+0.5);
     }
     return $result;
 }
@@ -1947,11 +1980,11 @@ function game_is_gaming($client_id)
 }
 function game_lianshengjiangli($playId,$isWin)
 {
-    if(!$isWin)
+    if(!(int)$isWin)
     {
         game_db_user_liansheng_over($playId);
     }
-    if($isWin)
+    if((int)$isWin)
     {
         game_db_user_liansheng_add($playId);
     }
