@@ -921,5 +921,17 @@ function update_online_num($type){
     $hall_config->update($collname, $updates);
 }
 
+/**添加联欢币发放回收记录（游戏结束，玩家输联欢币，就添加发放记录，玩家赢联欢币，收取其中的手续费为回收）
+ * @param $uid
+ * @param $type 1斗地主，2麻将
+ * @param $remark 备注
+ * @param $num数量（发放为负，回收为正）
+ */
+function add_lianhuanbi_logs($uid,$type,$remark,$num){
+    $hall_log = mongo_db::singleton("hall_log");
+    $rows=[['uid'=>$uid,'add_time'=>time(),'type'=>$type,'remark'=>$remark,'num'=>$num]];
+    $hall_log->insert("lianhuanbi_logs", $rows);
+}
+
 
 
