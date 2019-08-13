@@ -21,6 +21,7 @@
 
 use \GatewayWorker\Lib\Gateway;
 require_once 'src/switch.php';
+require_once 'src/hall.php';
 /**
  * 主逻辑
  * 主要是处理 onConnect onMessage onClose 三个方法
@@ -132,7 +133,7 @@ class Events
                $sql="update bolaik_user.user_stat_time set login_out_time='$nowTime',time_length=$num where user_id=$uid order by id desc limit 1 ";
                db_query($sql);
            }
+           update_online_num(2);
        }
-
    }
 }

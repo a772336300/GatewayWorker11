@@ -233,7 +233,8 @@ function hall_message_switch($mid,$data){
         case 20013:
             echo "\n---------- 查询商城信息 -----------\n";
             $filter = [
-                "mall_type" => ['$gt' => 0]//查询条件 结束时间 大于 当前时间
+                "mall_type" => ['$gt' => 0],//查询条件 结束时间 大于 当前时间
+                "mall_type" => ['$lt' => 8],//查询条件 结束时间 大于 当前时间
             ];
             $queryWriteOps = [
                 "sort"       => ["mall_type" => -1],//根据添加时间字段排序 1是升序，-1是降序
@@ -309,7 +310,7 @@ function hall_message_switch($mid,$data){
                     if($money<$good->price){
                         $code=2;
                     }else{
-                        if(!deal($_SESSION['phone'],$good->price)){
+                        if(!deal($_SESSION['phone'],$good->price,$good->mall_type)){
                             $code=3;
                         }
                     }
@@ -592,7 +593,7 @@ function hall_message_switch($mid,$data){
             $code=0;
             global $behaverids;
             //获取BU
-            $rmsg=getBu($_SESSION['phone'],$behaverids["tuiguang"],10);
+            $rmsg=getBu($_SESSION['phone'],$behaverids["tuiguang"],10,11);
 //            $rmsg=true;
             if($rmsg){
                 //查询当前状态是否可以领取
@@ -784,7 +785,7 @@ function add_user_packet($prop_id,$uid,$phone,$des,$num=1){
                         [
                             "q"     => ["prop_id" => $good->prop_id,
                                 'uid'=>$uid],
-                            "u"     => ['$set' => ['$inc' =>['over_time'=>$good->active_time]]],
+                            "u"     => ['$inc' =>['over_time'=>$good->active_time]],
                             'multi' => false, 'upsert' => false
                         ]
                     ];
@@ -875,6 +876,64 @@ function zero_update(){
 //    Timer::add(24*60*60, 'zero_update', null, false);
 //    Timer::add(30, 'zero_update', null, false);
 }
+
+/**修改在线人数
+ * @param $type 1大厅登陆，2大厅退出，3斗地主登陆，4斗地主退出
+ */
+function update_online_num($type){
+    //修改在线人数
+    $hall_config = mongo_db::singleton("hall_config");
+    $updates=[];
+    if($type==1){
+        $updates = [
+            [
+                "q"     => ["id" => 1],
+                "u"     => ['$inc' => ["hall_num"=>1]],
+                'multi' => false, 'upsert' => false
+            ]
+        ];
+    }else if($type==2){
+        $updates = [
+            [
+                "q"     => ["id" => 1],
+                "u"     => ['$inc' => ["hall_num"=>-1]],
+                'multi' => false, 'upsert' => false
+            ]
+        ];
+    }else if($type==3){
+        $updates = [
+            [
+                "q"     => ["id" => 1],
+                "u"     => ['$inc' => ["hall_num"=>-1,"doudizhu_num"=>1]],
+                'multi' => false, 'upsert' => false
+            ]
+        ];
+    }else if($type==4){
+        $updates = [
+            [
+                "q"     => ["id" => 1],
+                "u"     => ['$inc' => ["hall_num"=>1,"doudizhu_num"=>-1]],
+                'multi' => false, 'upsert' => false
+            ]
+        ];
+    }
+    $collname="online_statics";
+    $hall_config->update($collname, $updates);
+}
+
+/**添加联欢币发放回收记录（游戏结束，玩家输联欢币，就添加发放记录，玩家赢联欢币，收取其中的手续费为回收）
+ * @param $uid
+ * @param $type 1斗地主，2麻将
+ * @param $remark 备注
+ * @param $num数量（发放为负，回收为正）
+ */
+function add_lianhuanbi_logs($uid,$type,$remark,$num){
+    $hall_log = mongo_db::singleton("hall_log");
+    $rows=[['uid'=>$uid,'add_time'=>time(),'type'=>$type,'remark'=>$remark,'num'=>$num]];
+    $hall_log->insert("lianhuanbi_logs", $rows);
+}
+
+
 
 
 

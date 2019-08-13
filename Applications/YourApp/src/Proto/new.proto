@@ -724,7 +724,7 @@ message E_Goods_Info
 //	optional string  detail=9;//成功使用后，针对使用效果，填写对应值
 //	optional int32  duidie= 10;//堆叠1-是2-否
 //	optional int32  active_time = 11;  //有效时限（秒）0表示无限制
-	optional int32  mall_type = 6;  //针对商品类型0-不在商城展示1-实物（BU商城）2-话费（BU商城）3-Q币（BU商城）4-联欢币（游戏商城）5-道具（游戏商城）6-门票（游戏商城）7-礼包（游戏商城）
+	optional int32  mall_type = 6;  //针对商品类型0-不在商城展示1-实物（BU商城）2-话费（BU商城）3-Q币（BU商城）4-联欢币（游戏商城）5-道具（游戏商城）6-门票（游戏商城）7-礼包（游戏商城）,8H5商城优惠券
 	optional  int32 price_type= 7;//价格类型0-不需要1-联欢币2-BU币3-RMB
 	optional  int32 price= 8;//价格
 }
