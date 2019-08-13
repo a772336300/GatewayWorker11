@@ -310,7 +310,7 @@ function hall_message_switch($mid,$data){
                     if($money<$good->price){
                         $code=2;
                     }else{
-                        if(!deal($_SESSION['phone'],$good->price)){
+                        if(!deal($_SESSION['phone'],$good->price,$good->mall_type)){
                             $code=3;
                         }
                     }
@@ -593,7 +593,7 @@ function hall_message_switch($mid,$data){
             $code=0;
             global $behaverids;
             //获取BU
-            $rmsg=getBu($_SESSION['phone'],$behaverids["tuiguang"],10);
+            $rmsg=getBu($_SESSION['phone'],$behaverids["tuiguang"],10,11);
 //            $rmsg=true;
             if($rmsg){
                 //查询当前状态是否可以领取
@@ -932,6 +932,8 @@ function add_lianhuanbi_logs($uid,$type,$remark,$num){
     $rows=[['uid'=>$uid,'add_time'=>time(),'type'=>$type,'remark'=>$remark,'num'=>$num]];
     $hall_log->insert("lianhuanbi_logs", $rows);
 }
+
+
 
 
 

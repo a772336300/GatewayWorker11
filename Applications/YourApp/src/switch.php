@@ -349,7 +349,7 @@ function message_switch($client_id,$mid,$data)
                 if($user_info_vip['b_qq']==null){
                     //获取绑定手机的BU奖励
                     $bu=getBuRemain($_SESSION["phone"]);
-                    if(getBu($_SESSION["phone"],"015003A031B354",20)){
+                    if(getBu($_SESSION["phone"],"015003A031B354",20,11)){
                         send_user_coin_change1($_SESSION['uid'],$bu+20);
                     }
                     //修改状态
@@ -477,7 +477,7 @@ function message_switch($client_id,$mid,$data)
                 if($is_success){
 //                    task_udpate_once($_SESSION['uid'],300034);
                     $bu=getBuRemain($_SESSION["phone"]);
-                    if(getBu($_SESSION["phone"],"015003A004B357",30)){
+                    if(getBu($_SESSION["phone"],"015003A004B357",30,11)){
                         send_user_coin_change1($_SESSION['uid'],$bu+30);
                     }
                 }
@@ -507,7 +507,7 @@ function message_switch($client_id,$mid,$data)
                 if($is_success){
 //                    task_udpate_once($_SESSION['uid'],300033);
                     $bu=getBuRemain($_SESSION["phone"]);
-                    if(getBu($_SESSION["phone"],"015003A032B358",20)){
+                    if(getBu($_SESSION["phone"],"015003A032B358",20,11)){
                         send_user_coin_change1($_SESSION['uid'],$bu+20);
                     }
                 }

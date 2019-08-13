@@ -64,7 +64,7 @@ function game_db_give_jiangli($winCount,$player)
             $session=\GatewayWorker\Lib\Gateway::getSession($clientIdArr[0]);
             if(isset($session['phone']))
             {
-                if(getBu($session['phone'],$give['behaviorId'],$give['BU']))
+                if(getBu($session['phone'],$give['behaviorId'],$give['BU'],12))
                 {
                     $result['baseBU']=$give['BU'];
                     continue;
@@ -79,7 +79,7 @@ function game_db_give_jiangli($winCount,$player)
             $session=\GatewayWorker\Lib\Gateway::getSession($clientIdArr[0]);
             if(isset($session['phone']))
             {
-                if(getBu($session['phone'],$give['behaviorId'],$give['BU']))
+                if(getBu($session['phone'],$give['behaviorId'],$give['BU'],12))
                 {
                     $result['extraBU']=$give['BU'];
                     continue;
