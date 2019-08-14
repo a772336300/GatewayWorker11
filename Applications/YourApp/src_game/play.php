@@ -170,7 +170,14 @@ function roomInfo($roomId)
         $init['playerInfo'][$playerId]['gold']=$redis->hGet('info_'.$playerId,'gold');
         $init['playerInfo'][$playerId]['touxiang']=$redis->hGet('info_'.$playerId,'touxiang');
         $init['playerInfo'][$playerId]['level']=$redis->hGet('info_'.$playerId,'level');
-
+        if($redis->hGet($playerId,'time_out_count')>=2)
+        {
+            $init['playerInfo'][$playerId]['tuoguan']=true;
+        }
+        else
+        {
+            $init['playerInfo'][$playerId]['tuoguan']=false;
+        }
         $init['playerInfo'][$playerId]['cardsCount']=$redis->sCard($playerId.':cards');
     }
     $init['playerIds']=$playerIds;
@@ -219,6 +226,7 @@ function roomCreate($playerIds,$channel,$channelNumber=-1)
 }
 function GameStart($roomId,$playerIds)
 {
+    update_online_num(3,3);
     //设置先出牌者
     //redisSetBeginner($roomId);
     //游戏信息初始化
@@ -723,6 +731,7 @@ function beginPlayCard($dizhu,$roomId,$times)
 }
 function gameOver($roomId,$winner=null)
 {
+    update_online_num(4,3);
     global $redis;
     $result=array();
     if($winner!=null)
@@ -788,12 +797,12 @@ function experienceAndGold($roomId)
         if($player==$dizhu)
         {
             $result[$player]['gold']=200*$ratio*$times-$fangfei;
-            game_db_update_gold($player,$result[$player]['gold']);
+            game_db_update_gold($player,$result[$player]['gold'],$fangfei);
             $result[$player]['liansheng']=game_lianshengjiangli($player,0.5*$ratio+0.5);
             continue;
         }
         $result[$player]['gold']=(-1)*100*$ratio*$times-$fangfei;
-        game_db_update_gold($player,$result[$player]['gold']);
+        game_db_update_gold($player,$result[$player]['gold'],$fangfei);
         $result[$player]['liansheng']=game_lianshengjiangli($player,-0.5*$ratio+0.5);
     }
     return $result;

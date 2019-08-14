@@ -111,18 +111,19 @@ function game_db_store_game_result($roomId,$infos,$channel)
     }
 
 }
-function game_db_update_gold($player,$gold)
+function game_db_update_gold($player,$gold,$fangfei)
 {
     global $tcp_worker;
     $person_db=$tcp_worker->db->select('gold')->from("user_money")->where("uid= '$player'")->row();
-    $diff=$person_db+$gold;
+    $diff=$person_db['gold']+$gold;
     if($diff<0)
     {
-
+        add_lianhuanbi_logs($player,1,null,$diff);
         $affer_gold=0;
     }
     else
     {
+        add_lianhuanbi_logs($player,1,null,$fangfei);
         $affer_gold=$diff;
     }
     $tcp_worker->db->update('user_money')->cols(array('gold'=>$affer_gold))->where("uid='$player'")->query();

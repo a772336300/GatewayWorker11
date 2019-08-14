@@ -49,6 +49,7 @@ function game_send_room_init($init,$roomId,$client_id=null)
         $player_Info->setCardsCount($item['cardsCount']);
         $player_Info->setLevel($item['level']);
         $player_Info->setGold($item['gold']);
+        $player_Info->setTuoGuan($item['tuoguan']);
         $message->appendPlayersInfo($player_Info);
     }
     if($client_id!=null)

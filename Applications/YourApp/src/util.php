@@ -104,7 +104,7 @@ function getBuRemain($phone){
  * @param null $st
  * @return bool
  */
-function getBu($userMobile,$behaviorId,$money,$type,$tid=null,$st=null){
+function getBu($userMobile,$behaviorId,$money,$type=12,$tid=null,$st=null){
     //接口参数
     $url="https://ubc.jinvovo.com";
     $terraceId =$tid==null?"0dae8af09fc4f40eb7e2dbcd38f416e7":$tid;//合作平台ID,公钥

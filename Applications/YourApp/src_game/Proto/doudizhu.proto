@@ -101,6 +101,7 @@ message Player_Info
 	optional int32 gold = 4;
 	optional int32 level =5;
 	optional int32 Cards_count =  6;
+	optional bool tuo_guan =  7;
 }
 message Player_Order
 {

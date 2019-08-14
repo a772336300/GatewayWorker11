@@ -880,7 +880,7 @@ function zero_update(){
 /**修改在线人数
  * @param $type 1大厅登陆，2大厅退出，3斗地主登陆，4斗地主退出
  */
-function update_online_num($type){
+function update_online_num($type,$num=1){
     //修改在线人数
     $hall_config = mongo_db::singleton("hall_config");
     $updates=[];

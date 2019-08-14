@@ -1,6 +1,6 @@
 <?php
 /**
- * Auto generated from doudizhu.proto at 2019-07-24 15:16:42
+ * Auto generated from doudizhu.proto at 2019-08-14 19:06:19
  *
  * proto package
  */
@@ -18,6 +18,7 @@ class Player_Info extends \ProtobufMessage
     const GOLD = 4;
     const LEVEL = 5;
     const CARDS_COUNT = 6;
+    const TUO_GUAN = 7;
 
     /* @var array Field descriptors */
     protected static $fields = array(
@@ -51,6 +52,11 @@ class Player_Info extends \ProtobufMessage
             'required' => false,
             'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
+        self::TUO_GUAN => array(
+            'name' => 'tuo_guan',
+            'required' => false,
+            'type' => \ProtobufMessage::PB_TYPE_BOOL,
+        ),
     );
 
     /**
@@ -74,6 +80,7 @@ class Player_Info extends \ProtobufMessage
         $this->values[self::GOLD] = null;
         $this->values[self::LEVEL] = null;
         $this->values[self::CARDS_COUNT] = null;
+        $this->values[self::TUO_GUAN] = null;
     }
 
     /**
@@ -282,6 +289,39 @@ class Player_Info extends \ProtobufMessage
     public function hasCardsCount()
     {
         return $this->get(self::CARDS_COUNT) !== null;
+    }
+
+    /**
+     * Sets value of 'tuo_guan' property
+     *
+     * @param boolean $value Property value
+     *
+     * @return null
+     */
+    public function setTuoGuan($value)
+    {
+        return $this->set(self::TUO_GUAN, $value);
+    }
+
+    /**
+     * Returns value of 'tuo_guan' property
+     *
+     * @return boolean
+     */
+    public function getTuoGuan()
+    {
+        $value = $this->get(self::TUO_GUAN);
+        return $value === null ? (boolean)$value : $value;
+    }
+
+    /**
+     * Returns true if 'tuo_guan' property is set, false otherwise
+     *
+     * @return boolean
+     */
+    public function hasTuoGuan()
+    {
+        return $this->get(self::TUO_GUAN) !== null;
     }
 }
 }
