@@ -87,6 +87,11 @@ $tcp_worker->onWorkerStart = function ($worker)
 
     $redis = new Redis();
     $redisCon=$redis->pconnect('127.0.0.1');
+    //#test
+    global $cardModel;
+    $redis->flushAll();
+    foreach ($cardModel as $item)
+        $redis->sAdd('cardsModel',$item);
    // $monodb = new MongoDB\Client();
     $monodb= new MongoDB\Client("mongodb://{$config['mongodb']['address']}");
     //$monodb= new MongoDB\Client("mongodb+srv://myTester:xyz123@{$config['mongodb']['address']}?retryWrites=true&w=majority");

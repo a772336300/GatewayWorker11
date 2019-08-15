@@ -6,12 +6,7 @@ function switch_game($client_id,$mid,$data)
     {
         case Message_Id::CS_Join_Id:
             {
-//                //#test
-//                global $redis;
-//                global $cardModel;
-//                $redis->flushAll();
-//                foreach ($cardModel as $item)
-//                    $redis->sAdd('cardsModel',$item);
+
                 $join = new \Proto\CS_Join();
                 $join->parseFromString($data);
                 game_join($client_id,$join);
