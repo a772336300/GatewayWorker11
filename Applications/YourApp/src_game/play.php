@@ -3,12 +3,14 @@ use GatewayWorker\Lib\Gateway;
 use Proto\Room_Type;
 use Proto\Play_Data_Type;
 use Workerman\Lib\Timer;
+$waitingRobot=array();
 $waitingUser=array();
 $join_count=0;
 function robot_join($client_id,$robotId)
 {
-
+    $waitingRobot[]=$robotId;
 }
+
 function game_join($client_id,$join)
 {
     //test
@@ -73,6 +75,7 @@ function game_join($client_id,$join)
 //                }///
                 //game_db_lock_gold($playerId,300);
                 $waitingUser[Room_Type::chuji][$_SESSION['uid']]=time();
+                game_join_time_out_add_robot($playerId,Room_Type::chuji);
                 break;
             case Room_Type::zhongji:
                 ///if($gold<1000)
@@ -83,6 +86,7 @@ function game_join($client_id,$join)
 //                }
                 //game_db_lock_gold($playerId,300);
                 $waitingUser[Room_Type::zhongji][$_SESSION['uid']]=time();
+                game_join_time_out_add_robot($playerId,Room_Type::zhongji);
                 break;
             case Room_Type::gaoji:
                 echo "xxx";
@@ -94,6 +98,7 @@ function game_join($client_id,$join)
 //                }
                 //game_db_lock_gold($playerId,300);
                 $waitingUser[Room_Type::gaoji][$_SESSION['uid']]=time();
+                game_join_time_out_add_robot($playerId,Room_Type::gaoji);
                 break;
             case 4:
                 $roomId=10000;
@@ -133,6 +138,35 @@ function game_join($client_id,$join)
             die();
         }
     }
+}
+function game_join_time_out_add_robot($playerId,$type)
+{
+    Timer::add(30, function()use($playerId,$type)
+    {
+        global $waitingRobot;
+        global $waitingUser;
+        if(array_key_exists($playerId,$waitingUser[$type]))
+        {
+            $robotId=array_pop($waitingRobot);
+            $waitingUser[$type][$robotId]=time();
+            if(count($waitingUser[$type])==2)
+            {
+                $robotId1=array_pop($waitingRobot);
+                $waitingUser[$type][$robotId1]=time();
+            }
+            if(count($waitingUser[$type])==3)
+            {
+                $playerIds=array();
+                foreach ($waitingUser[$type] as $player=>$time)
+                {
+                    $playerIds[]=$player;
+                }
+                roomInit($playerIds,$type);
+                $waitingUser[$type]=array();
+            }
+        }
+
+    },array(),false);
 }
 function game_quit_join($client_id,$quit_join=null)
 {
