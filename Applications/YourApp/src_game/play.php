@@ -330,7 +330,7 @@ function cardSend($roomId)
     {
         $redis->delete($playerId . ':cards');
     }
-    $mapZhaDan = makeZhaDan($playerIds,0);
+    $mapZhaDan = makeZhaDan($playerIds,2);
     foreach($playerIds as $playerId)
     {
         $mapZhaDanScope=0;
