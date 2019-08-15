@@ -54,6 +54,7 @@ function game_db_give_jiangli($winCount,$player)
 {
     $result=array();
     global $monodb;
+    global $redis;
     $players=$monodb->game->user->find(['uid'=>$player])->toArray();
     $playerxx=$monodb->game->user->findOne(['uid'=>$player]);
     $give=$monodb->game_config->lianshengjiangli->findOne(['goods'=>'10400']);
@@ -63,11 +64,10 @@ function game_db_give_jiangli($winCount,$player)
     {
         if($give['baseBU']!=null)
         {
-            $clientIdArr=\GatewayWorker\Lib\Gateway::getClientIdByUid($player);
-            $session=\GatewayWorker\Lib\Gateway::getSession($clientIdArr[0]);
-            if(isset($session['phone']))
+            $phone=$redis->hGet('info_'.$player,'phone');
+            if($phone)
             {
-                if(getBu($session['phone'],$give['behaviorId'],$give['baseBU']))
+                if(getBu($phone,$give['behaviorId'],$give['baseBU']))
                 {
                     $result['baseBU']=$give['baseBU'];
                 }
@@ -78,11 +78,10 @@ function game_db_give_jiangli($winCount,$player)
         }
         if($give['extraBU']!=null)
         {
-            $clientIdArr=\GatewayWorker\Lib\Gateway::getClientIdByUid($player);
-            $session=\GatewayWorker\Lib\Gateway::getSession($clientIdArr[0]);
-            if(isset($session['phone']))
+            $phone=$redis->hGet('info_'.$player,'phone');
+            if($phone)
             {
-                if(getBu($session['phone'],$give['behaviorId'],$give['extraBU']))
+                if(getBu($phone,$give['behaviorId'],$give['extraBU']))
                 {
                     $result['extraBU']=$give['extraBU'];
                 }
