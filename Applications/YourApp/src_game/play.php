@@ -9,6 +9,7 @@ $join_count=0;
 function robot_join($client_id,$robotId)
 {
     $waitingRobot[]=$robotId;
+    echo "\n机器人加入id:$robotId\n";
     game_send_join($client_id,0);
 }
 
@@ -144,16 +145,27 @@ function game_join_time_out_add_robot($playerId,$type)
 {
     Timer::add(30, function()use($playerId,$type)
     {
+
         global $waitingRobot;
         global $waitingUser;
         if(array_key_exists($playerId,$waitingUser[$type]))
         {
+            echo "\n玩家的等待加入超时\n";
             $robotId=array_pop($waitingRobot);
-            $waitingUser[$type][$robotId]=time();
+            if($robotId!=null)
+            {
+                echo "\n机器人加入：id:$robotId\n";
+                $waitingUser[$type][$robotId]=time();
+            }
             if(count($waitingUser[$type])==2)
             {
+
                 $robotId1=array_pop($waitingRobot);
-                $waitingUser[$type][$robotId1]=time();
+                if($robotId1!=null)
+                {
+                    echo "\n机器人1加入：id:$robotId1\n";
+                    $waitingUser[$type][$robotId1]=time();
+                }
             }
             if(count($waitingUser[$type])==3)
             {
@@ -162,6 +174,7 @@ function game_join_time_out_add_robot($playerId,$type)
                 {
                     $playerIds[]=$player;
                 }
+                echo "\n机器人匹配成功：id:$robotId1\n";
                 roomInit($playerIds,$type);
                 $waitingUser[$type]=array();
             }
