@@ -50,7 +50,7 @@ function game_join($client_id,$join)
     {
         //遍历匹配数组队列，如果存在其中则返回已在匹配中
         foreach($waitingUser as $waitingUserItem)
-            if(in_array($_SESSION['uid'],$waitingUserItem))
+            if(array_key_exists($_SESSION['uid'],$waitingUserItem))
             {
                 send_notice_by_client_id($client_id,1,"已在匹配中");
                 //Events::sendOutByPrivateChannel($client_id,'xx','Join','system',"已在匹配中");
@@ -68,7 +68,7 @@ function game_join($client_id,$join)
 //                    return ;
 //                }///
                 //game_db_lock_gold($playerId,300);
-                $waitingUser[Room_Type::chuji][]=$_SESSION['uid'];
+                $waitingUser[Room_Type::chuji][$_SESSION['uid']]=time();
                 break;
             case Room_Type::zhongji:
                 ///if($gold<1000)
@@ -78,7 +78,7 @@ function game_join($client_id,$join)
 //                    return ;
 //                }
                 //game_db_lock_gold($playerId,300);
-                $waitingUser[Room_Type::zhongji][]=$_SESSION['uid'];
+                $waitingUser[Room_Type::zhongji][$_SESSION['uid']]=time();
                 break;
             case Room_Type::gaoji:
                 echo "xxx";
@@ -89,15 +89,20 @@ function game_join($client_id,$join)
 //                    return ;
 //                }
                 //game_db_lock_gold($playerId,300);
-                $waitingUser[Room_Type::gaoji][]=$_SESSION['uid'];
+                $waitingUser[Room_Type::gaoji][$_SESSION['uid']]=time();
                 break;
             case 4:
                 $roomId=10000;
-                $waitingUser[$roomId][]=$_SESSION['uid'];
+                $waitingUser[$roomId][$_SESSION['uid']]=time();
                 Events::sendOutByProtectChannel($_SESSION['uid'],'table','readying','system','等待其他玩家');
                 if(count($waitingUser[$roomId])==3)
                 {
-                    roomInit($waitingUser[$roomId],4,$roomId);
+                    $playerIds=array();
+                    foreach ($waitingUser[$roomId] as $player=>$time)
+                    {
+                        $playerIds[]=$player;
+                    }
+                    roomInit($playerIds,4,$roomId);
                     $waitingUser[4]=array();
                 }
                 break;
@@ -110,7 +115,12 @@ function game_join($client_id,$join)
         //Events::sendOutByProtectChannel($_SESSION['uid'],'table','Join','system','等待其他玩家');
         if($join->getType()!=4&&count($waitingUser[$join->getType()])==3)
         {
-            roomInit($waitingUser[$join->getType()],$join->getType());
+            $playerIds=array();
+            foreach ($waitingUser[$join->getType()] as $player=>$time)
+            {
+                $playerIds[]=$player;
+            }
+            roomInit($playerIds,$join->getType());
             $waitingUser[$join->getType()]=array();
         }
         if(count($waitingUser[$join->getType()])>=3)
@@ -125,9 +135,9 @@ function game_quit_join($client_id,$quit_join=null)
     global $waitingUser;
     //遍历匹配队列
     foreach($waitingUser as $key=>$value)
-        if(($index=array_search($_SESSION['uid'],$waitingUser[$key]))!==false)
+        if(array_key_exists($_SESSION['uid'],$waitingUser[$key]))
         {
-            unset($waitingUser[$key][$index]);
+            unset($waitingUser[$key][$_SESSION['uid']]);
             game_send_quit_join($client_id,$quit_join->getType());
             return ;
         }
