@@ -11,6 +11,8 @@
  * @link http://www.workerman.net/
  * @license http://www.opensource.org/licenses/mit-license.php MIT License
  */
+
+use MongoDB\BSON\ObjectId;
 use \Workerman\Worker;
 use \Workerman\WebServer;
 use \GatewayWorker\Gateway;
@@ -89,7 +91,17 @@ $tcp_worker->onWorkerStart = function ($worker)
         db_query($sql);
         $sql="update bolaik_user.user_stat_time set login_out_time='$nowTime' where login_out_time is null ";
         db_query($sql);
-        mongo_db::singleton();
+
+        $hall_config = mongo_db::singleton("hall_config");
+        $updates = [
+            [
+                "q"     => ["id" => 1],
+                "u"     => ['$set' => ["hall_num" => 0,"doudizhu_num"=>0,"majiang_num"=>0,"xiuxian_num"=>0]],
+                'multi' => false, 'upsert' => false
+            ]
+        ];
+        $collname="online_statics";
+        $hall_config->update($collname, $updates);
     }
 
     //$worker->db_web= new \Workerman\MySQL\Connection($config['db_web']['host'],$config['db_web']['port'],$config['db_web']['user'],$config['db_web']['password'],$config['db_web']['dbname'],$config['db_web']['charset']);

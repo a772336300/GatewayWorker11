@@ -44,6 +44,7 @@ require_once 'src_game/redis.php';
 require_once 'src_game/send_pack.php';
 require_once 'src_game/proto_arr.php';
 require_once 'src_game/Manager/room_manager.php';
+require_once 'src/hall.php';
 // bussinessWorker 进程
 $tcp_worker = new BusinessWorker();
 // worker名称

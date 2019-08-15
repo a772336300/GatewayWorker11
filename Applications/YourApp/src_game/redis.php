@@ -93,7 +93,7 @@ function redisInitGame($tableId)
     global $redis;
     $redis->hIncrBy($tableId,'repeat',1);//游戏重复次数标记
     $redis->hSet($tableId,'ratio',0);//房间输赢方，1地主，-1农民，0还没结果
-    $redis->hSet($tableId,'times','1');//房间倍数 ？和赔率重复
+    $redis->hSet($tableId,'times','0');//房间倍数 ？和赔率重复
     $redis->hSet($tableId,'dizhugongqi','1');//地主红旗存在
     $redis->hSet($tableId,'beginTime','123');//游戏开始时间
     $redis->hSet($tableId,'timer_type','123');//当前时间类型
@@ -122,12 +122,11 @@ function redisInitPlayers($playerIds,$table_id){
         $redis->hSet($playerId,'cards',$cardsId);
         $otherId=$redis->incr('otherINCR');
         $redis->hSet($playerId,'otherINCR',$otherId);
-
-
-        $redis->hSet('info_'.$playerId,'step',66);
-        $redis->hSet('info_'.$playerId,'name','测试xx');
-        $redis->hSet('info_'.$playerId,'gold',100000);
-        $redis->hSet('info_'.$playerId,'touxiang','https://www.workerman.net/img/workerman_logo.png');
-        $redis->hSet('info_'.$playerId,'level',66);
+        $db_player=db_get_user_by_id($playerId);
+        //$redis->hSet('info_'.$playerId,'step',$db_player['step']);
+        $redis->hSet('info_'.$playerId,'name',$db_player['name']);
+        //$redis->hSet('info_'.$playerId,'gold',$db_player['gold']);
+        $redis->hSet('info_'.$playerId,'touxiang',$db_player['touxiang']);
+        //$redis->hSet('info_'.$playerId,'level',$db_player['level']);
     }
 }

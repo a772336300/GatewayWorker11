@@ -329,13 +329,13 @@ function addLog($user_id,$get_u_coin,$task_id,$behaviorId){
 			$terraceId=$jsonObjectGame["public_key"];
 			$secret=$jsonObjectGame["private_key"];
 			if($terraceId==""){
-                if(getBu($user["user_account"],$behaviorId, $get_u_coin)==false){
+                if(getBu($user["user_account"],$behaviorId, $get_u_coin,11)==false){
                     echo "金窝窝获取bu失败!\n";
                     $objreturn->suc=false;
                     return $objreturn;
                 }
             }else{
-                if(getBu($user["user_account"],$behaviorId, $get_u_coin,$terraceId,$secret)==false){
+                if(getBu($user["user_account"],$behaviorId, $get_u_coin,11,$terraceId,$secret)==false){
                     echo "金窝窝获取bu失败!\n";
                     $objreturn->suc=false;
                     return $objreturn;

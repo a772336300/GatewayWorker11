@@ -4,6 +4,19 @@ function switch_game($client_id,$mid,$data)
 {
     switch ($mid)
     {
+        case Message_Id::CS_Robot_Join_Id:
+            {
+//                //#test
+//                global $redis;
+//                global $cardModel;
+//                $redis->flushAll();
+//                foreach ($cardModel as $item)
+//                    $redis->sAdd('cardsModel',$item);
+                $join = new \Proto\CS_Robot_Join();
+                $join->parseFromString($data);
+                robot_join($client_id,$join->getPlayerId());
+                break;
+            }
         case Message_Id::CS_Join_Id:
             {
 
@@ -25,6 +38,13 @@ function switch_game($client_id,$mid,$data)
                 $cs_play->parseFromString($data);
                 $play=$cs_play->getPlayData();
                 game_play($client_id,$play);
+                break;
+            }
+        case Message_Id::CS_Tuo_Guan_Id:
+            {
+                $cs_tuo_guan = new \Proto\CS_Tuo_Guan();
+                $cs_tuo_guan->parseFromString($data);
+                gameTuoGuan($_SESSION['uid'],$cs_tuo_guan->getData());
                 break;
             }
         case Message_Id::CS_Go_Out_Id:

@@ -99,11 +99,12 @@ function getBuRemain($phone){
  * @param $userMobile
  * @param $behaviorId
  * @param $money
+ * @param $type 11任务，12斗地主，13麻将
  * @param null $tid
  * @param null $st
  * @return bool
  */
-function getBu($userMobile,$behaviorId,$money,$tid=null,$st=null){
+function getBu($userMobile,$behaviorId,$money,$type=12,$tid=null,$st=null){
     //接口参数
     $url="https://ubc.jinvovo.com";
     $terraceId =$tid==null?"0dae8af09fc4f40eb7e2dbcd38f416e7":$tid;//合作平台ID,公钥
@@ -125,6 +126,8 @@ function getBu($userMobile,$behaviorId,$money,$tid=null,$st=null){
     $buf_arr= json_decode($result);
     echo "-获取BU-->".$result."\n";
     if($buf_arr->code==200){
+        //添加发放BU记录
+        add_BU_logs($userMobile,$type,1,"",$money,$behaviorId);
         return true;
     }else{
         return false;
@@ -162,7 +165,7 @@ function getBu($userMobile,$behaviorId,$money,$tid=null,$st=null){
 //    }
 //}
 
-function deal($fromUserMobile,$buAmount){
+function deal($fromUserMobile,$buAmount,$type){
     $url="https://ubc.jinvovo.com";
     $terraceId ="0dae8af09fc4f40eb7e2dbcd38f416e7";//合作平台ID,公钥
     $secret="e44f277a1451b356dd88ac6da1e5a7ee";//私钥
@@ -187,6 +190,8 @@ function deal($fromUserMobile,$buAmount){
     $buf_arr= json_decode($result);
     echo "--->".$result."\n";
     if($buf_arr->code==200){
+        //添加BU回收记录
+        add_BU_logs($fromUserMobile,$type,2,"",$buAmount,"");
         return true;
     }else{
         return false;
@@ -254,6 +259,19 @@ function get_real_ip()
 
     return ($ip ? $ip : $_SERVER['REMOTE_ADDR']);
 
+}
+
+/**添加BU记录
+ * @param $uid
+ * @param $type 11斗地主，12麻将
+ * @param $send_back 1发放，2回收
+ * @param $remark 备注
+ * @param $num数量
+ */
+function add_BU_logs($phone,$type,$send_back,$remark,$num,$behaviorId){
+    $hall_log = mongo_db::singleton("hall_log");
+    $rows=[['phone'=>$phone,'add_time'=>time(),'send_back'=>$send_back,'type'=>$type,'remark'=>$remark,'num'=>$num,'behaviorId'=>$behaviorId]];
+    $hall_log->insert("BU_logs", $rows);
 }
 
 

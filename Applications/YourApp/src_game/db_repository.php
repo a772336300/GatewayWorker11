@@ -37,12 +37,12 @@ function game_set_tack($playerId,$type,$count=1)
 function game_db_user_liansheng_over($playId)
 {
     global $monodb;
-    $monodb->game->user->updateOne(['uid'=>$playId],['$set'=>['liansheng'=>0]]);
+    $monodb->game->user->updateOne(['uid'=>$playId],['$set'=>['liansheng'=>0]],['upsert'=>true]);
 }
 function game_db_user_liansheng_add($playId)
 {
     global $monodb;
-    $monodb->game->user->updateOne(['uid'=>$playId],['$inc'=>['liansheng'=>1]]);
+    $monodb->game->user->updateOne(['uid'=>$playId],['$inc'=>['liansheng'=>1]],['upsert'=>true]);
 }
 function game_db_user_liansheng_count($playId)
 {
@@ -54,52 +54,77 @@ function game_db_give_jiangli($winCount,$player)
 {
     $result=array();
     global $monodb;
-    $gives=$monodb->game_config->lianshengliangli->find(['count'=>$winCount]);
+    $players=$monodb->game->user->find(['uid'=>$player])->toArray();
+    $playerxx=$monodb->game->user->findOne(['uid'=>$player]);
+    $give=$monodb->game_config->lianshengjiangli->findOne(['goods'=>'10400']);
+    $gives=$monodb->game_config->lianshengjiangli->find(['win_count'=>(string)$winCount])->toArray();
     //$winCount;
     foreach ($gives as $give)
     {
-        if($give['baseBU'])
+        if($give['baseBU']!=null)
         {
             $clientIdArr=\GatewayWorker\Lib\Gateway::getClientIdByUid($player);
             $session=\GatewayWorker\Lib\Gateway::getSession($clientIdArr[0]);
             if(isset($session['phone']))
             {
-                if(getBu($session['phone'],$give['behaviorId'],$give['BU']))
+                if(getBu($session['phone'],$give['behaviorId'],$give['baseBU']))
                 {
-                    $result['baseBU']=$give['BU'];
-                    continue;
+                    $result['baseBU']=$give['baseBU'];
                 }
                 //获取BU失败；
+                //#test
+                $result['baseBU']=$give['baseBU'];
             }
-            continue;
         }
-        if($give['extraBU'])
+        if($give['extraBU']!=null)
         {
             $clientIdArr=\GatewayWorker\Lib\Gateway::getClientIdByUid($player);
             $session=\GatewayWorker\Lib\Gateway::getSession($clientIdArr[0]);
             if(isset($session['phone']))
             {
-                if(getBu($session['phone'],$give['behaviorId'],$give['BU']))
+                if(getBu($session['phone'],$give['behaviorId'],$give['extraBU']))
                 {
-                    $result['extraBU']=$give['BU'];
-                    continue;
+                    $result['extraBU']=$give['extraBU'];
                 }
                 //获取BU失败；
+                //test
+                $result['extraBU']=$give['extraBU'];
             }
-            continue;
         }
-        add_user_packet($give['goods'],$player,null,$give['description'],$give['count']);
-        $result['goods'][$give['goods']]=$give['count'];
+        if($give['goods']!=null)
+        {
+            add_user_packet($give['goods'],$player,null,$give['description'],$give['count']);
+            $result['goods'][$give['goods']]=$give['count'];
+        }
     }
     return $result;
 }
 function game_db_store_game_result($roomId,$infos,$channel)
 {
+    global $redis;
     global $monodb;
+    $game_time = time()-$redis->hGet($roomId,'game_start_time');
     foreach ($infos as $playId=>$info)
     {
         //$player=$monodb->hall_log->game_log->updateOne(['uid'=>$playId],['$set'=>['roomid'=>$roomId,'game_type'=>'doudizhu'.$channel,'score'=>],'$inc'=>['gold'=>-$gold]]);
-        $monodb->hall_log->game_log->insertOne(['uid'=>$playId,'roomid'=>$roomId,'game_type'=>'doudizhu'.$channel,'score'=>$info['gold']]);
+        $monodb->hall_log->game_log->insertOne(['uid'=>$playId,'roomid'=>$roomId,'game_type'=>'doudizhu'.$channel,'game_time'=>$game_time,'score'=>$info['gold']]);
     }
 
+}
+function game_db_update_gold($player,$gold,$fangfei)
+{
+    global $tcp_worker;
+    $person_db=$tcp_worker->db->select('gold')->from("user_money")->where("uid= '$player'")->row();
+    $diff=$person_db['gold']+$gold;
+    if($diff<0)
+    {
+        add_lianhuanbi_logs($player,1,null,$diff);
+        $affer_gold=0;
+    }
+    else
+    {
+        add_lianhuanbi_logs($player,1,null,$fangfei);
+        $affer_gold=$diff;
+    }
+    $tcp_worker->db->update('user_money')->cols(array('gold'=>$affer_gold))->where("uid='$player'")->query();
 }
