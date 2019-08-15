@@ -8,6 +8,7 @@ $waitingUser=array();
 $join_count=0;
 function robot_join($client_id,$robotId)
 {
+    global $waitingRobot;
     $waitingRobot[]=$robotId;
     echo "\n机器人加入id:$robotId\n";
     game_send_join($client_id,0);
