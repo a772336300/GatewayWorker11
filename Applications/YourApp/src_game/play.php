@@ -9,6 +9,7 @@ $join_count=0;
 function robot_join($client_id,$robotId)
 {
     $waitingRobot[]=$robotId;
+    game_send_join($client_id,0);
 }
 
 function game_join($client_id,$join)
