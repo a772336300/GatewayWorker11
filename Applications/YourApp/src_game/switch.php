@@ -6,6 +6,7 @@ function switch_game($client_id,$mid,$data)
     {
         case Message_Id::CS_Robot_Join_Id:
             {
+                echo "\n机器人请求匹配\n";
 //                //#test
 //                global $redis;
 //                global $cardModel;
