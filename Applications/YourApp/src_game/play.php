@@ -5,6 +5,10 @@ use Proto\Play_Data_Type;
 use Workerman\Lib\Timer;
 $waitingUser=array();
 $join_count=0;
+function robot_join($client_id,$robotId)
+{
+
+}
 function game_join($client_id,$join)
 {
     //test

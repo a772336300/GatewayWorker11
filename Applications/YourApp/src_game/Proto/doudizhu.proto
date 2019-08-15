@@ -35,6 +35,7 @@ enum Message_Id
     SC_ComPetition_Group_Id = 19;
 	CS_Tuo_Guan_Id = 20;     //请求竞技组信息
 	SC_Tuo_Guan_Id = 21;
+	CS_Robot_Join_Id = 22;
 }
 
 enum Game_Type
@@ -189,4 +190,8 @@ message SC_Tuo_Guan
 {
 	optional int32 playerId = 1;
 	optional bool data = 2;//是否托管
+}
+message CS_Robot_Join
+{
+	optional int32 playerId = 1;
 }

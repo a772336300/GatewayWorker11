@@ -1,6 +1,6 @@
 <?php
 /**
- * Auto generated from doudizhu.proto at 2019-08-12 15:39:31
+ * Auto generated from doudizhu.proto at 2019-08-15 10:28:30
  *
  * proto package
  */
@@ -32,6 +32,7 @@ final class Message_Id
     const SC_ComPetition_Group_Id = 19;
     const CS_Tuo_Guan_Id = 20;
     const SC_Tuo_Guan_Id = 21;
+    const CS_Robot_Join_Id = 22;
 
     /**
      * Returns defined enum values
@@ -62,6 +63,7 @@ final class Message_Id
             'SC_ComPetition_Group_Id' => self::SC_ComPetition_Group_Id,
             'CS_Tuo_Guan_Id' => self::CS_Tuo_Guan_Id,
             'SC_Tuo_Guan_Id' => self::SC_Tuo_Guan_Id,
+            'CS_Robot_Join_Id' => self::CS_Robot_Join_Id,
         );
     }
 }
