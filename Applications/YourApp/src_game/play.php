@@ -8,6 +8,7 @@ $waitingUser=array();
 $join_count=0;
 function robot_join($client_id,$robotId)
 {
+    global $waitingRobot;
     $waitingRobot[]=$robotId;
     echo "\n机器人加入id:$robotId\n";
     game_send_join($client_id,0);
@@ -143,7 +144,7 @@ function game_join($client_id,$join)
 }
 function game_join_time_out_add_robot($playerId,$type)
 {
-    Timer::add(30, function()use($playerId,$type)
+    Timer::add(3, function()use($playerId,$type)
     {
 
         global $waitingRobot;
