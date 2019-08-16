@@ -7,7 +7,7 @@ $config=[
 //        'dbname'   => 'bolaik_db',
 //        'charset'  => 'utf8',
 //        ],
-        'db'=>['host'  => '192.168.0.70',
+        'db'=>['host'  => '192.168.0.241',
         'port'     => '3306',
         'user'     => 'dgame',
         'password' => '123456',

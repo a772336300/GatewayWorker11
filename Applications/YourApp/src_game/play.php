@@ -465,8 +465,8 @@ function timerTrigger($repeat,$currantTick,$roomId)
         }
         else
             //如果时抢地主，则不抢
-            if($compareValue['type']==Play_Data_Type::jiaodizhu||$compareValue['type']==Play_Data_Type::qiangdizhu){
-                roomTrigger($turnerId,$roomId,array('type'=>Play_Data_Type::qiangdizhu,'data'=>0));
+            if($compareValue['type']==Play_Data_Type::jiaodizhu){
+                roomTrigger($turnerId,$roomId,array('type'=>Play_Data_Type::jiaodizhu,'data'=>0));
             }
             else
                 //如果是出牌
