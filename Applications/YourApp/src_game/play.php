@@ -144,7 +144,7 @@ function game_join($client_id,$join)
 }
 function game_join_time_out_add_robot($playerId,$type)
 {
-    Timer::add(30, function()use($playerId,$type)
+    Timer::add(3, function()use($playerId,$type)
     {
 
         global $waitingRobot;
