@@ -6,6 +6,7 @@ use Workerman\Lib\Timer;
 $waitingRobot=array();
 $waitingUser=array();
 $join_count=0;
+const time_out_limit=1;
 function robot_join($client_id,$robotId)
 {
     global $waitingRobot;
@@ -175,7 +176,7 @@ function game_join_time_out_add_robot($playerId,$type)
                 {
                     $playerIds[]=$player;
                 }
-                echo "\n机器人匹配成功：id:$robotId1\n";
+                echo "\n机器人匹配成功\n";
                 roomInit($playerIds,$type);
                 $waitingUser[$type]=array();
             }
@@ -233,7 +234,7 @@ function roomInfo($roomId)
         $init['playerInfo'][$playerId]['gold']=$redis->hGet('info_'.$playerId,'gold');
         $init['playerInfo'][$playerId]['touxiang']=$redis->hGet('info_'.$playerId,'touxiang');
         $init['playerInfo'][$playerId]['level']=$redis->hGet('info_'.$playerId,'level');
-        if($redis->hGet($playerId,'time_out_count')>=2)
+        if($redis->hGet($playerId,'time_out_count')>=time_out_limit)
         {
             $init['playerInfo'][$playerId]['tuoguan']=true;
         }
@@ -421,14 +422,19 @@ function roomTick($roomId,$times,$timeSecond=16)
 //    //#test
 //    timerTrigger($repeat,$tick,$roomId);
 //    //#test
-    if($redis->hGet($turnerId,'time_out_count')>=2)
+    if($redis->hGet($turnerId,'time_out_count')>=time_out_limit)
     {
-        game_send_tuo_guan($roomId,$turnerId,true);
         $timeSecond=0.5;
     }
-    Timer::add($timeSecond, function()use($roomId,$repeat,$tick)
+    Timer::add($timeSecond, function()use($roomId,$repeat,$tick,$turnerId)
     {
         timerTrigger($repeat,$tick,$roomId);
+        global $redis;
+        if($redis->hGet($turnerId,'time_out_count')>=time_out_limit)
+        {
+            game_send_tuo_guan($roomId,$turnerId,true);
+            $timeSecond=0.5;
+        }
     },array(),false);
     //game_send_turn($turnerId);
 }
@@ -437,7 +443,7 @@ function gameTuoGuan($playerId,$data)
     global $redis;
     if($data)
     {
-        $redis->hSet($playerId,'time_out_count',2);
+        $redis->hSet($playerId,'time_out_count',time_out_limit);
         $roomId= $redis->hGet($playerId,'roomId');
         game_send_tuo_guan($roomId,$playerId,true);
         return;
@@ -475,6 +481,15 @@ function timerTrigger($repeat,$currantTick,$roomId)
                     //如果当前牌权是本人者出最小的一张牌
                     if ($redis->hGet($roomId, 'currant_value_owner') == $turnerId)
                     {
+                        $result = startCards($redis->sMembers($turnerId.':cards'));
+                        if($result==null)
+                        {
+                            send_notice($turnerId,1,"自动出牌错误");
+                            util_log("自动出牌错误！error：3111");
+                            return ;
+                        }
+                        roomTrigger($turnerId,$roomId,array('type'=>Play_Data_Type::pai,'data'=>$result['cards']),$result['code']);
+                        return ;
                         //@@获取手牌最小值
                         $data=preg_replace('/[rwyb*]/','',$redis->sMembers($turnerId.':cards'));
                         $begin = min($data);
@@ -501,17 +516,28 @@ function timerTrigger($repeat,$currantTick,$roomId)
                     else
                     {
                         //取出最小牌
-                        //if($compareValue['data']==null)
-                        //{
-                        //    Events::sendOutByProtectChannel($playerId, 'systemMessage', 'error', $playerId, '系统错误,当前牌拥有者出牌为空');
-                        //    return;
-                        //}
-                        //$result=biggerCards($redis->sMembers($turnerId.':cards'),$compareValue['data']);
-                        //if($result==null)
-                        //    spaceTrigger($turnerId,$roomId,array('type'=>Play_Data_Type::pai,'data'=>null));
-                        //else
-                        //    spaceTrigger($turnerId,$roomId,array('type'=>Play_Data_Type::pai,'data'=>$result['body']),$result['code']);
-                        roomTrigger($turnerId,$roomId,array('type'=>Play_Data_Type::pai,'data'=>null));
+                        if($compareValue['data']==null)
+                        {
+                            send_notice($turnerId,1,"用户id错误");
+                            util_log("用户id错误！error：3000");
+                            return;
+                            //Events::sendOutByProtectChannel($playerId, 'systemMessage', 'error', $playerId, '系统错误,当前牌拥有者出牌为空');
+                        }
+                        $dizhu=$redis->hGet($roomId,'dizhu');
+                        $currentValueOwner=$redis->hGet($roomId,'currant_value_owner');
+                        if($currentValueOwner!=$dizhu&&$dizhu!=$turnerId)
+                        {
+                            roomTrigger($turnerId,$roomId,array('type'=>Play_Data_Type::pai,'data'=>null));
+                        }
+                        else
+                        {
+                            $result=biggerCards($redis->sMembers($turnerId.':cards'),$compareValue['data']);
+                            if($result==null)
+                                roomTrigger($turnerId,$roomId,array('type'=>Play_Data_Type::pai,'data'=>null));
+                            else
+                                roomTrigger($turnerId,$roomId,array('type'=>Play_Data_Type::pai,'data'=>$result['cards']),$result['code']);
+
+                        }
                     }
 
                 }
@@ -522,6 +548,281 @@ function timerTrigger($repeat,$currantTick,$roomId)
 
     }
 }
+function startCards($Cards)
+{
+    $result=array();
+    $Cards_str=implode(',',$Cards);
+    $cardsDecode =valueDecode($Cards_str);
+    if($cardsDecode!=null&&checkType($cardsDecode))
+    {
+        $result['cards']=$Cards_str;
+        $result['code']=$cardsDecode;
+        return $result;
+    }
+
+    $compareValue_sandaiyi=['type'=>['X'=>'3','Y'=>'0'],'begin'=>'2','wings'=>['type'=>1,'data'=>'3']];
+    $sandaiyi= biggerCards($Cards,$compareValue_sandaiyi,true);
+    if($sandaiyi!=null)
+    {
+        return $sandaiyi;
+    }
+
+    $compareValue_sandaier=['type'=>['X'=>'3','Y'=>'0'],'begin'=>'2','wings'=>['type'=>2,'data'=>'3']];
+    $sandaiyi= biggerCards($Cards,$compareValue_sandaier,true);
+    if($sandaiyi!=null)
+    {
+        return $sandaiyi;
+    }
+
+    $compareValue_dui=['type'=>['X'=>'2','Y'=>'0'],'begin'=>'2','wings'=>[]];
+    $dui= biggerCards($Cards,$compareValue_dui,true);
+    if($dui!=null)
+    {
+        return $dui;
+    }
+    $compareValue_shun=['type'=>['X'=>'1','Y'=>'4'],'begin'=>'2','wings'=>[]];
+    $shun= biggerCards($Cards,$compareValue_shun,true);
+    if($shun!=null)
+    {
+        return $shun;
+    }
+    $compareValue_dan=['type'=>['X'=>'1','Y'=>'0'],'begin'=>'2','wings'=>[]];
+    $dan= biggerCards($Cards,$compareValue_dan,true);
+    if($dan!=null)
+    {
+        return $dan;
+    }
+
+    return null;
+}
+function haveP($Cards)
+{
+    if(array_intersect(['*16','*17'],$Cards)==['*16','*17'])
+    {
+        $result['cards']='*16,*17';
+        $result['code']=['type'=>['X'=>'1','Y'=>'1'],'begin'=>'16','wings'=>[]];
+        return $result;
+    }
+    return null;
+}
+function biggerCards($Cards,$compareValue,$noGP=false)
+{
+    $result=array();
+    //$Cards=preg_replace('/[rwyb*]/','',$Cards);
+    $cardsMap=array();
+    $Gz=100;
+    foreach ($Cards as $card)
+    {
+        $map=substr($card,1);
+        if(array_key_exists($map,$cardsMap))
+        {
+            //如果存在则值加一
+            $cardsMap[$map]['count']++;
+            if($cardsMap[$map]['count']==4)
+            {
+                if($map<$Gz)
+                {
+                    $Gz=$map;
+                }
+            }
+        }
+        else
+        {
+            $cardsMap[$map]['count']=1;
+        }
+        $cardsMap[$map]['cards'][]=$card;
+    }
+    //比较值+1到最大值出牌,是否可出可出就出
+    $X=$compareValue['type']['X'];
+    //如果不存在大于的牌,返回 false
+    $Y=$compareValue['type']['Y'];
+    $begin=$compareValue['begin'];
+    //找出 == x  ==y  >= begin的区域,找出符合wings的区域 =type
+    //如果x ,y ,begin相同,找出wings的 >data的区域
+    $tmpBegin=0;
+    $tmpY=0;
+    $isGet=0;
+    $isWingsGet=1;
+    $tmpWings=array();
+    if($compareValue['wings']!=null&&!empty($compareValue['wings']['type']))
+    {
+        $tmpWings=array('type'=>$compareValue['wings']['type'],'data'=>array());
+        $isWingsGet=0;
+    }
+    $cards=array('wings'=>[],'body'=>[]);
+    ksort($cardsMap);
+    foreach ($cardsMap as $map=>$item)
+    {
+        //识别连值
+        if($isGet==0&&$item['count']>=$X&&$map>$begin&&$tmpBegin==0)
+        {
+            $tmpBegin=$map;
+        }
+        //x区域计数
+        if($item['count'] >=$X&&$map==$tmpY+$tmpBegin&&($tmpY-1)!=$Y)
+        {
+            $tmpY++;
+            for ($i=0;$i<$X;$i++)
+                $cards['body'][]=$item['cards'][$i];
+            if(($tmpY-1)==$Y)
+            {
+                $isGet=1;
+            }
+            continue;
+        }
+        if($isGet==0)
+        {
+            $tmpBegin=0;
+            $tmpY=0;
+            $cards['body']=array();
+        }
+        //非x连续区域，加入wings
+        if($isWingsGet==1)
+            continue;
+        if(!empty($compareValue['wings']['type'])&&$compareValue['wings']['type']<=$item['count'])
+        {
+            for ($i=0;$i<$compareValue['wings']['type'];$i++)
+            {
+                $cards['wings'][]=$item['cards'][$i];
+            }
+            $tmpWings['data'][]=$map;
+            if($X==4&&count($tmpWings['data'])==2)
+            {
+                $isWingsGet=1;
+                continue;
+            }
+            if(count($tmpWings['data'])==($Y+1))
+            {
+                $isWingsGet=1;
+                continue;
+            }
+
+        }
+    }
+    if($isWingsGet!=1||$isGet!=1)
+    {
+        //不是炸弹且手牌有炸弹
+        if(!isG($compareValue)&&$Gz!=100)
+        {
+            //出炸弹
+            $result['cards']='r'.$Gz.',w'.$Gz.',b'.$Gz.',y'.$Gz;
+            $result['code']=['type'=>['X'=>4,'Y'=>0],'begin'=>$Gz,'wings'=>[]];
+            if($noGP&&(isG($result['code'])||isP($result['code'])))
+                return null;
+            return $result;
+        }
+        //否则出皇炸
+        if(($result=haveP($Cards))!=null)
+        {
+            if($noGP&&(isG($result['code'])||isP($result['code'])))
+                return null;
+            return $result;
+        }
+        //是否有炸弹或皇炸,有就出牌
+        if($noGP&&(isG($result['code'])||isP($result['code'])))
+            return null;
+        return $result;
+    }
+    $result['cards']=array_merge($cards['wings'],$cards['body']);
+    $result['cards']=implode(',',$result['cards']);
+    $result['code']=['type'=>['X'=>$X,'Y'=>$Y],'begin'=>$tmpBegin,'wings'=>$tmpWings];
+    return $result;
+    //如果存在相应的牌,返回牌和code
+}
+//手牌中比当前牌大的一张手牌
+//function biggerCards($Cards,$compareValue)
+//{
+//    $result=array();
+//    //$Cards=preg_replace('/[rwyb*]/','',$Cards);
+//    //比较值+1到最大值出牌,是否可出可出就出
+//    $X=$compareValue['type']['X'];
+//    //如果不存在大于的牌,返回 false
+//    $Y=$compareValue['type']['Y'];
+//    $begin=$compareValue['begin'];
+//    $wingsType=$compareValue['wings']['type'];
+//    $wings=$compareValue['wings']['data'];
+//    $tmp=array();
+//    foreach ($Cards as $card)
+//    {
+//        $map=substr($card,1);
+//        if(array_key_exists($map,$tmp))
+//        {
+//            //如果存在则值加一
+//            $tmp[$map]['count']++;
+//        }
+//        else
+//        {
+//            $tmp[$map]['count']=1;
+//        }
+//        $tmp[$map]['cards'][]=$card;
+//
+//    }
+//    ksort($tmp);
+//    //找出 == x  ==y  >= begin的区域,找出符合wings的区域 =type
+//    //如果x ,y ,begin相同,找出wings的 >data的区域
+//    $tmpBegin=0;
+//    $tmpY=0;
+//    $isGet=0;
+//    $tmpWings=array();
+//    $isWingsGet=0;
+//    $cards=array();
+//    foreach ($tmp as $map=>$item)
+//    {
+//        //识别连值
+//        if($isGet==0&&$item['count']>=$X&&$map>$begin&&$tmpBegin==0)
+//        {
+//            $tmpBegin=$map;
+//        }
+//        //x区域计数
+//        if($item['count'] >=$X&&$map==$tmpY+$tmpBegin)
+//        {
+//            $tmpY++;
+//            for ($i=0;$i<$item['count'];$i++)
+//                 $cards['body']=$item['cards'][$i];
+//            if($tmpY==$Y)
+//            {
+//                $isGet=1;
+//            }
+//            continue;
+//        }
+//        if($isGet==0)
+//        {
+//            $tmpBegin=0;
+//            $tmpY=0;
+//            $cards['body']=array();
+//        }
+//        //非x连续区域，加入wings
+//        if($wings==null)
+//            $isWingsGet=1;
+//        if ($wingsType==$item['count'])
+//        {
+//            if($X==4&&count($tmpWings['data'])==2)
+//            {
+//                $isWingsGet=1;
+//                continue;
+//            }
+//            if(count($tmpWings['data'])==$Y)
+//            {
+//                $isWingsGet=1;
+//                continue;
+//            }
+//            $tmpWings['data'][]=$map;
+//            for ($i=0;$i<$item['count'];$i++)
+//                $cards['wings']=$item['cards'][$i];
+//        }
+//    }
+//    if($isWingsGet!=1||$isGet!=1)
+//    {
+//        haveG();
+//        haveP();
+//        return $result;
+//    }
+//    $result['cards']=array_merge($cards['wings'],implode(',',$cards['body']));
+//    $result['code']=['type'=>['X'=>$X,'Y'=>$Y],'begin'=>$tmpBegin,'wings'=>$tmpWings];
+//    return $result;
+//    //如果存在相应的牌,返回牌和code
+//}
+
 function roomTrigger($playerId,$roomId,$value,$valueCode=null)
 {
     //划分出牌类型
