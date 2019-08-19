@@ -547,6 +547,7 @@ function timerTrigger($repeat,$currantTick,$roomId)
 }
 function startCards($Cards)
 {
+    return null;
     $result=array();
     $Cards_str=implode(',',$Cards);
     $cardsDecode =valueDecode($Cards_str);
@@ -604,6 +605,7 @@ function haveP($Cards)
 }
 function biggerCards($Cards,$compareValue,$noGP=false)
 {
+    return null;
     $result=array();
     //$Cards=preg_replace('/[rwyb*]/','',$Cards);
     $cardsMap=array();
