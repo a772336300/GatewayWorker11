@@ -430,10 +430,9 @@ function roomTick($roomId,$times,$timeSecond=16)
     {
         timerTrigger($repeat,$tick,$roomId);
         global $redis;
-        if($redis->hGet($turnerId,'time_out_count')>=time_out_limit)
+        if($redis->hGet($turnerId,'time_out_count')==time_out_limit)
         {
             game_send_tuo_guan($roomId,$turnerId,true);
-            $timeSecond=0.5;
         }
     },array(),false);
     //game_send_turn($turnerId);
@@ -484,34 +483,32 @@ function timerTrigger($repeat,$currantTick,$roomId)
                         $result = startCards($redis->sMembers($turnerId.':cards'));
                         if($result==null)
                         {
-                            send_notice($turnerId,1,"自动出牌错误");
-                            util_log("自动出牌错误！error：3111");
+                            //@@获取手牌最小值
+                            $data=preg_replace('/[rwyb*]/','',$redis->sMembers($turnerId.':cards'));
+                            $begin = min($data);
+                            $cards=null;
+                            if($redis->sIsMember($turnerId.':cards','r'.$begin))
+                                $cards='r'.$begin;
+                            if($redis->sIsMember($turnerId.':cards','w'.$begin))
+                                $cards='w'.$begin;
+                            if($redis->sIsMember($turnerId.':cards','y'.$begin))
+                                $cards='y'.$begin;
+                            if($redis->sIsMember($turnerId.':cards','b'.$begin))
+                                $cards='b'.$begin;
+                            if($redis->sIsMember($turnerId.':cards','*'.$begin))
+                                $cards='*'.$begin;
+                            if($cards==null)
+                            {
+                                var_dump('自动出牌错误');
+                                return ;
+                            }
+                            $value = array('type' => Play_Data_Type::pai, 'data' => $cards);
+                            $valueCode =  ['type' => ['X' => 1, 'Y' => 0], 'begin' => $begin, 'wings' => array()];
+                            roomTrigger($turnerId, $roomId, $value,$valueCode);
                             return ;
                         }
                         roomTrigger($turnerId,$roomId,array('type'=>Play_Data_Type::pai,'data'=>$result['cards']),$result['code']);
                         return ;
-                        //@@获取手牌最小值
-                        $data=preg_replace('/[rwyb*]/','',$redis->sMembers($turnerId.':cards'));
-                        $begin = min($data);
-                        $cards=null;
-                        if($redis->sIsMember($turnerId.':cards','r'.$begin))
-                            $cards='r'.$begin;
-                        if($redis->sIsMember($turnerId.':cards','w'.$begin))
-                            $cards='w'.$begin;
-                        if($redis->sIsMember($turnerId.':cards','y'.$begin))
-                            $cards='y'.$begin;
-                        if($redis->sIsMember($turnerId.':cards','b'.$begin))
-                            $cards='b'.$begin;
-                        if($redis->sIsMember($turnerId.':cards','*'.$begin))
-                            $cards='*'.$begin;
-                        if($cards==null)
-                        {
-                            var_dump('自动出牌错误');
-                            return ;
-                        }
-                        $value = array('type' => Play_Data_Type::pai, 'data' => $cards);
-                        $valueCode =  ['type' => ['X' => 1, 'Y' => 0], 'begin' => $begin, 'wings' => array()];
-                        roomTrigger($turnerId, $roomId, $value,$valueCode);
                     }
                     else
                     {
