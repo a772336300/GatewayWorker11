@@ -824,6 +824,9 @@ function biggerCards($Cards,$compareValue,$noGP=false)
 
 function roomTrigger($playerId,$roomId,$value,$valueCode=null)
 {
+    echo "玩家$playerId:打牌\n";
+    print_r($value);
+    echo "\n";
     //划分出牌类型
     switch ($value['type'])
     {
@@ -1638,7 +1641,11 @@ function game_play($clientId,$payload_buff)
              }*/
         }
         else
+        {
             send_notice_by_client_id($clientId,1,"没轮到你");
+            echo "\n$playerId:没轮到你,轮到$owner\n";
+        }
+
         // app1_spaceinputmastar::onSpaceMessage('client','没轮到你',$client_id);
 
     }
