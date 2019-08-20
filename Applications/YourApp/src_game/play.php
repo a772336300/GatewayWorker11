@@ -180,6 +180,10 @@ function game_join_time_out_add_robot($playerId,$type)
                 roomInit($playerIds,$type);
                 $waitingUser[$type]=array();
             }
+            else
+            {
+                game_join_time_out_add_robot($playerId,$type);
+            }
         }
 
     },array(),false);
