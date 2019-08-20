@@ -6,6 +6,7 @@ use Workerman\Lib\Timer;
 $waitingRobot=array();
 $waitingUser=array();
 $join_count=0;
+const simple=0;
 const time_out_limit=1;
 function robot_join($client_id,$robotId)
 {
@@ -551,7 +552,10 @@ function timerTrigger($repeat,$currantTick,$roomId)
 }
 function startCards($Cards)
 {
-    return null;
+    if(simple)
+    {
+        return null;
+    }
     $result=array();
     $Cards_str=implode(',',$Cards);
     $cardsDecode =valueDecode($Cards_str);
@@ -609,7 +613,10 @@ function haveP($Cards)
 }
 function biggerCards($Cards,$compareValue,$noGP=false)
 {
-    return null;
+    if(simple)
+    {
+        return null;
+    }
     $result=array();
     //$Cards=preg_replace('/[rwyb*]/','',$Cards);
     $cardsMap=array();
