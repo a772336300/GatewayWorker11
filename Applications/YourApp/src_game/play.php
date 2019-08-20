@@ -689,7 +689,7 @@ function biggerCards($Cards,$compareValue,$noGP=false)
         //非x连续区域，加入wings
         if($isWingsGet==1)
             continue;
-        if(!empty($compareValue['wings']['type'])&&$compareValue['wings']['type']<=$item['count'])
+        if(!empty($compareValue['wings']['type'])&&$compareValue['wings']['type']==$item['count'])
         {
             for ($i=0;$i<$compareValue['wings']['type'];$i++)
             {
