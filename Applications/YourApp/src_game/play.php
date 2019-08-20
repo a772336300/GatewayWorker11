@@ -870,6 +870,7 @@ function jiaodizhu($playerId,$roomId,$value,$valueCode=null)
         //通过步数和玩家队列来判断轮到谁
         $NextId = $redis->lIndex($roomId . ':playerIds', ((int)$tick) % 3);
         if ($redis->hGet($NextId, 'chance') == false||$value['data']==3) {
+            game_send_play($roomId,$playerId,Play_Data_Type::jiaodizhu,$value['data']);
             beginPlayCard($playerId, $roomId, 3);
         } else {
             game_send_play($roomId,$playerId,Play_Data_Type::jiaodizhu,$value['data']);
