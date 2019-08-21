@@ -930,7 +930,7 @@ function jiaodizhu($playerId,$roomId,$value,$valueCode=null)
         }
         else//如果下家有机会，当前玩家关闭，轮转玩家
         {
-            initRoomState($roomId,$value,$value);
+            initRoomState($roomId,json_decode($redis->hGet($roomId, 'compareValue'), true),$value);
             roomTick($roomId,1);
         }
 
