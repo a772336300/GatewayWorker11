@@ -36,7 +36,8 @@ enum Message_Id
     SC_ComPetition_Group_Id = 19;
 	CS_Tuo_Guan_Id = 20;     //请求竞技组信息
 	SC_Tuo_Guan_Id = 21;
-	CS_Robot_Join_Id = 22;
+	CS_Robot_Join_Id = 22;      //Robot匹配
+	SC_Competition_Result_Id = 23;      //竞技结果
 }
 
 enum Game_Type
@@ -195,4 +196,17 @@ message SC_Tuo_Guan
 message CS_Robot_Join
 {
 	optional int32 playerId = 1;
+}
+message SC_Competition_Result
+{
+    optional int32  Competition_id  = 1;
+    message Competition_end
+    {
+        optional int32  playerId    = 1;
+        repeated int32  levelUp     = 2;    //赛制
+        optional bool   to_up       = 3;    //晋级
+        repeated int32  gold        = 4;    //奖励
+        optional bool   over        = 5;    //所有比赛结束
+    }
+    repeated Competition_end    competition = 2;
 }
