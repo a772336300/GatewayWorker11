@@ -2,6 +2,11 @@
 require_once __DIR__.'/../src/task.php';
 require_once __DIR__.'/../src/hall.php';
 require_once __DIR__.'/../src/util.php';
+function game_mysql_db_get_user_by_id($uid)
+{
+    global $tcp_worker;
+    return $tcp_worker->db->select('*')->from('user')->where("uid = $uid")->row();
+}
 function game_db_get_gold($playerId)
 {
     return 100000;

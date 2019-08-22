@@ -122,7 +122,7 @@ function redisInitPlayers($playerIds,$table_id){
         $redis->hSet($playerId,'cards',$cardsId);
         $otherId=$redis->incr('otherINCR');
         $redis->hSet($playerId,'otherINCR',$otherId);
-        $db_player=db_get_user_by_id($playerId);
+        $db_player=game_mysql_db_get_user_by_id($playerId);
         //$redis->hSet('info_'.$playerId,'step',$db_player['step']);
         $redis->hSet('info_'.$playerId,'name',$db_player['name']);
         $redis->hSet('info_'.$playerId,'phone',$db_player['phone']);

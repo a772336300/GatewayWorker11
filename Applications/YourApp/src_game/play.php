@@ -280,12 +280,12 @@ function roomInit($playerIds,$channel,$channelNumber=-1)
         foreach ($client_ids as $client_id)
             Gateway::joinGroup($client_id,$roomId);
     }
+    $redis->hSet($roomId,'open','1');
+    GameStart($roomId,$playerIds);
     //房间初始化的信息
     //房间信息
     $init=roomInfo($roomId);
     game_send_room_init($init,$roomId);
-    $redis->hSet($roomId,'open','1');
-    GameStart($roomId,$playerIds);
 }
 function roomCreate($playerIds,$channel,$channelNumber=-1)
 {

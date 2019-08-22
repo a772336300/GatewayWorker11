@@ -5,6 +5,7 @@ enum Room_Type
 	chuji =1;
 	zhongji =2;
 	gaoji =3;
+	bisai_dizhu=4;
 }
 enum Play_Data_Type
 {
