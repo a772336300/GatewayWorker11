@@ -175,7 +175,20 @@ final class room_manager{
     function competition_sign_up($user_data){
         if (isset($this->users)&&!isset($this->users[$user_data['competition_id']]['id'])){
             //
-            $this->users[$user_data['competition_id']['id']]=$user_data;
+            $collname='game_competition';
+            $mongodb=mongo_db::singleton('func_system');
+            $filter = [
+                    'id' => $user_data['competition_id']
+            ];
+            $queryWriteOps = [
+                'projection'    => ['_id'   =>0],//不输出_id字段
+                'sort'          => ['id'    =>1]//根据id字段排序 1是升序，-1是降序
+            ];
+            $rs = $mongodb->query($collname,$filter,$queryWriteOps);
+            if ($rs != null){
+                $this->users[$user_data['competition_id']['id']]=$user_data;
+            }
+
         }
     }
 
