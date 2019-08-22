@@ -111,7 +111,7 @@ message Player_Order
 }
 message SC_Init_Room
 {
-	optional int32 type =  1;
+	optional Room_Type type =  1;
     optional int32 times = 2;
     optional int32 dizhu =  3;
     optional int64 gameStartTime = 4;
