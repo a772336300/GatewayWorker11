@@ -56,6 +56,7 @@ final class room_manager{
      */
     function start_game_room(){
         $this->__timer_id_read=Timer::add(20,function (){
+            echo sprintf("ComPetition Loop %s\n",date("Y-m-d H:i:s"));
             if (isset($this->rooms)) {
                 foreach ($this->rooms as $room) {
                     if(isset($room)) {
