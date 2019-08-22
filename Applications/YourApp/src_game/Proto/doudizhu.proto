@@ -160,7 +160,7 @@ message SC_Is_Gaming
 message Player_Game_Result
 {
 	optional int32 playerId = 1;
-	optional int32 levelUp = 2;
+	repeated int32 levelUp = 2;
 	optional int32 gold = 3;
 	optional string unPlayCards = 4;
 	message Lian_Sheng

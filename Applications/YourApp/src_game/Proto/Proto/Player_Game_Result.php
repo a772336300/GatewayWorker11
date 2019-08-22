@@ -1,6 +1,6 @@
 <?php
 /**
- * Auto generated from doudizhu.proto at 2019-07-24 15:16:42
+ * Auto generated from doudizhu.proto at 2019-08-22 10:19:02
  *
  * proto package
  */
@@ -27,7 +27,7 @@ class Player_Game_Result extends \ProtobufMessage
         ),
         self::LEVELUP => array(
             'name' => 'levelUp',
-            'required' => false,
+            'repeated' => true,
             'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
         self::GOLD => array(
@@ -63,7 +63,7 @@ class Player_Game_Result extends \ProtobufMessage
     public function reset()
     {
         $this->values[self::PLAYERID] = null;
-        $this->values[self::LEVELUP] = null;
+        $this->values[self::LEVELUP] = array();
         $this->values[self::GOLD] = null;
         $this->values[self::UNPLAYCARDS] = null;
         $this->values[self::LIANSHENG] = null;
@@ -113,26 +113,35 @@ class Player_Game_Result extends \ProtobufMessage
     }
 
     /**
-     * Sets value of 'levelUp' property
+     * Appends value to 'levelUp' list
      *
-     * @param integer $value Property value
+     * @param integer $value Value to append
      *
      * @return null
      */
-    public function setLevelUp($value)
+    public function appendLevelUp($value)
     {
-        return $this->set(self::LEVELUP, $value);
+        return $this->append(self::LEVELUP, $value);
     }
 
     /**
-     * Returns value of 'levelUp' property
+     * Clears 'levelUp' list
      *
-     * @return integer
+     * @return null
+     */
+    public function clearLevelUp()
+    {
+        return $this->clear(self::LEVELUP);
+    }
+
+    /**
+     * Returns 'levelUp' list
+     *
+     * @return integer[]
      */
     public function getLevelUp()
     {
-        $value = $this->get(self::LEVELUP);
-        return $value === null ? (integer)$value : $value;
+        return $this->get(self::LEVELUP);
     }
 
     /**
@@ -142,7 +151,39 @@ class Player_Game_Result extends \ProtobufMessage
      */
     public function hasLevelUp()
     {
-        return $this->get(self::LEVELUP) !== null;
+        return count($this->get(self::LEVELUP)) !== 0;
+    }
+
+    /**
+     * Returns 'levelUp' iterator
+     *
+     * @return \ArrayIterator
+     */
+    public function getLevelUpIterator()
+    {
+        return new \ArrayIterator($this->get(self::LEVELUP));
+    }
+
+    /**
+     * Returns element from 'levelUp' list at given offset
+     *
+     * @param int $offset Position in list
+     *
+     * @return integer
+     */
+    public function getLevelUpAt($offset)
+    {
+        return $this->get(self::LEVELUP, $offset);
+    }
+
+    /**
+     * Returns count of 'levelUp' list
+     *
+     * @return int
+     */
+    public function getLevelUpCount()
+    {
+        return $this->count(self::LEVELUP);
     }
 
     /**

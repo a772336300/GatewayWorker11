@@ -93,7 +93,6 @@ function game_send_game_result($roomId,$result)
         $player_game_result = new \Proto\Player_Game_Result();
         $player_game_result->setPlayerId($playerId);
         $player_game_result->setGold($item['gold']);
-        $player_game_result->setLevelUp($item['level']);
         $player_game_result->setUnPlayCards($item['cardsLeft']);
         $message->appendPlayerGameResult($player_game_result);
 

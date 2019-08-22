@@ -410,7 +410,7 @@ function initRoomState($roomId,$compareValue,$currentValue)
     $redis->hSet($roomId,'compareValue',json_encode($compareValue));
     $redis->hSet($roomId,'currentValue',json_encode($currentValue));
 }
-function roomTick($roomId,$times,$timeSecond=16)
+function roomTick($roomId,$times,$timeSecond=1000000000)
 {
     global $redis;
     $tick=$redis->hIncrBy($roomId,'tick',$times);
@@ -1170,7 +1170,6 @@ function experienceAndGold($roomId)
     $times=$redis->hGet($roomId,'times');
     foreach ($players as $player)
     {
-        $result[$player]['level']=100;
         $result[$player]['cardsLeft']=100;
         if($player==$dizhu)
         {
