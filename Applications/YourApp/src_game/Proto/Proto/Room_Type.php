@@ -1,6 +1,6 @@
 <?php
 /**
- * Auto generated from doudizhu.proto at 2019-07-24 15:16:41
+ * Auto generated from doudizhu.proto at 2019-08-22 14:28:44
  *
  * proto package
  */
@@ -14,6 +14,7 @@ final class Room_Type
     const chuji = 1;
     const zhongji = 2;
     const gaoji = 3;
+    const bisai_dizhu = 4;
 
     /**
      * Returns defined enum values
@@ -26,6 +27,7 @@ final class Room_Type
             'chuji' => self::chuji,
             'zhongji' => self::zhongji,
             'gaoji' => self::gaoji,
+            'bisai_dizhu' => self::bisai_dizhu,
         );
     }
 }
