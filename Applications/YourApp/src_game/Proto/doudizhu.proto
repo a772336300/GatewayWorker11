@@ -40,11 +40,7 @@ enum Message_Id
 	SC_Competition_Result_Id = 23;      //竞技结果
 }
 
-enum Game_Type
-{
-    Game_ddz    = 1;
-    Game_xzdd   = 2;
-}
+
 message CS_ComPetition_SignUp
 {
     optional int32 competition_id = 1;
