@@ -38,6 +38,7 @@ enum Message_Id
 	SC_Tuo_Guan_Id = 21;
 	CS_Robot_Join_Id = 22;      //Robot匹配
 	SC_Competition_Result_Id = 23;      //竞技结果
+	CS_ComPetition_Join_Id = 24;    //进入竞赛
 }
 
 
@@ -205,4 +206,9 @@ message SC_Competition_Result
         optional bool   over        = 5;    //所有比赛结束
     }
     repeated Competition_end    competition = 2;
+}
+message CS_ComPetition_Join
+{
+    optional int32  Competition_id  = 1;
+    optional int32  playerId        = 2;
 }
