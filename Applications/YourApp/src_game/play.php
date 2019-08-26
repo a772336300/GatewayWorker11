@@ -1170,7 +1170,9 @@ function experienceAndGold($roomId)
     $times=$redis->hGet($roomId,'times');
     foreach ($players as $player)
     {
-        $result[$player]['cardsLeft']=100;
+        $cards=$redis->sMembers($player.':cards');
+        $cards=implode(',',$cards);
+        $result[$player]['cardsLeft']=$cards;
         if($player==$dizhu)
         {
             $result[$player]['gold']=200*$ratio*$times-$fangfei;
