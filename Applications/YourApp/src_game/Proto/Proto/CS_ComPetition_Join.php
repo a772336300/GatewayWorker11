@@ -1,29 +1,29 @@
 <?php
 /**
- * Auto generated from doudizhu.proto at 2019-08-26 15:02:18
+ * Auto generated from doudizhu.proto at 2019-08-26 15:02:19
  *
  * proto package
  */
 
 namespace Proto {
 /**
- * SC_ComPetition_Start message
+ * CS_ComPetition_Join message
  */
-class SC_ComPetition_Start extends \ProtobufMessage
+class CS_ComPetition_Join extends \ProtobufMessage
 {
     /* Field index constants */
     const COMPETITION_ID = 1;
-    const GAME_TYPE = 2;
+    const PLAYERID = 2;
 
     /* @var array Field descriptors */
     protected static $fields = array(
         self::COMPETITION_ID => array(
-            'name' => 'competition_id',
+            'name' => 'Competition_id',
             'required' => false,
             'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
-        self::GAME_TYPE => array(
-            'name' => 'game_type',
+        self::PLAYERID => array(
+            'name' => 'playerId',
             'required' => false,
             'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
@@ -45,7 +45,7 @@ class SC_ComPetition_Start extends \ProtobufMessage
     public function reset()
     {
         $this->values[self::COMPETITION_ID] = null;
-        $this->values[self::GAME_TYPE] = null;
+        $this->values[self::PLAYERID] = null;
     }
 
     /**
@@ -59,7 +59,7 @@ class SC_ComPetition_Start extends \ProtobufMessage
     }
 
     /**
-     * Sets value of 'competition_id' property
+     * Sets value of 'Competition_id' property
      *
      * @param integer $value Property value
      *
@@ -71,7 +71,7 @@ class SC_ComPetition_Start extends \ProtobufMessage
     }
 
     /**
-     * Returns value of 'competition_id' property
+     * Returns value of 'Competition_id' property
      *
      * @return integer
      */
@@ -82,7 +82,7 @@ class SC_ComPetition_Start extends \ProtobufMessage
     }
 
     /**
-     * Returns true if 'competition_id' property is set, false otherwise
+     * Returns true if 'Competition_id' property is set, false otherwise
      *
      * @return boolean
      */
@@ -92,36 +92,36 @@ class SC_ComPetition_Start extends \ProtobufMessage
     }
 
     /**
-     * Sets value of 'game_type' property
+     * Sets value of 'playerId' property
      *
      * @param integer $value Property value
      *
      * @return null
      */
-    public function setGameType($value)
+    public function setPlayerId($value)
     {
-        return $this->set(self::GAME_TYPE, $value);
+        return $this->set(self::PLAYERID, $value);
     }
 
     /**
-     * Returns value of 'game_type' property
+     * Returns value of 'playerId' property
      *
      * @return integer
      */
-    public function getGameType()
+    public function getPlayerId()
     {
-        $value = $this->get(self::GAME_TYPE);
+        $value = $this->get(self::PLAYERID);
         return $value === null ? (integer)$value : $value;
     }
 
     /**
-     * Returns true if 'game_type' property is set, false otherwise
+     * Returns true if 'playerId' property is set, false otherwise
      *
      * @return boolean
      */
-    public function hasGameType()
+    public function hasPlayerId()
     {
-        return $this->get(self::GAME_TYPE) !== null;
+        return $this->get(self::PLAYERID) !== null;
     }
 }
 }
