@@ -1,6 +1,6 @@
 <?php
 /**
- * Auto generated from doudizhu.proto at 2019-08-15 10:28:30
+ * Auto generated from doudizhu.proto at 2019-08-26 15:02:18
  *
  * proto package
  */
@@ -33,6 +33,8 @@ final class Message_Id
     const CS_Tuo_Guan_Id = 20;
     const SC_Tuo_Guan_Id = 21;
     const CS_Robot_Join_Id = 22;
+    const SC_Competition_Result_Id = 23;
+    const CS_ComPetition_Join_Id = 24;
 
     /**
      * Returns defined enum values
@@ -64,6 +66,8 @@ final class Message_Id
             'CS_Tuo_Guan_Id' => self::CS_Tuo_Guan_Id,
             'SC_Tuo_Guan_Id' => self::SC_Tuo_Guan_Id,
             'CS_Robot_Join_Id' => self::CS_Robot_Join_Id,
+            'SC_Competition_Result_Id' => self::SC_Competition_Result_Id,
+            'CS_ComPetition_Join_Id' => self::CS_ComPetition_Join_Id,
         );
     }
 }
