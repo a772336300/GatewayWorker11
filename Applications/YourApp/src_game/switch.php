@@ -102,7 +102,9 @@ function switch_game($client_id,$mid,$data)
             }
         case Message_Id::CS_ComPetition_Join_Id:
             {
-
+                $com_join = new \Proto\CS_ComPetition_Join();
+                $com_join->parseFromString($data);
+                echo sprintf("CS_ComPetition_Join competitionid=%s playerid=%s\n",$com_join->getCompetitionId(),$com_join->getPlayerId());
             }
     }
 }
