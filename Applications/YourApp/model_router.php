@@ -25,5 +25,7 @@ $model_router = [
     20=>'game_worker',
     21=>'game_worker',
     22=>'game_worker',
+    23=>'game_worker',
+    24=>'game_worker'
 
 ];
