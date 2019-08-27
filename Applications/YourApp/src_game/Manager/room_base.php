@@ -2,24 +2,34 @@
 
 require_once 'user.php';
 class room_base{
-    private $gtype;      //房间类型
-    private $starttime;   //开始时间
-    private $code;       //房间编号
-    private $number;     //当前人数
-    private $max;        //最大人数
-    private $users;      //用户容器
-    private $advanced;   //进阶比(1、2，3人进阶)
-    private $state;      //状态 0空 1有人 2满人 3满开
-    public  static $room_type=[1,2];
+    private $gtype;     //房间类型
+    private $starttime; //开始时间
+    private $code;      //房间编号
+    private $number;    //当前人数
+    private $max;       //最大人数
+    private $users;     //用户容器
+    private $advanced;  //进阶比(1、2，3人进阶)
+    private $state;     //状态 0空 1有人 2满人 3满开
+    private $bstart;    //是否开始
+    private $bnumber;   //是否是人满开
 
     function __construct(){
         $this->users=null;
-        $this->gtype=self::$room_type[0];
+        $this->gtype=\Proto\Room_Type::bisai_dizhu;
         $this->starttime=null;
         $this->code=0;
         $this->number=0;
         $this->max=0;
         $this->state=0;
+        $this->bstart=false;
+    }
+
+    function set_bnumber($vale){
+        $this->bnumber=$vale;
+    }
+
+    function get_bnumber(){
+        return $this->bnumber;
     }
 
     function set_gtype($vale){
@@ -28,6 +38,14 @@ class room_base{
 
     function get_gtype(){
         return $this->gtype;
+    }
+
+    function set_bstart($vale){
+        $this->bstart=$vale;
+    }
+
+    function get_bstart(){
+        return $this->bstart;
     }
 
     function set_advanced($vale){
@@ -56,7 +74,7 @@ class room_base{
 
     function set_max($vale){
         $this->max=$vale;
-        for ($i=0;i<$this->max;$i++){
+        for ($i=0;$i<$this->max;$i++){
             $this->users[$i]=new user();
         }
     }
@@ -78,13 +96,16 @@ class room_base{
      *                  'level'     //等级
      *                  ]
      */
-    function user_enter($vale){
+    function user_enter($user_id){
         if ($this->number<$this->max){
+            array_push($this->users,$user_id);
+            /*
             $this->users[$this->number]->userid=$vale['userid'];
             $this->users[$this->number]->gender=$vale['gender'];
             $this->users[$this->number]->position=$this->number;
             $this->users[$this->number]->integral=$vale['integral'];
             $this->users[$this->number]->level=$vale['level'];
+            */
             $this->number++;
             if ($this->number==$this->max){
                 $this->state=2;

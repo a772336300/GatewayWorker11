@@ -22,12 +22,13 @@ final class room_manager{
     private $__time_id_start;
 
     private function __construct() {
+        echo sprintf("room manager construct %s\n",date("Y-m-d H:i:s"));
         //self::$ins=null;
         $this->user_number=0;
         $this->user_ids=null;
         $this->rooms=null;          //房间
         $this->__time_id_read=Timer::add(20,function (){
-         //   $this->room_loop();
+            $this->room_loop();
         },true);
     }
 
@@ -56,33 +57,25 @@ final class room_manager{
      */
     function start_game_room(){
         $this->__timer_id_read=Timer::add(20,function (){
-            echo sprintf("ComPetition Loop %s\n",date("Y-m-d H:i:s"));
+            echo sprintf("start_game_room %s\n",date("Y-m-d H:i:s"));
             if (isset($this->rooms)) {
                 foreach ($this->rooms as $room) {
                     if(isset($room)) {
                         foreach ($room as $tmp) {
-                            if (isset($tmp)) {
-                                if (strtotime(date("Y-m-d H:i:s")) == strtotime($tmp['starttime'])) {
-                                    //此处添加游戏启动代码
-                                    /**
-                                     * @var $params = [
-                                     *           'is_last_card' => 1,
-                                     *           'is_zi_mo' => 1,
-                                     *           'is_gang_mo_pai' => 0,
-                                     *           'is_qiang_gang_hu' => 0,
-                                     *           'ming_gang_count' => 0,
-                                     *           'an_gang_count' => 0,
-                                     *           'is_hu_jue_zhang' => 0,
-                                     *           'men_fen' => 2,
-                                     *           'quan_fen' => 1,
-                                     *           'hu_card' => 11,
-                                     *           'is_ting' => 0,
-                                     *           'flower_count' => 1,
-                                     *           'mj_type' => 1,
-                                     *           'play_count =>4
-                                     *      ]
-                                     */
-                                    //$game = new game_xzdd();
+                            if ($tmp->get_bstart() == false) {
+                                echo sprintf("starttime %s\n", $tmp->get_starttime());
+                                if ($tmp->get_bnumber() == true) {  //人满开
+                                    if ($tmp->get_number() == $tmp->get_max()) {
+                                        roomInit($tmp->get_user_all(),$tmp->get_gtype());
+                                        $tmp->set_bstart(true);
+                                    }
+                                    //roomInit()
+                                }else{  //定时开
+                                    if (strtotime(date("Y-m-d H:i:s")) == strtotime($tmp->get_starttime())) {
+                                        echo sprintf("start time: %s \n", $tmp->get_starttime());
+                                        roomInit($tmp->get_user_all(),$tmp->get_gtype());
+                                        $tmp->set_bstart(true);
+                                    }
                                 }
                             }
                         }
@@ -96,7 +89,8 @@ final class room_manager{
      * 读取数据库，查询赛制，建立房间
      */
     function room_loop(){
-        $collname='gmae_competition';
+        echo sprintf("room_loop %s\n",date("Y-m-d H:i:s"));
+        $collname='game_competition';
         $mongodb=mongo_db::singleton('func_system');
         $filter = [
                 'starttime'  => ['$gt' => date('Y-m-d H:i:s')] //条件：大于当前时间
@@ -117,10 +111,10 @@ final class room_manager{
      * @param $data =>[
      *                  'id'=>1,
      *                  'type'=>'ddz'/'xzdd',
-     *                  'bnumber'=>0/1
+     *                  'bnumber'=>false,
      *                  'number'=>100,
      *                  'advanced'=>1,
-     *                  'max'=>5,
+     *                  'max'=>3,
      *                  'starttime'=>'2019-07-08 14:49:05'
      *                  ]
      */
@@ -128,7 +122,7 @@ final class room_manager{
     {
         switch ($data->type)
         {
-            case room_base::$room_type[0]:
+            case \Proto\Room_Type::bisai_dizhu:
                 $count = $data->number/3;
                 for ($i=0;$i<$count;$i++){
                     $tmproom = new room_base();
@@ -136,19 +130,12 @@ final class room_manager{
                     $tmproom->set_starttime($data->starttime);
                     $tmproom->set_max(3);
                     $tmproom->set_advanced($data->advanced);
-                    self::$rooms[$data->id][$tmproom->get_code()]=$tmproom;
+                    $tmproom->set_bstart(false);
+                    $tmproom->set_bnumber($data->number);
+                    $this->rooms[$data->id][$tmproom->get_code()]=$tmproom;
                 }
                 break;
-            case room_base::$room_type[1]:
-                $count = $data->number/4;
-                for ($i=0;$i<$count;$i++){
-                    $tmproom = new room_base();
-                    $tmproom->set_code(time());
-                    $tmproom->set_starttime($data->starttime);
-                    $tmproom->set_max(4);
-                    $tmproom->set_advanced($data->advanced);
-                    $this->rooms[$data->id][$tmproom->get_code()] = $tmproom;
-                }
+            default:
                 break;
         }
     }
@@ -168,27 +155,29 @@ final class room_manager{
      * 玩家报名
      * @param $user_data =>[
      *                      'competition_id'=>1,
-     *                      'uiser_id'=>1,
+     *                      'user_id'=>1,
      *                      'game_type'=>1,
      *                      ]
      */
-    function competition_sign_up($user_data){
-        if (isset($this->users)&&!isset($this->users[$user_data['competition_id']]['id'])){
-            //
+    function competition_sign_up($competition_id,$room_type,$user_id){
+        if (isset($this->users)&&!isset($this->users[$user_data[$competition_id]][$room_type])){
+            /*
             $collname='game_competition';
             $mongodb=mongo_db::singleton('func_system');
             $filter = [
-                    'id' => $user_data['competition_id']
+                    'id' => $competition_id
             ];
             $queryWriteOps = [
                 'projection'    => ['_id'   =>0],//不输出_id字段
                 'sort'          => ['id'    =>1]//根据id字段排序 1是升序，-1是降序
             ];
             $rs = $mongodb->query($collname,$filter,$queryWriteOps);
-            if ($rs != null){
-                $this->users[$user_data['competition_id']['id']]=$user_data;
+            */
+            foreach ($this->rooms[$competition_id][$room_type] as $room) {
+                if ($room->get_number() < $room->get_max()) {
+                    $room->user_enter($user_id);
+                }
             }
-
         }
     }
 

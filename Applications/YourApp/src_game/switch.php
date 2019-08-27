@@ -73,7 +73,7 @@ function switch_game($client_id,$mid,$data)
                  *                      'game_type'=>'ddz',
                  *                      ]
                  */
-                room_manager::singleton()->competition_sign_up($Competition);
+                room_manager::singleton()->competition_sign_up($Competition->getCompetitionId(),$Competition->getGameType(),$Competition->getUserId());
                 break;
             }
         case Message_Id::CS_ComPetition_Group_Id:
@@ -99,6 +99,10 @@ function switch_game($client_id,$mid,$data)
                     $GameCom->appendGroup($tmp);
                 }
                 \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(Message_Id::SC_ComPetition_Group_Id,$GameCom->serializeToString()));
+            }
+        case Message_Id::CS_ComPetition_Join_Id:
+            {
+
             }
     }
 }
