@@ -202,7 +202,12 @@ message SC_Competition_Result
         optional int32  playerId    = 1;
         repeated int32  levelUp     = 2;    //赛制
         optional bool   to_up       = 3;    //晋级
-        repeated int32  gold        = 4;    //奖励
+        message gold
+        {
+            optional int32  id      = 1;
+            optional int32  number  = 2;
+        }
+        repeated gold  golds        = 4;    //奖励
         optional bool   over        = 5;    //所有比赛结束
     }
     repeated Competition_end    competition = 2;
