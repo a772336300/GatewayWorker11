@@ -123,16 +123,17 @@ final class room_manager{
         switch ($data->type)
         {
             case \Proto\Room_Type::bisai_dizhu:
-                $count = $data->number/3;
+                $count = intval($data->number/3);
                 for ($i=0;$i<$count;$i++){
                     $tmproom = new room_base();
+                    $tmproom->set_gtype($data->type);
                     $tmproom->set_code(time());
                     $tmproom->set_starttime($data->starttime);
                     $tmproom->set_max(3);
                     $tmproom->set_advanced($data->advanced);
                     $tmproom->set_bstart(false);
                     $tmproom->set_bnumber($data->number);
-                    $this->rooms[$data->id][$tmproom->get_code()]=$tmproom;
+                    $this->rooms[$data->id][$data->type][$tmproom->get_code()]=$tmproom;
                 }
                 break;
             default:
