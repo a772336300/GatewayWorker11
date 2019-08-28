@@ -208,9 +208,10 @@ message SC_Competition_Result
             optional int32  number  = 2;
         }
         repeated gold  golds        = 4;    //奖励
-        optional bool   over        = 5;    //所有比赛结束
     }
     repeated Competition_end    competition = 2;
+    repeated int32              top_list    = 3;
+    optional bool               over        = 4;    //所有比赛结束
 }
 message CS_ComPetition_Join
 {
