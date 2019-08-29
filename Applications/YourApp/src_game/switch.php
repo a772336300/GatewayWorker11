@@ -62,7 +62,6 @@ function switch_game($client_id,$mid,$data)
             }
         case Message_Id::CS_Competition_SignUp_Id:
             {
-                break;
                 $Competition = new \Proto\CS_ComPetition_SignUp();
                 $Competition->parseFromString($data);
                 /**
@@ -73,12 +72,11 @@ function switch_game($client_id,$mid,$data)
                  *                      'game_type'=>'ddz',
                  *                      ]
                  */
-                room_manager::singleton()->competition_sign_up($Competition->getCompetitionId(),$Competition->getGameType(),$Competition->getUserId());
+                room_manager::singleton()->competition_sign_up($Competition->getCompetitionId(),$Competition->getGameType(),$Competition->getUserId(),$client_id);
                 break;
             }
         case Message_Id::CS_ComPetition_Group_Id:
             {
-                break;
                 $collname='game_competition';
                 $mongodb=mongo_db::singleton('func_system');
                 $filter = [
@@ -99,12 +97,14 @@ function switch_game($client_id,$mid,$data)
                     $GameCom->appendGroup($tmp);
                 }
                 \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(Message_Id::SC_ComPetition_Group_Id,$GameCom->serializeToString()));
+                break;
             }
         case Message_Id::CS_ComPetition_Join_Id:
             {
                 $com_join = new \Proto\CS_ComPetition_Join();
                 $com_join->parseFromString($data);
-                echo sprintf("CS_ComPetition_Join competitionid=%s playerid=%s\n",$com_join->getCompetitionId(),$com_join->getPlayerId());
+                echo sprintf("CS_ComPetition_Join competitionid = %s playerid = %s\n",$com_join->getCompetitionId(),$com_join->getPlayerId());
+                break;
             }
     }
 }
