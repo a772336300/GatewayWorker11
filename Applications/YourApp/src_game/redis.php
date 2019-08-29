@@ -1,13 +1,18 @@
 <?php
-function redisInitRoom($playerIds,$channel,$channelNumber=-1){
+function redisInitRoom($playerIds,$channel,$channelNumber){
     global $redis;
     //设置房间编号
-    $tableId=$redis->incr('tableINCR');
-    if($tableId<=1000000||$tableId>=10000000)
+    if($channelNumber==-1)
     {
-        $redis->Set('tableINCR',1000000);
         $tableId=$redis->incr('tableINCR');
+        if($tableId<=1000000||$tableId>=10000000)
+        {
+            $redis->Set('tableINCR',1000000);
+            $tableId=$redis->incr('tableINCR');
+        }
     }
+    else
+    $tableId=$channelNumber;
     $redis->hSet($tableId,'channel',$channel);//房间类型
     //不同类型的房间
     switch ($channel){
@@ -54,7 +59,8 @@ function redisInitRoom($playerIds,$channel,$channelNumber=-1){
             $redis->hSet($tableId,'capital',0);//最低本钱,锁定金币
             break;
         default:
-            //经验
+            if($channelNumber!=-1)
+            $redis->hSet($tableId,'channelNumber',$channelNumber);
             $redis->hSet($tableId,'experienceLoser',100);
             $redis->hSet($tableId,'experienceSuccessor',200);
             //金币
