@@ -265,7 +265,7 @@ function roomInfo($roomId)
     $init['currentValueOwner']=$redis->hGet($roomId,'currant_value_owner');
     return $init;
 }
-function roomInit($playerIds,$channel,$channelNumber=-1,$index=-1)
+function roomInit($playerIds,$channel,$channelNumber=-1,$competition_id=-1,$index=-1)
 {
     global $redis;
     // TODO: Implement onmessage() method.
@@ -282,6 +282,7 @@ function roomInit($playerIds,$channel,$channelNumber=-1,$index=-1)
     }
     $redis->hSet($roomId,'open','1');
     $redis->hSet($roomId,'index',$index);
+    $redis->hSet($roomId,'competition_id',$competition_id);
     GameStart($roomId,$playerIds);
     //房间初始化的信息
     //房间信息
@@ -1130,6 +1131,9 @@ function gameOver($roomId,$winner=null)
         game_over_task($roomId);
 
     }
+    //比赛房间计算
+    room_manager::singleton()->roomGame_Calculation($redis->hGet($roomId,'competition_id'),$roomId,$redis->hGet($roomId,'index'));
+
     game_send_game_result($roomId,$result);
     // Gateway::leaveGroup();
     $playerIds=$redis->lRange($roomId.':playerIds',0,-1);
