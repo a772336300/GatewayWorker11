@@ -12,6 +12,9 @@ class room_base{
     private $state;     //状态 0空 1有人 2满人 3满开
     private $bstart;    //是否开始
     private $bnumber;   //是否是人满开
+    private $top_list;  //进阶列表
+    private $top_index; //进阶索引
+    private $bsend_start;   //是否开始通知
 
     function __construct(){
         $this->users=null;
@@ -22,6 +25,17 @@ class room_base{
         $this->max=0;
         $this->state=0;
         $this->bstart=false;
+        $this->top_list=[120,90,60,30,9,3,1];
+        $this->top_index=0;
+        $this->bsend_start=false;
+    }
+
+    function set_bsend_start($vale){
+        $this->bsend_start=$vale;
+    }
+
+    function get_bsend_start(){
+        return $this->bsend_start;
     }
 
     function set_bnumber($vale){
@@ -30,6 +44,22 @@ class room_base{
 
     function get_bnumber(){
         return $this->bnumber;
+    }
+
+    function set_top_list($vale){
+        $this->top_list=$vale;
+    }
+
+    function get_top_list(){
+        return $this->top_list;
+    }
+
+    function set_top_index($vale){
+        $this->top_index=$vale;
+    }
+
+    function get_top_index(){
+        return $this->top_index;
     }
 
     function set_gtype($vale){
@@ -96,9 +126,10 @@ class room_base{
      *                  'level'     //等级
      *                  ]
      */
-    function user_enter($user_id){
-        if ($this->number<$this->max){
-            array_push($this->users,$user_id);
+    function user_enter($user_id,$client_id){
+        if ($this->number < $this->max){
+            $this->users[$this->number]->client_id  = $client_id;
+            $this->users[$this->number]->userid     = $user_id;
             /*
             $this->users[$this->number]->userid=$vale['userid'];
             $this->users[$this->number]->gender=$vale['gender'];
@@ -178,6 +209,13 @@ class room_base{
      */
     function get_user_all(){
         return $this->users;
+    }
+
+    function get_user_id_all(){
+        $userids = [];
+        foreach ($this->users as $user){
+            array_push($userids,$user->userid);
+        }
     }
 
 }

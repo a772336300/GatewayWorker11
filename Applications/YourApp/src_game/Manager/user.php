@@ -6,4 +6,5 @@ class user{
     public $position;   //坐位
     public $integral;   //积分
     public $level;      //等级
+    public $client_id;  //socketid
 }
