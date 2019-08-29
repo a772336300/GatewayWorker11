@@ -265,7 +265,7 @@ function roomInfo($roomId)
     $init['currentValueOwner']=$redis->hGet($roomId,'currant_value_owner');
     return $init;
 }
-function roomInit($playerIds,$channel,$channelNumber=-1)
+function roomInit($playerIds,$channel,$channelNumber=-1,$index=-1)
 {
     global $redis;
     // TODO: Implement onmessage() method.
@@ -281,6 +281,7 @@ function roomInit($playerIds,$channel,$channelNumber=-1)
             Gateway::joinGroup($client_id,$roomId);
     }
     $redis->hSet($roomId,'open','1');
+    $redis->hSet($roomId,'index',$index);
     GameStart($roomId,$playerIds);
     //房间初始化的信息
     //房间信息
