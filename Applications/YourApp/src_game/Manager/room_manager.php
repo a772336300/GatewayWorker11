@@ -59,7 +59,6 @@ final class room_manager{
      */
     function start_game_room(){
         $this->__timer_id_read=Timer::add(20,function (){
-
             if (isset($this->rooms)) {
                 foreach ($this->rooms as $room) {
                     foreach ($room as $tmp) {
@@ -67,7 +66,7 @@ final class room_manager{
                             if ($m->get_bsend_start() == false) {
                                 if ($m->get_number() == $m->get_max()) {
                                     $sc_star = new \Proto\SC_ComPetition_Start();
-                                    $sc_star->setCompetitionId($m->get_gtype());
+                                    $sc_star->setCompetitionId($m->get_competition_id());
                                     $sc_star->setGameType($m->get_gtype());
                                     $users = $m->get_user_all();
                                     echo sprintf("start_game_room %s\n",date("Y-m-d H:i:s"));
@@ -97,7 +96,6 @@ final class room_manager{
                                     }
                                 }
                             }
-
                         }
                     }
                 }
@@ -146,6 +144,7 @@ final class room_manager{
                 $count = intval($data->number/3);
                 for ($i=0;$i<$count;$i++){
                     $tmproom = new room_base();
+                    $tmproom->set_competition_id($data->id);
                     $tmproom->set_gtype($data->type);
                     $tmproom->set_code(time());
                     $tmproom->set_starttime($data->starttime);
@@ -194,7 +193,7 @@ final class room_manager{
             ];
             $rs = $mongodb->query($collname,$filter,$queryWriteOps);
             */
-            foreach ($this->rooms[$competition_id][$room_type] as $room) {
+            foreach ($this->rooms[$competition_id][$room_type] as $room){
                 if ($room->get_number() < $room->get_max()) {
                     $room->user_enter($user_id,$client_id);
                     send_notice($user_id,1,"报名成功！");
@@ -221,6 +220,10 @@ final class room_manager{
         }
     }
 
+    function test($vale){
+        echo sprintf("调用  %s",$vale);
+    }
+
     /**
      * 重新进入房间
      * @param $room_id
@@ -236,6 +239,10 @@ final class room_manager{
         if (isset($this->rooms)&&isset($this->rooms[$room_id])){
             $this->rooms[$room_id]->user_reenter($user);
         }
+    }
+
+    function roomGame_Calculation($competition_id,$room_id,$index){
+
     }
 }
 

@@ -2,6 +2,7 @@
 
 require_once 'user.php';
 class room_base{
+    private $competition_id;
     private $gtype;     //房间类型
     private $starttime; //开始时间
     private $code;      //房间编号
@@ -17,6 +18,7 @@ class room_base{
     private $bsend_start;   //是否开始通知
 
     function __construct(){
+        $this->competition_id=0;
         $this->users=null;
         $this->gtype=\Proto\Room_Type::bisai_dizhu;
         $this->starttime=null;
@@ -36,6 +38,14 @@ class room_base{
 
     function get_bsend_start(){
         return $this->bsend_start;
+    }
+
+    function set_competition_id($vale){
+        $this->competition_id=$vale;
+    }
+
+    function get_competition_id(){
+        return $this->competition_id;
     }
 
     function set_bnumber($vale){
