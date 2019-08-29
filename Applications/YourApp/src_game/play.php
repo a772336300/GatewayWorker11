@@ -283,6 +283,7 @@ function roomInit($playerIds,$channel,$channelNumber=-1,$competition_id=-1,$inde
     $redis->hSet($roomId,'open','1');
     $redis->hSet($roomId,'index',$index);
     $redis->hSet($roomId,'competition_id',$competition_id);
+    $redis->hSet($roomId,'roomtype',$channel);
     GameStart($roomId,$playerIds);
     //房间初始化的信息
     //房间信息
@@ -1132,7 +1133,10 @@ function gameOver($roomId,$winner=null)
 
     }
     //比赛房间计算
-    room_manager::singleton()->roomGame_Calculation($redis->hGet($roomId,'competition_id'),$roomId,$redis->hGet($roomId,'index'));
+    if ($redis->hGet($roomId,'roomtype') == \Proto\Room_Type::bisai_dizhu)
+    {
+        room_manager::singleton()->roomGame_Calculation($redis->hGet($roomId,'competition_id'),$redis->hGet($roomId,'roomtype'),$roomId,$redis->hGet($roomId,'index'));
+    }
 
     game_send_game_result($roomId,$result);
     // Gateway::leaveGroup();
