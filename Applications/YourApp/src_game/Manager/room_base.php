@@ -128,6 +128,11 @@ class room_base{
      */
     function user_enter($user_id,$client_id){
         if ($this->number < $this->max){
+            foreach ($this->users as $user){
+                if ($user->userid == $user_id){
+                    return;
+                }
+            }
             $this->users[$this->number]->client_id  = $client_id;
             $this->users[$this->number]->userid     = $user_id;
             /*
@@ -216,6 +221,7 @@ class room_base{
         foreach ($this->users as $user){
             array_push($userids,$user->userid);
         }
+        return $userids;
     }
 
 }

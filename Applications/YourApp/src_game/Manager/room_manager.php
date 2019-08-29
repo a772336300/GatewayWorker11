@@ -81,7 +81,8 @@ final class room_manager{
                                 if ($m->get_bnumber() == true) {  //人满开
                                     if ($m->get_number() == $m->get_max()) {
                                         //if ($m->get_top_index() + 1 == count($m->get_top_list())){
-                                            roomInit($m->get_user_id_all(),$m->get_gtype());
+                                            $user_ids = $m->get_user_id_all();
+                                            roomInit($user_ids,$m->get_gtype());
                                             $m->set_bstart(true);
                                         //}
                                     }
@@ -196,6 +197,7 @@ final class room_manager{
             foreach ($this->rooms[$competition_id][$room_type] as $room) {
                 if ($room->get_number() < $room->get_max()) {
                     $room->user_enter($user_id,$client_id);
+                    send_notice($user_id,1,"报名成功！");
                     break;
                 }
             }
