@@ -1,4 +1,6 @@
 <?php
+
+use Proto\Message_Id;
 use Workerman\Lib\Timer;
 use GatewayWorker\Lib\Gateway;
 
@@ -57,27 +59,45 @@ final class room_manager{
      */
     function start_game_room(){
         $this->__timer_id_read=Timer::add(20,function (){
-            echo sprintf("start_game_room %s\n",date("Y-m-d H:i:s"));
+
             if (isset($this->rooms)) {
                 foreach ($this->rooms as $room) {
-                    if(isset($room)) {
-                        foreach ($room as $tmp) {
-                            if ($tmp->get_bstart() == false) {
-                                echo sprintf("starttime %s\n", $tmp->get_starttime());
-                                if ($tmp->get_bnumber() == true) {  //人满开
-                                    if ($tmp->get_number() == $tmp->get_max()) {
-                                        roomInit($tmp->get_user_all(),$tmp->get_gtype());
-                                        $tmp->set_bstart(true);
+                    foreach ($room as $tmp) {
+                        foreach ($tmp as $m) {
+                            if ($m->get_bsend_start() == false) {
+                                if ($m->get_number() == $m->get_max()) {
+                                    $sc_star = new \Proto\SC_ComPetition_Start();
+                                    $sc_star->setCompetitionId($m->get_gtype());
+                                    $sc_star->setGameType($m->get_gtype());
+                                    $users = $m->get_user_all();
+                                    echo sprintf("start_game_room %s\n",date("Y-m-d H:i:s"));
+                                    foreach ($users as $user) {
+                                        \GatewayWorker\Lib\Gateway::sendToClient($user->client_id,my_pack(Message_Id::SC_ComPetition_Start_Id,$sc_star->serializeToString()));
+                                    }
+                                    $m->set_bsend_start(true);
+                                }
+                            }
+                            if ($m->get_bstart() == false) {
+                                if ($m->get_bnumber() == true) {  //人满开
+                                    if ($m->get_number() == $m->get_max()) {
+                                        //if ($m->get_top_index() + 1 == count($m->get_top_list())){
+                                            $user_ids = $m->get_user_id_all();
+                                            roomInit($user_ids,$m->get_gtype());
+                                            $m->set_bstart(true);
+                                        //}
                                     }
                                     //roomInit()
                                 }else{  //定时开
-                                    if (strtotime(date("Y-m-d H:i:s")) == strtotime($tmp->get_starttime())) {
+                                    if ($m->get_bstart() == true || strtotime(date("Y-m-d H:i:s")) == strtotime($m->get_starttime())) {
                                         echo sprintf("start time: %s \n", $tmp->get_starttime());
-                                        roomInit($tmp->get_user_all(),$tmp->get_gtype());
-                                        $tmp->set_bstart(true);
+                                        if ($m->get_top_index() + 1 == count($m->get_top_list())){
+                                            roomInit($m->get_user_id_all(),$m->get_gtype());
+                                            $m->set_bstart(true);
+                                        }
                                     }
                                 }
                             }
+
                         }
                     }
                 }
@@ -160,8 +180,8 @@ final class room_manager{
      *                      'game_type'=>1,
      *                      ]
      */
-    function competition_sign_up($competition_id,$room_type,$user_id){
-        if (isset($this->users)&&!isset($this->users[$user_data[$competition_id]][$room_type])){
+    function competition_sign_up($competition_id,$room_type,$user_id,$client_id){
+        if (isset($this->rooms[$competition_id][$room_type])){
             /*
             $collname='game_competition';
             $mongodb=mongo_db::singleton('func_system');
@@ -176,7 +196,9 @@ final class room_manager{
             */
             foreach ($this->rooms[$competition_id][$room_type] as $room) {
                 if ($room->get_number() < $room->get_max()) {
-                    $room->user_enter($user_id);
+                    $room->user_enter($user_id,$client_id);
+                    send_notice($user_id,1,"报名成功！");
+                    break;
                 }
             }
         }
