@@ -263,6 +263,7 @@ function roomInfo($roomId)
     // $compareValue=$redis->hGet($roomId,'compareValue');
     //$compareValue=json_decode($compareValue,true);
     $init['currentValueOwner']=$redis->hGet($roomId,'currant_value_owner');
+    $init['historyCards']=$redis->lRange($roomId.':historyCards',0,-1);
     return $init;
 }
 function roomInit($playerIds,$channel,$channelNumber=-1,$competition_id=-1,$index=-1)
@@ -412,7 +413,7 @@ function initRoomState($roomId,$compareValue,$currentValue)
     $redis->hSet($roomId,'compareValue',json_encode($compareValue));
     $redis->hSet($roomId,'currentValue',json_encode($currentValue));
 }
-function roomTick($roomId,$times,$timeSecond=1000000000)
+function roomTick($roomId,$times,$timeSecond=1000044400)
 {
     global $redis;
     $tick=$redis->hIncrBy($roomId,'tick',$times);
@@ -1047,6 +1048,7 @@ function pai($playerId,$roomId,$value,$valueCode=null)
     {
         if (changeCard($playerId, $roomId, $value['data']))
         {
+            roomCardsStore($roomId,$value['data']);
             if(($type=pai_type_for_task($valueCode))!==null)
             {
                 echo "发送更新中：\n";
@@ -1097,6 +1099,11 @@ function pai($playerId,$roomId,$value,$valueCode=null)
             roomTick($roomId, 1);
         }
     }
+}
+function roomCardsStore($roomId,$itemCards)
+{
+    global $redis;
+    $redis->lPush($roomId.':historyCards',$itemCards);
 }
 function beginPlayCard($dizhu,$roomId,$times)
 {

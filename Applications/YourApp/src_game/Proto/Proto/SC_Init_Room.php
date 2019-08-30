@@ -1,6 +1,6 @@
 <?php
 /**
- * Auto generated from doudizhu.proto at 2019-08-22 14:28:44
+ * Auto generated from doudizhu.proto at 2019-08-30 11:58:05
  *
  * proto package
  */
@@ -23,6 +23,7 @@ class SC_Init_Room extends \ProtobufMessage
     const TURNERLEFTTIME = 9;
     const CURRENTVALUEOWNER = 10;
     const PLAYERSINFO = 11;
+    const HISTORYCARDS = 12;
 
     /* @var array Field descriptors */
     protected static $fields = array(
@@ -81,6 +82,11 @@ class SC_Init_Room extends \ProtobufMessage
             'repeated' => true,
             'type' => '\Proto\Player_Info'
         ),
+        self::HISTORYCARDS => array(
+            'name' => 'historyCards',
+            'required' => false,
+            'type' => \ProtobufMessage::PB_TYPE_STRING,
+        ),
     );
 
     /**
@@ -109,6 +115,7 @@ class SC_Init_Room extends \ProtobufMessage
         $this->values[self::TURNERLEFTTIME] = null;
         $this->values[self::CURRENTVALUEOWNER] = null;
         $this->values[self::PLAYERSINFO] = array();
+        $this->values[self::HISTORYCARDS] = null;
     }
 
     /**
@@ -521,6 +528,39 @@ class SC_Init_Room extends \ProtobufMessage
     public function getPlayersInfoCount()
     {
         return $this->count(self::PLAYERSINFO);
+    }
+
+    /**
+     * Sets value of 'historyCards' property
+     *
+     * @param string $value Property value
+     *
+     * @return null
+     */
+    public function setHistoryCards($value)
+    {
+        return $this->set(self::HISTORYCARDS, $value);
+    }
+
+    /**
+     * Returns value of 'historyCards' property
+     *
+     * @return string
+     */
+    public function getHistoryCards()
+    {
+        $value = $this->get(self::HISTORYCARDS);
+        return $value === null ? (string)$value : $value;
+    }
+
+    /**
+     * Returns true if 'historyCards' property is set, false otherwise
+     *
+     * @return boolean
+     */
+    public function hasHistoryCards()
+    {
+        return $this->get(self::HISTORYCARDS) !== null;
     }
 }
 }

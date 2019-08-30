@@ -67,13 +67,21 @@ $gateway->router = function ($worker_connections, $client_connection, $cmd, $buf
         $model = $model_router[$mid];
         return $worker_connections[$client_connection->model_address[$model]];
     }
+    if($cmd==GatewayProtocol::CMD_ON_CLOSE)
+    {
+        $model = $buffer;
+        $worker_connections_map=[];
+        foreach ($models as $model)
+        {
+            $worker_connections_map[]=$worker_connections[$client_connection->model_address[$model]];
+        }
+        return $worker_connections_map;
+    }
     return $worker_connections[$client_connection->model_address[$default_model]];
 };
-
 
 // 如果不是在根目录启动，则运行runAll方法
 if(!defined('GLOBAL_START'))
 {
     Worker::runAll();
 }
-
