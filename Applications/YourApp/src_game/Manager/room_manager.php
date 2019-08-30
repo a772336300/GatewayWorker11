@@ -1,6 +1,8 @@
 <?php
 
 use Proto\Message_Id;
+use Proto\SC_Competition_Result_Competition_end_gold;
+use Proto\SC_Competition_Result_Competition_end;
 use Proto\SC_Competition_Result;
 use Workerman\Lib\Timer;
 use GatewayWorker\Lib\Gateway;
@@ -164,7 +166,7 @@ final class room_manager{
                     $tmproom->set_top_list($data->top_list);
                     $this->rooms[$data->id][$data->type][0][$tmproom->get_code()]=$tmproom;
                     $this->rooms[$data->id][$data->type][0]['room_max'] = $data->max;
-                    $this->rooms[$data->id][$data->type]['top_list'] = $data->top_list;
+                    $this->rooms[$data->id][$data->type]['top_list'] = explode(",",$data->top_list);
                 }
                 break;
             default:
@@ -243,13 +245,66 @@ final class room_manager{
 
             if (count($this->users[$competition_id][$room_type][$index]['socket_id']) == $this->rooms[$competition_id][$room_type][$index]['room_max']){
                 arsort($this->users[$competition_id][$room_type][$index]['integral']);
+                /**
+                 * message SC_Competition_Result
+                {
+                optional int32  Competition_id  = 1;
+                message Competition_end
+                {
+                optional int32  playerId    = 1;
+                repeated int32  levelUp     = 2;    //赛制
+                optional bool   to_up       = 3;    //晋级
+                message gold
+                {
+                optional int32  id      = 1;
+                optional int32  number  = 2;
+                }
+                repeated gold  golds        = 4;    //奖励
+                }
+                repeated Competition_end    competition = 2;
+                repeated int32              top_list    = 3;
+                optional bool               over        = 4;    //所有比赛结束
+                }
+                 */
                 $competition_result = SC_Competition_Result();
-                $competition_result->setCompetitionId($competition_id);
                 $begin = 0;
-                foreach ($this->users[$competition_id][$room_type][$index]['socket_id'] as $user){
+                foreach ($this->users[$competition_id][$room_type][$index]['integral'] as $uid => $integral){
+                    $competition_end = SC_Competition_Result_Competition_end();
+                    $competition_end->setPlayerId($uid);
+                    $competition_end->appendLevelUp($begin);
+                    $competition_end->appendLevelUp($this->rooms[$competition_id][$room_type]['top_list'][$index]);
+                    if ($begin < $this->rooms[$competition_id][$room_type]['top_list'][$index + 1])
+                    {
+                        $competition_end->setToUp(true);
+                    }
+                    else
+                    {
+                        $competition_end->setToUp(false);
+                    }
+                }
 
+                $gold = SC_Competition_Result_Competition_end_gold();
+                $competition_result->setCompetitionId($competition_id);
+
+                foreach ($this->users[$competition_id][$room_type][$index]['socket_id'] as $id => $socket){
+                    //foreach ($this->rooms[$competition_id][$room_type]['to_list'] as $)
+                    $competition_result->setCompetitionId($id); //competition_id
+
+
+                    $competition_result->appendCompetition(); //competition
+
+                    foreach ($this->rooms[$competition_id][$room_type]['top_list'] as $num){ //top_list
+                        $competition_result->appendTopList($num);
+                    }
+                    if ($index + 1 == count($this->rooms[$competition_id][$room_type]['top_list'])){ //over
+                        $competition_result->setOver(true);
+                    }
+                    else
+                    {
+                        $competition_result->setOver(false);
+                    }
                     $begin++;
-                    \GatewayWorker\Lib\Gateway::sendToClient($user->client_id,my_pack(Message_Id::SC_Competition_Result_Id,$competition_result->serializeToString()));
+                    \GatewayWorker\Lib\Gateway::sendToClient($socket,my_pack(Message_Id::SC_Competition_Result_Id,$competition_result->serializeToString()));
                 }
 
 

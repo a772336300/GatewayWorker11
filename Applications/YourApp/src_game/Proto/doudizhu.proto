@@ -198,6 +198,7 @@ message CS_Robot_Join
 {
 	optional int32 playerId = 1;
 }
+
 message SC_Competition_Result
 {
     optional int32  Competition_id  = 1;
@@ -213,7 +214,7 @@ message SC_Competition_Result
         }
         repeated gold  golds        = 4;    //奖励
     }
-    repeated Competition_end    competition = 2;
+    optional Competition_end    competition = 2;
     repeated int32              top_list    = 3;
     optional bool               over        = 4;    //所有比赛结束
 }
