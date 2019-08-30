@@ -266,13 +266,29 @@ function roomInfo($roomId)
     $init['historyCards']=$redis->lRange($roomId.':historyCards',0,-1);
     return $init;
 }
+function encode_playerId($playerId,$mark)
+{
+    return $mark.':'.$playerId;
+}
+function encode_playerIds($playerIds,$mark)
+{
+    return array_map(function ($code) use($mark){return $mark.':'.$code;},$playerIds);
+}
+function decode_playerId($playerId)
+{
+    return substr(strstr($playerId,':'),1);
+}
 function roomInit($playerIds,$channel,$channelNumber=-1,$competition_id=-1,$index=-1)
 {
     global $redis;
     // TODO: Implement onmessage() method.
     //有状态
-    //shuffle($playerIds);
-    $roomId=roomCreate($playerIds,$channel,$channelNumber);
+    shuffle($playerIds);
+    if($channelNumber==-1)
+        $playerIds_room=$playerIds;
+    else
+    $playerIds_room=encode_playerIds($playerIds,$channelNumber);
+    $roomId=roomCreate($playerIds_room,$channel,$channelNumber);
     echo "房间创建成功\r\n";
     //设置房间消息发送器
     foreach ($playerIds as $playerId)
@@ -285,7 +301,7 @@ function roomInit($playerIds,$channel,$channelNumber=-1,$competition_id=-1,$inde
     $redis->hSet($roomId,'index',$index);
     $redis->hSet($roomId,'competition_id',$competition_id);
     $redis->hSet($roomId,'roomtype',$channel);
-    GameStart($roomId,$playerIds);
+    GameStart($roomId,$playerIds_room);
     //房间初始化的信息
     //房间信息
     $init=roomInfo($roomId);
@@ -340,7 +356,7 @@ function cardSend($roomId)
     {
         $redis->delete($playerId . ':cards');
     }
-    $mapZhaDan = makeZhaDan($playerIds,2);
+    $mapZhaDan = makeZhaDan($playerIds,0,3);
     foreach($playerIds as $playerId)
     {
         $mapZhaDanScope=0;
@@ -381,12 +397,13 @@ function cardSend($roomId)
     }
 
 }
-function makeZhaDan($playerIds,$count)
+function makeZhaDan($playerIds,$randomStart,$randomEnd)
 {
     $mapZhaDan=array();
     $cards=array(3,4,5,6,7,8,9,10,11,12,13,14,15);
     shuffle($cards);
     shuffle($cards);
+    $count= mt_rand($randomStart,$randomEnd);
     for ($i=0;$i<$count;$i++)
     {
         if($playerIds==null)
@@ -1552,7 +1569,7 @@ function game_play($clientId,$payload_buff)
     $payload['data']=$payload_buff->getData();
     global $redis;
     //获取本次适配的对象
-    $playerId=$_SESSION['uid'];
+    $playerId=encode_playerId($_SESSION['uid']);
     //对象是否存在游戏房间中
     //通过对象获取房间
     $roomId=$redis->hGet($playerId,'roomId');

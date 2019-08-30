@@ -1,6 +1,6 @@
 <?php
 /**
- * Auto generated from doudizhu.proto at 2019-08-30 14:56:08
+ * Auto generated from doudizhu.proto at 2019-08-30 17:06:31
  *
  * proto package
  */
@@ -26,13 +26,13 @@ class SC_Competition_Result extends \ProtobufMessage
         ),
         self::COMPETITION => array(
             'name' => 'competition',
-            'repeated' => true,
+            'required' => false,
             'type' => '\Proto\SC_Competition_Result_Competition_end'
         ),
         self::TOP_LIST => array(
             'name' => 'top_list',
-            'repeated' => true,
-            'type' => \ProtobufMessage::PB_TYPE_INT,
+            'required' => false,
+            'type' => \ProtobufMessage::PB_TYPE_STRING,
         ),
         self::OVER => array(
             'name' => 'over',
@@ -57,8 +57,8 @@ class SC_Competition_Result extends \ProtobufMessage
     public function reset()
     {
         $this->values[self::COMPETITION_ID] = null;
-        $this->values[self::COMPETITION] = array();
-        $this->values[self::TOP_LIST] = array();
+        $this->values[self::COMPETITION] = null;
+        $this->values[self::TOP_LIST] = null;
         $this->values[self::OVER] = null;
     }
 
@@ -106,31 +106,21 @@ class SC_Competition_Result extends \ProtobufMessage
     }
 
     /**
-     * Appends value to 'competition' list
+     * Sets value of 'competition' property
      *
-     * @param \Proto\SC_Competition_Result_Competition_end $value Value to append
-     *
-     * @return null
-     */
-    public function appendCompetition(\Proto\SC_Competition_Result_Competition_end $value)
-    {
-        return $this->append(self::COMPETITION, $value);
-    }
-
-    /**
-     * Clears 'competition' list
+     * @param \Proto\SC_Competition_Result_Competition_end $value Property value
      *
      * @return null
      */
-    public function clearCompetition()
+    public function setCompetition(\Proto\SC_Competition_Result_Competition_end $value=null)
     {
-        return $this->clear(self::COMPETITION);
+        return $this->set(self::COMPETITION, $value);
     }
 
     /**
-     * Returns 'competition' list
+     * Returns value of 'competition' property
      *
-     * @return \Proto\SC_Competition_Result_Competition_end[]
+     * @return \Proto\SC_Competition_Result_Competition_end
      */
     public function getCompetition()
     {
@@ -144,71 +134,30 @@ class SC_Competition_Result extends \ProtobufMessage
      */
     public function hasCompetition()
     {
-        return count($this->get(self::COMPETITION)) !== 0;
+        return $this->get(self::COMPETITION) !== null;
     }
 
     /**
-     * Returns 'competition' iterator
+     * Sets value of 'top_list' property
      *
-     * @return \ArrayIterator
-     */
-    public function getCompetitionIterator()
-    {
-        return new \ArrayIterator($this->get(self::COMPETITION));
-    }
-
-    /**
-     * Returns element from 'competition' list at given offset
-     *
-     * @param int $offset Position in list
-     *
-     * @return \Proto\SC_Competition_Result_Competition_end
-     */
-    public function getCompetitionAt($offset)
-    {
-        return $this->get(self::COMPETITION, $offset);
-    }
-
-    /**
-     * Returns count of 'competition' list
-     *
-     * @return int
-     */
-    public function getCompetitionCount()
-    {
-        return $this->count(self::COMPETITION);
-    }
-
-    /**
-     * Appends value to 'top_list' list
-     *
-     * @param integer $value Value to append
+     * @param string $value Property value
      *
      * @return null
      */
-    public function appendTopList($value)
+    public function setTopList($value)
     {
-        return $this->append(self::TOP_LIST, $value);
+        return $this->set(self::TOP_LIST, $value);
     }
 
     /**
-     * Clears 'top_list' list
+     * Returns value of 'top_list' property
      *
-     * @return null
-     */
-    public function clearTopList()
-    {
-        return $this->clear(self::TOP_LIST);
-    }
-
-    /**
-     * Returns 'top_list' list
-     *
-     * @return integer[]
+     * @return string
      */
     public function getTopList()
     {
-        return $this->get(self::TOP_LIST);
+        $value = $this->get(self::TOP_LIST);
+        return $value === null ? (string)$value : $value;
     }
 
     /**
@@ -218,39 +167,7 @@ class SC_Competition_Result extends \ProtobufMessage
      */
     public function hasTopList()
     {
-        return count($this->get(self::TOP_LIST)) !== 0;
-    }
-
-    /**
-     * Returns 'top_list' iterator
-     *
-     * @return \ArrayIterator
-     */
-    public function getTopListIterator()
-    {
-        return new \ArrayIterator($this->get(self::TOP_LIST));
-    }
-
-    /**
-     * Returns element from 'top_list' list at given offset
-     *
-     * @param int $offset Position in list
-     *
-     * @return integer
-     */
-    public function getTopListAt($offset)
-    {
-        return $this->get(self::TOP_LIST, $offset);
-    }
-
-    /**
-     * Returns count of 'top_list' list
-     *
-     * @return int
-     */
-    public function getTopListCount()
-    {
-        return $this->count(self::TOP_LIST);
+        return $this->get(self::TOP_LIST) !== null;
     }
 
     /**
