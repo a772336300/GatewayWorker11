@@ -1,6 +1,6 @@
 <?php
 /**
- * Auto generated from doudizhu.proto at 2019-08-30 17:06:31
+ * Auto generated from doudizhu.proto at 2019-08-30 18:28:35
  *
  * proto package
  */
@@ -50,13 +50,13 @@ class RoomInfoTable extends \ProtobufMessage
         ),
         self::SIGNUPTIME => array(
             'name' => 'signUpTime',
-            'required' => false,
-            'type' => \ProtobufMessage::PB_TYPE_STRING,
+            'repeated' => true,
+            'type' => '\Proto\TimeInfo'
         ),
         self::BEGINNINGTIME => array(
             'name' => 'beginningTime',
-            'required' => false,
-            'type' => \ProtobufMessage::PB_TYPE_STRING,
+            'repeated' => true,
+            'type' => '\Proto\TimeInfo'
         ),
         self::GAMESTATE => array(
             'name' => 'gameState',
@@ -85,8 +85,8 @@ class RoomInfoTable extends \ProtobufMessage
         $this->values[self::NAMETEXT] = null;
         $this->values[self::TYPETEXT] = null;
         $this->values[self::PLAYERNUM] = null;
-        $this->values[self::SIGNUPTIME] = null;
-        $this->values[self::BEGINNINGTIME] = null;
+        $this->values[self::SIGNUPTIME] = array();
+        $this->values[self::BEGINNINGTIME] = array();
         $this->values[self::GAMESTATE] = null;
     }
 
@@ -266,26 +266,35 @@ class RoomInfoTable extends \ProtobufMessage
     }
 
     /**
-     * Sets value of 'signUpTime' property
+     * Appends value to 'signUpTime' list
      *
-     * @param string $value Property value
+     * @param \Proto\TimeInfo $value Value to append
      *
      * @return null
      */
-    public function setSignUpTime($value)
+    public function appendSignUpTime(\Proto\TimeInfo $value)
     {
-        return $this->set(self::SIGNUPTIME, $value);
+        return $this->append(self::SIGNUPTIME, $value);
     }
 
     /**
-     * Returns value of 'signUpTime' property
+     * Clears 'signUpTime' list
      *
-     * @return string
+     * @return null
+     */
+    public function clearSignUpTime()
+    {
+        return $this->clear(self::SIGNUPTIME);
+    }
+
+    /**
+     * Returns 'signUpTime' list
+     *
+     * @return \Proto\TimeInfo[]
      */
     public function getSignUpTime()
     {
-        $value = $this->get(self::SIGNUPTIME);
-        return $value === null ? (string)$value : $value;
+        return $this->get(self::SIGNUPTIME);
     }
 
     /**
@@ -295,30 +304,71 @@ class RoomInfoTable extends \ProtobufMessage
      */
     public function hasSignUpTime()
     {
-        return $this->get(self::SIGNUPTIME) !== null;
+        return count($this->get(self::SIGNUPTIME)) !== 0;
     }
 
     /**
-     * Sets value of 'beginningTime' property
+     * Returns 'signUpTime' iterator
      *
-     * @param string $value Property value
+     * @return \ArrayIterator
+     */
+    public function getSignUpTimeIterator()
+    {
+        return new \ArrayIterator($this->get(self::SIGNUPTIME));
+    }
+
+    /**
+     * Returns element from 'signUpTime' list at given offset
+     *
+     * @param int $offset Position in list
+     *
+     * @return \Proto\TimeInfo
+     */
+    public function getSignUpTimeAt($offset)
+    {
+        return $this->get(self::SIGNUPTIME, $offset);
+    }
+
+    /**
+     * Returns count of 'signUpTime' list
+     *
+     * @return int
+     */
+    public function getSignUpTimeCount()
+    {
+        return $this->count(self::SIGNUPTIME);
+    }
+
+    /**
+     * Appends value to 'beginningTime' list
+     *
+     * @param \Proto\TimeInfo $value Value to append
      *
      * @return null
      */
-    public function setBeginningTime($value)
+    public function appendBeginningTime(\Proto\TimeInfo $value)
     {
-        return $this->set(self::BEGINNINGTIME, $value);
+        return $this->append(self::BEGINNINGTIME, $value);
     }
 
     /**
-     * Returns value of 'beginningTime' property
+     * Clears 'beginningTime' list
      *
-     * @return string
+     * @return null
+     */
+    public function clearBeginningTime()
+    {
+        return $this->clear(self::BEGINNINGTIME);
+    }
+
+    /**
+     * Returns 'beginningTime' list
+     *
+     * @return \Proto\TimeInfo[]
      */
     public function getBeginningTime()
     {
-        $value = $this->get(self::BEGINNINGTIME);
-        return $value === null ? (string)$value : $value;
+        return $this->get(self::BEGINNINGTIME);
     }
 
     /**
@@ -328,7 +378,39 @@ class RoomInfoTable extends \ProtobufMessage
      */
     public function hasBeginningTime()
     {
-        return $this->get(self::BEGINNINGTIME) !== null;
+        return count($this->get(self::BEGINNINGTIME)) !== 0;
+    }
+
+    /**
+     * Returns 'beginningTime' iterator
+     *
+     * @return \ArrayIterator
+     */
+    public function getBeginningTimeIterator()
+    {
+        return new \ArrayIterator($this->get(self::BEGINNINGTIME));
+    }
+
+    /**
+     * Returns element from 'beginningTime' list at given offset
+     *
+     * @param int $offset Position in list
+     *
+     * @return \Proto\TimeInfo
+     */
+    public function getBeginningTimeAt($offset)
+    {
+        return $this->get(self::BEGINNINGTIME, $offset);
+    }
+
+    /**
+     * Returns count of 'beginningTime' list
+     *
+     * @return int
+     */
+    public function getBeginningTimeCount()
+    {
+        return $this->count(self::BEGINNINGTIME);
     }
 
     /**
