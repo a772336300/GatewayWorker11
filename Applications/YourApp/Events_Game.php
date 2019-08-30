@@ -108,7 +108,21 @@ class Events_Game
    public static function onClose($client_id)
    {
 
-      echo "a clientxxxxxxxxxxxx\n";
+       global $waitingUser;
+       global $waitingRobot;
+       //遍历匹配队列
+       foreach($waitingUser as $key=>$value)
+           if(array_key_exists($_SESSION['uid'],$waitingUser[$key]))
+           {
+               unset($waitingUser[$key][$_SESSION['uid']]);
+               return ;
+           }
+       foreach ($waitingRobot as $key=>$value)
+           if($_SESSION['uid']==$value)
+           {
+               unset($waitingRobot[$key]);
+               return ;
+           }
        // 向所有人发送 
       // GateWay::sendToAll("$client_id logout\r\n");
 

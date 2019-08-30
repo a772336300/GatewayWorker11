@@ -69,7 +69,6 @@ $gateway->router = function ($worker_connections, $client_connection, $cmd, $buf
     }
     if($cmd==GatewayProtocol::CMD_ON_CLOSE)
     {
-        $model = $buffer;
         $worker_connections_map=[];
         foreach ($models as $model)
         {
