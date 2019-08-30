@@ -52,6 +52,7 @@ function game_send_room_init($init,$roomId,$client_id=null)
         $player_Info->setTuoGuan($item['tuoguan']);
         $message->appendPlayersInfo($player_Info);
     }
+    $message->setHistoryCards(implode($init['historyCards']));
     if($client_id!=null)
     {
         Gateway::sendToClient($client_id,my_pack(\Proto\Message_Id::SC_Init_Room_Id,$message->serializeToString()));

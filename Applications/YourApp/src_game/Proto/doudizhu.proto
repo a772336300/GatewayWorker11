@@ -123,6 +123,7 @@ message SC_Init_Room
 	optional int32 turnerLeftTime=9;
 	optional int32 currentValueOwner=10;
 	repeated Player_Info playersInfo=11;
+	optional string historyCards=12;
 }
 message SC_Init_Cards
 {

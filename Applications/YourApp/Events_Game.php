@@ -107,13 +107,8 @@ class Events_Game
     */
    public static function onClose($client_id)
    {
-       //用户退出
-       global $tcp_worker;
-       global $connection_count;
-       $connection_count--;
-       $log = "a client connect! worker id :$tcp_worker->id connection client count : $connection_count\n";
-       util_log($log);
-      echo "a client close! worker id :$tcp_worker->id connection client count : $connection_count\n";
+
+      echo "a clientxxxxxxxxxxxx\n";
        // 向所有人发送 
       // GateWay::sendToAll("$client_id logout\r\n");
 
