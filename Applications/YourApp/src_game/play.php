@@ -1135,7 +1135,7 @@ function gameOver($roomId,$winner=null)
     //比赛房间计算
     if ($redis->hGet($roomId,'roomtype') == \Proto\Room_Type::bisai_dizhu)
     {
-        room_manager::singleton()->roomGame_Calculation($redis->hGet($roomId,'competition_id'),$redis->hGet($roomId,'roomtype'),$roomId,$redis->hGet($roomId,'index'));
+        room_manager::singleton()->roomGame_Calculation($redis->hGet($roomId,'competition_id'),$redis->hGet($roomId,'roomtype'),$roomId,$redis->hGet($roomId,'index'),$result);
     }
 
     game_send_game_result($roomId,$result);
