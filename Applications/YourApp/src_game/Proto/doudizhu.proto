@@ -226,12 +226,12 @@ message CS_ComPetition_Join
 message CS_CreateCardRoom
 {
      optional int32 playerid = 1;              //玩家ID
-     optional int32 roomType = 2;          //地主or麻将
-     optional int32 gameType = 3;          //晋级赛or 积分赛
+     optional int32 roomType = 2;          //1地主or2麻将
+     optional int32 gameType = 3;          //1晋级赛or 2积分赛
      optional int32 players = 4;               //比赛人数
      optional int32 numberOfGames = 5;   //比赛局数
-     optional string signUpTime = 6;          //报名时间 2019|1|1|0|0  年月日时分
-     optional string beginningTime = 7;     //开始时间  2019|1|1|0|10  年月日时分
+     repeated TimeInfo signUpTime = 6;          //报名时间 2019|1|1|0|0  年月日时分
+     repeated TimeInfo beginningTime = 7;     //开始时间  2019|1|1|0|10  年月日时分
      optional string roomName = 8;          //房间名称，玩家自己输入
      optional string roomExplain = 9;        //比赛描述，玩家输入
 }
@@ -254,7 +254,16 @@ message RoomInfoTable
     optional string nameText = 3;    //房间名称
     optional string typeText = 4;         //晋级赛or积分赛
     optional int32 playerNum = 5;      //在线人数
-    optional string signUpTime = 6;    //报名时间
-    optional string beginningTime = 7;   //开始时间
+    repeated TimeInfo signUpTime = 6;    //报名时间
+    repeated TimeInfo beginningTime = 7;   //开始时间
     optional string gameState = 8;         //游戏状态
+}
+//时间信息
+message TimeInfo
+{
+   optional int32 year = 1;
+   optional int32 month = 2;
+   optional int32 day = 3;
+   optional int32 hour = 4;
+   optional int32 minute = 5;
 }
