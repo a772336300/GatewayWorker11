@@ -6,8 +6,9 @@ class room_base{
     private $gtype;     //房间类型
     private $starttime; //开始时间
     private $code;      //房间编号
-    private $number;    //当前人数
-    private $max;       //最大人数
+    private $number;    //当前房间人数
+    private $max;       //当前房间最大人数
+    private $room_max;       //参加比赛的最大人数
     private $users;     //用户容器
     private $advanced;  //进阶比(1、2，3人进阶)
     private $state;     //状态 0空 1有人 2满人 3满开
@@ -25,6 +26,7 @@ class room_base{
         $this->code=0;
         $this->number=0;
         $this->max=0;
+        $this->room_max=0;
         $this->state=0;
         $this->bstart=false;
         $this->top_list=[120,90,60,30,9,3,1];
@@ -112,6 +114,10 @@ class room_base{
         return $this->code;
     }
 
+    function get_state(){
+        return $this->state;
+    }
+
     function set_max($vale){
         $this->max=$vale;
         for ($i=0;$i<$this->max;$i++){
@@ -119,12 +125,16 @@ class room_base{
         }
     }
 
-    function get_state(){
-        return $this->state;
-    }
-
     function get_max(){
         return $this->max;
+    }
+
+    function set_room_max($vale){
+        $this->room_max=$vale;
+    }
+
+    function get_room_max(){
+        return $this->room_max;
     }
 
     /**
