@@ -373,10 +373,30 @@ class Gateway extends Worker
             // 调用路由函数，选择一个worker把请求转发给它
             /** @var TcpConnection $worker_connection */
             $worker_connection = call_user_func($this->router, $this->_workerConnections, $connection, $cmd, $body);
-            if (false === $worker_connection->send($gateway_data)) {
-                $msg = "SendBufferToWorker fail. May be the send buffer are overflow. See http://wiki.workerman.net/Error2";
-                static::log($msg);
-                return false;
+            if(is_array($worker_connection))
+            {
+                if($worker_connection==null)
+                {
+                    $msg = "SendBufferToWorker fail. Extra method return null";
+                    static::log($msg);
+                    return false;
+                }
+                foreach ($worker_connection as $worker_connection_item)
+                {
+                    if (false === $worker_connection_item->send($gateway_data)) {
+                        $msg = "SendBufferToWorker fail. May be the send buffer are overflow. See http://wiki.workerman.net/Error2";
+                        static::log($msg);
+                        return false;
+                    }
+                }
+            }
+            else
+            {
+                if (false === $worker_connection->send($gateway_data)) {
+                    $msg = "SendBufferToWorker fail. May be the send buffer are overflow. See http://wiki.workerman.net/Error2";
+                    static::log($msg);
+                    return false;
+                }
             }
         } // 没有可用的 worker
         else {
