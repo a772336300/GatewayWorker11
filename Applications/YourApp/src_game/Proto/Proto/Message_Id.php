@@ -1,6 +1,6 @@
 <?php
 /**
- * Auto generated from doudizhu.proto at 2019-08-26 15:02:18
+ * Auto generated from doudizhu.proto at 2019-08-30 14:56:08
  *
  * proto package
  */
@@ -35,6 +35,9 @@ final class Message_Id
     const CS_Robot_Join_Id = 22;
     const SC_Competition_Result_Id = 23;
     const CS_ComPetition_Join_Id = 24;
+    const CS_CreateCardRoom_Id = 25;
+    const SC_CreateCardRoom_Id = 26;
+    const SC_RoomInfoTable_Id = 27;
 
     /**
      * Returns defined enum values
@@ -68,6 +71,9 @@ final class Message_Id
             'CS_Robot_Join_Id' => self::CS_Robot_Join_Id,
             'SC_Competition_Result_Id' => self::SC_Competition_Result_Id,
             'CS_ComPetition_Join_Id' => self::CS_ComPetition_Join_Id,
+            'CS_CreateCardRoom_Id' => self::CS_CreateCardRoom_Id,
+            'SC_CreateCardRoom_Id' => self::SC_CreateCardRoom_Id,
+            'SC_RoomInfoTable_Id' => self::SC_RoomInfoTable_Id,
         );
     }
 }
