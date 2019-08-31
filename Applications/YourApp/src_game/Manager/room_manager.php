@@ -63,12 +63,17 @@ final class room_manager{
     function start_game_room(){
         $this->__timer_id_read=Timer::add(20,function (){
             if (isset($this->rooms)) {
-                foreach ($this->rooms as $competition_id) {   //$competition_id = $this->rooms[competition_id]
-                    foreach ($competition_id as $room_type) {   //$room_type = $this->rooms[competition_id][room_type]
-                        foreach ($room_type as $indexkey => $index) {  //$index = $this->rooms[competition_id][room_type][index]
-                            if ($indexkey != 'top_list' && $indexkey != 'top_list_str') {
-                                foreach ($index as $roomcode => $room){  //$room = $this->rooms[competition_id][room_type][index][room_code]
-                                    if ($roomcode != 'room_max') {
+                //$competition_id = $this->rooms[competition_id]
+                foreach ($this->rooms as $competition_id) {
+                    //$room_type = $this->rooms[competition_id][room_type]
+                    foreach ($competition_id as $room_type) {
+                        //$config = $this->rooms[competition_id][room_type][['rooms_data'],['room_max'],['top_list'],['top_list_str']]
+                        foreach ($room_type as $key => $config) {
+                            if ($key == 'rooms_data') {
+                                //$index = $this->rooms[competition_id][room_type]['rooms_data'][index]
+                                foreach ($config as $index) {
+                                    //$room = $this->rooms[competition_id][room_type]['rooms_data'][index][code]
+                                    foreach ($index as $roomcode => $room){
                                         if ($room->get_bsend_start() == false) {
                                             if ($room->get_number() == $room->get_max()) {
                                                 $sc_star = new \Proto\SC_ComPetition_Start();
@@ -104,8 +109,19 @@ final class room_manager{
                                             }
                                         }
                                     }
-
                                 }
+                            }
+                            elseif ($key == 'room_max')
+                            {
+
+                            }
+                            elseif ($key == 'top_list')
+                            {
+
+                            }
+                            elseif ($key == 'top_list_str')
+                            {
+
                             }
                         }
                     }
@@ -169,8 +185,8 @@ final class room_manager{
                     $tmproom->set_bstart(false);
                     $tmproom->set_bnumber($data->number);
                     $tmproom->set_top_list($data->top_list);
-                    $this->rooms[$data->id][$data->type][0][$tmproom->get_code()]=$tmproom;
-                    $this->rooms[$data->id][$data->type][0]['room_max'] = $data->max;
+                    $this->rooms[$data->id][$data->type]['rooms_data'][0][$tmproom->get_code()]=$tmproom;
+                    $this->rooms[$data->id][$data->type]['room_max'][0] = $data->max;
                     $this->rooms[$data->id][$data->type]['top_list'] = explode(",",$data->top_list);
                     $this->rooms[$data->id][$data->type]['top_list_str'] = $data->top_list;
                 }
