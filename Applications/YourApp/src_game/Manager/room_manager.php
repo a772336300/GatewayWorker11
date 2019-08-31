@@ -65,41 +65,46 @@ final class room_manager{
             if (isset($this->rooms)) {
                 foreach ($this->rooms as $competition_id) {   //$competition_id = $this->rooms[competition_id]
                     foreach ($competition_id as $room_type) {   //$room_type = $this->rooms[competition_id][room_type]
-                        foreach ($room_type as $index) {  //$index = $this->rooms[competition_id][room_type][index]
-                            foreach ($index as $room){  //$room = $this->rooms[competition_id][room_type][index][room_code]
-                                if ($room->get_bsend_start() == false) {
-                                    if ($room->get_number() == $room->get_max()) {
-                                        $sc_star = new \Proto\SC_ComPetition_Start();
-                                        $sc_star->setCompetitionId($room->get_competition_id());
-                                        $sc_star->setGameType($room->get_gtype());
-                                        $users = $room->get_user_all();
-                                        echo sprintf("start_game_room %s\n",date("Y-m-d H:i:s"));
-                                        foreach ($users as $user) {
-                                            \GatewayWorker\Lib\Gateway::sendToClient($user->client_id,my_pack(Message_Id::SC_ComPetition_Start_Id,$sc_star->serializeToString()));
+                        foreach ($room_type as $indexkey => $index) {  //$index = $this->rooms[competition_id][room_type][index]
+                            if ($indexkey != 'top_list' && $indexkey != 'top_list_str') {
+                                foreach ($index as $roomcode => $room){  //$room = $this->rooms[competition_id][room_type][index][room_code]
+                                    if ($roomcode != 'room_max') {
+                                        if ($room->get_bsend_start() == false) {
+                                            if ($room->get_number() == $room->get_max()) {
+                                                $sc_star = new \Proto\SC_ComPetition_Start();
+                                                $sc_star->setCompetitionId($room->get_competition_id());
+                                                $sc_star->setGameType($room->get_gtype());
+                                                $users = $room->get_user_all();
+                                                echo sprintf("start_game_room %s\n",date("Y-m-d H:i:s"));
+                                                foreach ($users as $user) {
+                                                    \GatewayWorker\Lib\Gateway::sendToClient($user->client_id,my_pack(Message_Id::SC_ComPetition_Start_Id,$sc_star->serializeToString()));
+                                                }
+                                                $room->set_bsend_start(true);
+                                            }
                                         }
-                                        $room->set_bsend_start(true);
-                                    }
-                                }
-                                if ($room->get_bstart() == false) {
-                                    if ($room->get_bnumber() == true) {  //人满开
-                                        if ($room->get_number() == $room->get_max()) {
-                                            //if ($m->get_top_index() + 1 == count($m->get_top_list())){
-                                            $user_ids = $room->get_user_id_all();
-                                            roomInit($user_ids,$room->get_gtype(), $room->get_code(), $room->get_competition_id(), $room->get_top_index());
-                                            $room->set_bstart(true);
-                                            //}
-                                        }
-                                        //roomInit()
-                                    }else{  //定时开
-                                        if ($room->get_bstart() == true || strtotime(date("Y-m-d H:i:s")) == strtotime($room->get_starttime())) {
-                                            echo sprintf("start time: %s \n", $room->get_starttime());
-                                            if ($room->get_top_index() + 1 == count($room->get_top_list())){
-                                                $user_ids = $room->get_user_id_all();
-                                                roomInit($user_ids,$room->get_gtype(), $room->get_code(), $room->get_competition_id(), $room->get_top_index());
-                                                $room->set_bstart(true);
+                                        if ($room->get_bstart() == false) {
+                                            if ($room->get_bnumber() == true) {  //人满开
+                                                if ($room->get_number() == $room->get_max()) {
+                                                    //if ($m->get_top_index() + 1 == count($m->get_top_list())){
+                                                    $user_ids = $room->get_user_id_all();
+                                                    roomInit($user_ids,$room->get_gtype(), $room->get_code(), $room->get_competition_id(), $room->get_top_index());
+                                                    $room->set_bstart(true);
+                                                    //}
+                                                }
+                                                //roomInit()
+                                            }else{  //定时开
+                                                if ($room->get_bstart() == true || strtotime(date("Y-m-d H:i:s")) == strtotime($room->get_starttime())) {
+                                                    echo sprintf("start time: %s \n", $room->get_starttime());
+                                                    if ($room->get_top_index() + 1 == count($room->get_top_list())){
+                                                        $user_ids = $room->get_user_id_all();
+                                                        roomInit($user_ids,$room->get_gtype(), $room->get_code(), $room->get_competition_id(), $room->get_top_index());
+                                                        $room->set_bstart(true);
+                                                    }
+                                                }
                                             }
                                         }
                                     }
+
                                 }
                             }
                         }
@@ -167,6 +172,7 @@ final class room_manager{
                     $this->rooms[$data->id][$data->type][0][$tmproom->get_code()]=$tmproom;
                     $this->rooms[$data->id][$data->type][0]['room_max'] = $data->max;
                     $this->rooms[$data->id][$data->type]['top_list'] = explode(",",$data->top_list);
+                    $this->rooms[$data->id][$data->type]['top_list_str'] = $data->top_list;
                 }
                 break;
             default:
@@ -261,8 +267,8 @@ final class room_manager{
                 }
                 repeated gold  golds        = 4;    //奖励
                 }
-                repeated Competition_end    competition = 2;
-                repeated int32              top_list    = 3;
+                optional Competition_end    competition = 2;
+                optional string              top_list    = 3;
                 optional bool               over        = 4;    //所有比赛结束
                 }
                  */
