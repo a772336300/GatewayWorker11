@@ -2,7 +2,6 @@
 use Proto\Message_Id;
 function switch_game($client_id,$mid,$data)
 {
-    echo "FFFFFFFFFFFFFFFFFFF\n";
     switch ($mid)
     {
         case Message_Id::CS_Robot_Join_Id:
