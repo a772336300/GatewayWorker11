@@ -1,23 +1,23 @@
 <?php
 /**
- * Auto generated from doudizhu.proto at 2019-09-02 10:40:06
+ * Auto generated from doudizhu.proto at 2019-09-02 10:40:07
  *
  * proto package
  */
 
 namespace Proto {
 /**
- * CS_Go_Out message
+ * CS_JoinTheRoom message
  */
-class CS_Go_Out extends \ProtobufMessage
+class CS_JoinTheRoom extends \ProtobufMessage
 {
     /* Field index constants */
-    const TYPE = 1;
+    const RESULT = 1;
 
     /* @var array Field descriptors */
     protected static $fields = array(
-        self::TYPE => array(
-            'name' => 'type',
+        self::RESULT => array(
+            'name' => 'result',
             'required' => false,
             'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
@@ -38,7 +38,7 @@ class CS_Go_Out extends \ProtobufMessage
      */
     public function reset()
     {
-        $this->values[self::TYPE] = null;
+        $this->values[self::RESULT] = null;
     }
 
     /**
@@ -52,36 +52,36 @@ class CS_Go_Out extends \ProtobufMessage
     }
 
     /**
-     * Sets value of 'type' property
+     * Sets value of 'result' property
      *
      * @param integer $value Property value
      *
      * @return null
      */
-    public function setType($value)
+    public function setResult($value)
     {
-        return $this->set(self::TYPE, $value);
+        return $this->set(self::RESULT, $value);
     }
 
     /**
-     * Returns value of 'type' property
+     * Returns value of 'result' property
      *
      * @return integer
      */
-    public function getType()
+    public function getResult()
     {
-        $value = $this->get(self::TYPE);
+        $value = $this->get(self::RESULT);
         return $value === null ? (integer)$value : $value;
     }
 
     /**
-     * Returns true if 'type' property is set, false otherwise
+     * Returns true if 'result' property is set, false otherwise
      *
      * @return boolean
      */
-    public function hasType()
+    public function hasResult()
     {
-        return $this->get(self::TYPE) !== null;
+        return $this->get(self::RESULT) !== null;
     }
 }
 }

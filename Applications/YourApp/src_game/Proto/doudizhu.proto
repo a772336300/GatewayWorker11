@@ -42,7 +42,7 @@ enum Message_Id
 	CS_CreateCardRoom_Id = 25;
     SC_CreateCardRoom_Id = 26;
     SC_RoomInfoTable_Id = 27;
-    SC_ JoinTheRoom_Id = 28; //加入房间
+    SC_JoinTheRoom_Id = 28; //加入房间
     CS_JoinTheRoom_Id =29;   //返回加入结果
 
 }
