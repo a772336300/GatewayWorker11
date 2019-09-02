@@ -220,7 +220,7 @@ function quit_group()
         {
             $roomId=$redis->hGet(ab($_SESSION('uid'),$index_type),'roomId');
             
-            Gateway::leaveGroup($client_id,$roomId);
+            //Gateway::leaveGroup($client_id,$roomId);
         }
     }
 }
