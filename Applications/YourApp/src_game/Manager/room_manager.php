@@ -334,7 +334,7 @@ final class room_manager{
         $collname='user_create_competition';
         $code = time();
         $db=mongo_db::singleton('func_system');
-        $rows = ['Player_id' => $CreateCardRoom_data->getPlayerid(),
+        $rows = [['Player_id' => $CreateCardRoom_data->getPlayerid(),
             'ROOMTYPE' => ['roomType' => $CreateCardRoom_data->getRoomType(),
                 'GAMETYE' => ['getType' => $CreateCardRoom_data->getGameType(),
                     'CODE' => [
@@ -348,7 +348,7 @@ final class room_manager{
                     ]
                 ]
             ]
-        ];
+        ]];
         $rs = $db->insert($collname, $rows);
         $Reult = new SC_CreateCardRoom();
         $Reult->setResult(1);

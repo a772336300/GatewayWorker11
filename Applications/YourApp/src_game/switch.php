@@ -125,6 +125,7 @@ function switch_game($client_id,$mid,$data)
             $jointheroom->parseFromString($data);
             $jointheroom->getPlayerid();
             $jointheroom->getRoomId();
+            break;
         }
     }
 }
