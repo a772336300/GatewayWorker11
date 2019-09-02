@@ -209,10 +209,26 @@ function game_quit_join($client_id,$quit_join=null)
             return ;
         }
 }
+function quit_group()
+{
+    global $redis;
+    $index_type= $redis->get($_SESSION('uid').'indexType');
+    $list_type= $redis->sMembers($_SESSION('uid').'listType');
+    foreach ($list_type as $type)
+    {
+        if($type!=$index_type)
+        {
+            $roomId=$redis->hGet(ab($_SESSION('uid'),$index_type),'roomId');
+            
+            Gateway::leaveGroup($client_id,$roomId);
+        }
+    }
+}
 function roomInfo($roomId,$roomType)
 {
     global $redis;
     $redis->set($_SESSION('uid').'indexType',$roomType);
+    $redis->sAdd($_SESSION('uid').'listType',$roomType);
     $init=array();
     $playerIds=$redis->lRange($roomId.':playerIds',0,-1);
     $init['type']=$redis->hGet($roomId,'channel');
@@ -274,7 +290,7 @@ function ab($playerId,$mark)
 {
     return $playerId.':'.$mark;
 }
-function abs($playerIds,$mark)
+function abss($playerIds,$mark)
 {
     return array_map(function ($code) use($mark){return $code.':'.$mark;},$playerIds);
 }
@@ -291,7 +307,7 @@ function roomInit($playerIds,$channel,$channelNumber=-1,$competition_id=-1,$inde
     if($channelNumber==-1)
         $playerIds_room=$playerIds;
     else
-    $playerIds_room=abs($playerIds,$channelNumber);
+    $playerIds_room=abss($playerIds,$channelNumber);
     $roomId=roomCreate($playerIds_room,$channel,$channelNumber);
     echo "房间创建成功\r\n";
     //设置房间消息发送器
