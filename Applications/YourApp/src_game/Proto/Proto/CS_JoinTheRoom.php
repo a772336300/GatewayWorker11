@@ -1,6 +1,6 @@
 <?php
 /**
- * Auto generated from doudizhu.proto at 2019-09-02 10:40:07
+ * Auto generated from doudizhu.proto at 2019-09-02 10:55:56
  *
  * proto package
  */
@@ -12,12 +12,18 @@ namespace Proto {
 class CS_JoinTheRoom extends \ProtobufMessage
 {
     /* Field index constants */
-    const RESULT = 1;
+    const PLAYERID = 1;
+    const ROOMID = 2;
 
     /* @var array Field descriptors */
     protected static $fields = array(
-        self::RESULT => array(
-            'name' => 'result',
+        self::PLAYERID => array(
+            'name' => 'playerid',
+            'required' => false,
+            'type' => \ProtobufMessage::PB_TYPE_INT,
+        ),
+        self::ROOMID => array(
+            'name' => 'roomId',
             'required' => false,
             'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
@@ -38,7 +44,8 @@ class CS_JoinTheRoom extends \ProtobufMessage
      */
     public function reset()
     {
-        $this->values[self::RESULT] = null;
+        $this->values[self::PLAYERID] = null;
+        $this->values[self::ROOMID] = null;
     }
 
     /**
@@ -52,36 +59,69 @@ class CS_JoinTheRoom extends \ProtobufMessage
     }
 
     /**
-     * Sets value of 'result' property
+     * Sets value of 'playerid' property
      *
      * @param integer $value Property value
      *
      * @return null
      */
-    public function setResult($value)
+    public function setPlayerid($value)
     {
-        return $this->set(self::RESULT, $value);
+        return $this->set(self::PLAYERID, $value);
     }
 
     /**
-     * Returns value of 'result' property
+     * Returns value of 'playerid' property
      *
      * @return integer
      */
-    public function getResult()
+    public function getPlayerid()
     {
-        $value = $this->get(self::RESULT);
+        $value = $this->get(self::PLAYERID);
         return $value === null ? (integer)$value : $value;
     }
 
     /**
-     * Returns true if 'result' property is set, false otherwise
+     * Returns true if 'playerid' property is set, false otherwise
      *
      * @return boolean
      */
-    public function hasResult()
+    public function hasPlayerid()
     {
-        return $this->get(self::RESULT) !== null;
+        return $this->get(self::PLAYERID) !== null;
+    }
+
+    /**
+     * Sets value of 'roomId' property
+     *
+     * @param integer $value Property value
+     *
+     * @return null
+     */
+    public function setRoomId($value)
+    {
+        return $this->set(self::ROOMID, $value);
+    }
+
+    /**
+     * Returns value of 'roomId' property
+     *
+     * @return integer
+     */
+    public function getRoomId()
+    {
+        $value = $this->get(self::ROOMID);
+        return $value === null ? (integer)$value : $value;
+    }
+
+    /**
+     * Returns true if 'roomId' property is set, false otherwise
+     *
+     * @return boolean
+     */
+    public function hasRoomId()
+    {
+        return $this->get(self::ROOMID) !== null;
     }
 }
 }

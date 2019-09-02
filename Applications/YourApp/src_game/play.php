@@ -159,7 +159,7 @@ function game_join_time_out_add_robot($playerId,$type)
             if($robotId!=null)
             {
                 echo "\n机器人加入：id:$robotId\n";
-                $redis->hSet($robotId,'isRobot',true);
+                $redis->hSet($robotId,'is_robot',true);
                 $waitingUser[$type][$robotId]=time();
             }
             if(count($waitingUser[$type])==2)
@@ -169,7 +169,7 @@ function game_join_time_out_add_robot($playerId,$type)
                 if($robotId1!=null)
                 {
                     echo "\n机器人1加入：id:$robotId1\n";
-                    $redis->hSet($robotId,'isRobot',true);
+                    $redis->hSet($robotId,'is_robot',true);
                     $waitingUser[$type][$robotId1]=time();
                 }
             }
@@ -459,7 +459,7 @@ function roomTick($roomId,$times,$timeSecond=1000044400)
     {
         timerTrigger($repeat,$tick,$roomId);
         global $redis;
-        if($redis->hGet($turnerId,'time_out_count')==time_out_limit)
+        if($redis->hGet($turnerId,'time_out_count')==time_out_limit&&!$redis->hGet($turnerId,'is_robot'))
         {
             game_send_tuo_guan($roomId,$turnerId,true);
         }
