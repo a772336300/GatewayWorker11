@@ -151,6 +151,7 @@ function game_join_time_out_add_robot($playerId,$type)
 
         global $waitingRobot;
         global $waitingUser;
+        global $redis;
         if(array_key_exists($playerId,$waitingUser[$type]))
         {
             echo "\n玩家的等待加入超时\n";
@@ -158,6 +159,7 @@ function game_join_time_out_add_robot($playerId,$type)
             if($robotId!=null)
             {
                 echo "\n机器人加入：id:$robotId\n";
+                $redis->hSet($robotId,'isRobot',true);
                 $waitingUser[$type][$robotId]=time();
             }
             if(count($waitingUser[$type])==2)
@@ -167,6 +169,7 @@ function game_join_time_out_add_robot($playerId,$type)
                 if($robotId1!=null)
                 {
                     echo "\n机器人1加入：id:$robotId1\n";
+                    $redis->hSet($robotId,'isRobot',true);
                     $waitingUser[$type][$robotId1]=time();
                 }
             }
@@ -1159,7 +1162,7 @@ function gameOver($roomId,$winner=null)
     //比赛房间计算
     if ($redis->hGet($roomId,'roomtype') == \Proto\Room_Type::bisai_dizhu)
     {
-        room_manager::singleton()->roomGame_Calculation($redis->hGet($roomId,'competition_id'),$redis->hGet($roomId,'roomtype'),$roomId,$redis->hGet($roomId,'index'));
+        room_manager::singleton()->roomGame_Calculation($redis->hGet($roomId,'competition_id'),$redis->hGet($roomId,'roomtype'),$roomId,$redis->hGet($roomId,'index'),$result);
     }
 
     game_send_game_result($roomId,$result);

@@ -67,6 +67,7 @@ final class room_manager{
                     foreach ($competition_id as $room_type) {   //$room_type = $this->rooms[competition_id][room_type]
                         foreach ($room_type as $index) {  //$index = $this->rooms[competition_id][room_type][index]
                             foreach ($index as $room){  //$room = $this->rooms[competition_id][room_type][index][room_code]
+
                                 if ($room->get_bsend_start() == false) {
                                     if ($room->get_number() == $room->get_max()) {
                                         $sc_star = new \Proto\SC_ComPetition_Start();
