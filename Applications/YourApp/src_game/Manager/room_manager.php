@@ -324,6 +324,58 @@ final class room_manager{
             //unset($this->rooms[$competition_id][$room_type][$index][$room_id]);
         }
     }
+
+    /*
+     * 用户创建比赛
+     */
+    function CreateCardRoom($client_id,$CreateCardRoom_data){
+        $collname='user_create_competition';
+        $code = time();
+        $db=mongo_db::singleton('func_system');
+        $rows = ['Player_id' => $CreateCardRoom_data->getPlayerid(),
+            'ROOMTYPE' => ['roomType' => $CreateCardRoom_data->getRoomType(),
+                'GAMETYE' => ['getType' => $CreateCardRoom_data->getGameType(),
+                    'CODE' => [
+                        'code'          => $code,
+                        'players'       => $CreateCardRoom_data->getPlayers(),
+                        'numberOfGames' => $CreateCardRoom_data->getNumberOfGames(),
+                        'signUpTime'    => $CreateCardRoom_data->getSignUpTime(),
+                        'beginningTime' => $CreateCardRoom_data->getBeginningTime(),
+                        'roomName'      => $CreateCardRoom_data->getRoomName(),
+                        'roomExplain'   => $CreateCardRoom_data->getRoomExplain()
+                    ]
+                ]
+            ]
+        ];
+        $rs = $db->insert($collname, $rows);
+        $Reult = \Proto\SC_CreateCardRoom();
+        $Reult->setResult(1);
+        $roominfotable = \Proto\RoomInfoTable::
+        $roominfotable->setRoomId($code);
+        if ($CreateCardRoom_data->getRoomType()==1)
+        {
+            $roominfotable->setGameText('地主');
+        }
+        elseif ($CreateCardRoom_data->getRoomType()==2)
+        {
+            $roominfotable->setGameText('麻将');
+        }
+        $roominfotable->setNameText($CreateCardRoom_data->getRoomName());
+        if ($CreateCardRoom_data->getGameType() == 1)
+        {
+            $roominfotable->setTypeText('晋级赛');
+        }
+        elseif ($CreateCardRoom_data->getGameType() == 2)
+        {
+            $roominfotable->setTypeText('积分赛');
+        }
+        $roominfotable->setPlayerNum(1);
+        $roominfotable->setGameState(0);
+
+        $Reult->setRoomInfo($roominfotable);
+        \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(Message_Id::SC_CreateCardRoom_Id,$Reult->serializeToString()));
+
+    }
 }
 
 ?>//php
