@@ -272,7 +272,7 @@ message TimeInfo
 }
 
 //加入房间
-message SC_ JoinTheRoom
+message SC_JoinTheRoom
 {
     optional int32 playerid = 1;     //玩家ID
     optional int32 roomId = 2;  	 //房间ID
