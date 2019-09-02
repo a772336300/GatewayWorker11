@@ -1,11 +1,13 @@
 <?php
 
 use Proto\Message_Id;
-use Proto\SC_Competition_Result_Competition_end_gold;
-use Proto\SC_Competition_Result_Competition_end;
+use Proto\RoomInfoTable;
 use Proto\SC_Competition_Result;
+use Proto\SC_Competition_Result_Competition_end;
+use Proto\SC_ComPetition_Start;
+use Proto\SC_CreateCardRoom;
+use Proto\TimeInfo;
 use Workerman\Lib\Timer;
-use GatewayWorker\Lib\Gateway;
 
 require_once 'room_base.php';
 require_once 'user.php';
@@ -76,7 +78,7 @@ final class room_manager{
                                     foreach ($index as $roomcode => $room){
                                         if ($room->get_bsend_start() == false) {
                                             if ($room->get_number() == $room->get_max()) {
-                                                $sc_star = new \Proto\SC_ComPetition_Start();
+                                                $sc_star = new SC_ComPetition_Start();
                                                 $sc_star->setCompetitionId($room->get_competition_id());
                                                 $sc_star->setGameType($room->get_gtype());
                                                 $users = $room->get_user_all();
@@ -291,12 +293,12 @@ final class room_manager{
                     optional bool               over        = 4;    //所有比赛结束
                 }
                  */
-                $competition_result = SC_Competition_Result();
+                $competition_result = new SC_Competition_Result();
                 $begin = 0;
                 foreach ($this->users[$competition_id][$room_type][$index]['socket_id'] as $uid => $socket){
                     //foreach ($this->rooms[$competition_id][$room_type]['to_list'] as $)
                     $competition_result->setCompetitionId($competition_id); //competition_id
-                    $competition_end = SC_Competition_Result_Competition_end();
+                    $competition_end = new SC_Competition_Result_Competition_end();
                     $competition_end->setPlayerId($uid);
                     $competition_end->appendLevelUp($begin);
                     $competition_end->appendLevelUp($this->rooms[$competition_id][$room_type]['top_list'][$index]);
@@ -348,9 +350,9 @@ final class room_manager{
             ]
         ];
         $rs = $db->insert($collname, $rows);
-        $Reult = \Proto\SC_CreateCardRoom();
+        $Reult = new SC_CreateCardRoom();
         $Reult->setResult(1);
-        $roominfotable = \Proto\RoomInfoTable::
+        $roominfotable = new RoomInfoTable();
         $roominfotable->setRoomId($code);
         if ($CreateCardRoom_data->getRoomType()==1)
         {
@@ -370,6 +372,8 @@ final class room_manager{
             $roominfotable->setTypeText('积分赛');
         }
         $roominfotable->setPlayerNum(1);
+        $roominfotable->setSignUpTime($CreateCardRoom_data->getSignUpTime());
+        $roominfotable->setBeginningTime($CreateCardRoom_data->getBeginningTime());
         $roominfotable->setGameState(0);
 
         $Reult->setRoomInfo($roominfotable);
