@@ -42,6 +42,9 @@ enum Message_Id
 	CS_CreateCardRoom_Id = 25;
     SC_CreateCardRoom_Id = 26;
     SC_RoomInfoTable_Id = 27;
+    SC_ JoinTheRoom_Id = 28; //加入房间
+    CS_JoinTheRoom_Id =29;   //返回加入结果
+
 }
 
 
@@ -267,3 +270,17 @@ message TimeInfo
    optional int32 hour = 4;
    optional int32 minute = 5;
 }
+
+//加入房间
+message SC_ JoinTheRoom
+{
+    optional int32 playerid = 1;     //玩家ID
+    optional int32 roomId = 2;  	 //房间ID
+}
+
+//加入房间返回
+message CS_JoinTheRoom
+{
+     optional int32 result = 1;     //加入房间结果 0失败 1成功
+}
+

@@ -112,5 +112,20 @@ function switch_game($client_id,$mid,$data)
                 echo sprintf("CS_ComPetition_Join competitionid = %s playerid = %s\n",$com_join->getCompetitionId(),$com_join->getPlayerId());
                 break;
             }
+        case Message_Id::CS_CreateCardRoom_Id:
+        {
+            $createroom = new \Proto\CS_CreateCardRoom();
+            $createroom->parseFromString($data);
+            $createroom->getPlayerid();
+            $createroom->getRoomType();
+            $createroom->getGameType();
+            $createroom->getPlayers();
+            $createroom->getNumberOfGames();
+            $createroom->getSignUpTime();
+            $createroom->getBeginningTime();
+            $createroom->getRoomName();
+            $createroom->getRoomExplain();
+            break;
+        }
     }
 }
