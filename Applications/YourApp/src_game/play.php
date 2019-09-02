@@ -33,7 +33,7 @@ function game_join($client_id,$join)
         util_log("用户id错误！error：3000");
         return;
     }
-    $playerId=$_SESSION['uid'];
+    $playerId=ab($_SESSION['uid'],$join->getType());
     echo "id:$playerId\n";
     //$gold=game_db_get_gold($playerId);
     if($redis->exists($playerId))
@@ -52,7 +52,7 @@ function game_join($client_id,$join)
         $cards=implode(',',$cards);
         //Events::sendOutByProtectChannel($playerId,'selfCards','initCards','system',$cards);
         //房间信息
-        $init=roomInfo($roomId);
+        $init=roomInfo($roomId,$join->getType());
         game_send_room_init($init,$roomId,$client_id);
         game_send_cards($client_id,$cards);
         return ;
@@ -209,9 +209,10 @@ function game_quit_join($client_id,$quit_join=null)
             return ;
         }
 }
-function roomInfo($roomId)
+function roomInfo($roomId,$roomType)
 {
     global $redis;
+    $redis->set($_SESSION('uid').'indexType',$roomType);
     $init=array();
     $playerIds=$redis->lRange($roomId.':playerIds',0,-1);
     $init['type']=$redis->hGet($roomId,'channel');
@@ -269,17 +270,17 @@ function roomInfo($roomId)
     $init['historyCards']=$redis->lRange($roomId.':historyCards',0,-1);
     return $init;
 }
-function encode_playerId($playerId,$mark)
+function ab($playerId,$mark)
 {
-    return $mark.':'.$playerId;
+    return $playerId.':'.$mark;
 }
-function encode_playerIds($playerIds,$mark)
+function abs($playerIds,$mark)
 {
-    return array_map(function ($code) use($mark){return $mark.':'.$code;},$playerIds);
+    return array_map(function ($code) use($mark){return $code.':'.$mark;},$playerIds);
 }
-function decode_playerId($playerId)
+function ac($playerId)
 {
-    return substr(strstr($playerId,':'),1);
+    return strstr($playerId,':',true);
 }
 function roomInit($playerIds,$channel,$channelNumber=-1,$competition_id=-1,$index=-1)
 {
@@ -290,7 +291,7 @@ function roomInit($playerIds,$channel,$channelNumber=-1,$competition_id=-1,$inde
     if($channelNumber==-1)
         $playerIds_room=$playerIds;
     else
-    $playerIds_room=encode_playerIds($playerIds,$channelNumber);
+    $playerIds_room=abs($playerIds,$channelNumber);
     $roomId=roomCreate($playerIds_room,$channel,$channelNumber);
     echo "房间创建成功\r\n";
     //设置房间消息发送器
@@ -307,7 +308,7 @@ function roomInit($playerIds,$channel,$channelNumber=-1,$competition_id=-1,$inde
     GameStart($roomId,$playerIds_room);
     //房间初始化的信息
     //房间信息
-    $init=roomInfo($roomId);
+    $init=roomInfo($roomId,$channel);
     game_send_room_init($init,$roomId);
 }
 function roomCreate($playerIds,$channel,$channelNumber=-1)
@@ -396,7 +397,7 @@ function cardSend($roomId)
     {
         $cards=$redis->Smembers($playerId.':cards');
         $cards=implode(',',$cards);
-        game_send_cards_by_uid($playerId,$cards);
+        game_send_cards_by_uid(ac($playerId),$cards);
     }
 
 }
@@ -544,7 +545,7 @@ function timerTrigger($repeat,$currantTick,$roomId)
                         //取出最小牌
                         if($compareValue['data']==null)
                         {
-                            send_notice($turnerId,1,"用户id错误");
+                            send_notice(ac($turnerId),1,"用户id错误");
                             util_log("用户id错误！error：3000");
                             return;
                             //Events::sendOutByProtectChannel($playerId, 'systemMessage', 'error', $playerId, '系统错误,当前牌拥有者出牌为空');
@@ -878,7 +879,7 @@ function roomTrigger($playerId,$roomId,$value,$valueCode=null)
             break;
         //$room->times=$room->times*2
         default:
-            send_notice($playerId,1,"时间类型错误");
+            send_notice(ac($playerId),1,"时间类型错误");
 
     }
 }
@@ -1108,12 +1109,12 @@ function pai($playerId,$roomId,$value,$valueCode=null)
 
         }
         else
-            send_notice($playerId,1,"出牌错误");
+            send_notice(ac($playerId),1,"出牌错误");
     }
     else
     {
         if ($redis->hGet($roomId, 'currant_value_owner') == $playerId)
-            send_notice($playerId,1,"需要出牌");
+            send_notice(ac($playerId),1,"需要出牌");
         else {
             game_send_play($roomId,$playerId,Play_Data_Type::pai,null);
             //玩家不出比较不变
@@ -1572,7 +1573,8 @@ function game_play($clientId,$payload_buff)
     $payload['data']=$payload_buff->getData();
     global $redis;
     //获取本次适配的对象
-    $playerId=encode_playerId($_SESSION['uid']);
+    $index_type=$redis->get($_SESSION['uid'].'indexType');
+    $playerId=ab($_SESSION['uid'],$index_type);
     //对象是否存在游戏房间中
     //通过对象获取房间
     $roomId=$redis->hGet($playerId,'roomId');

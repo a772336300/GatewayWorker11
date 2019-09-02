@@ -117,12 +117,12 @@ class Events_Game
                unset($waitingUser[$key][$_SESSION['uid']]);
                return ;
            }
-       foreach ($waitingRobot as $key=>$value)
-           if($_SESSION['uid']==$value)
-           {
-               unset($waitingRobot[$key]);
-               return ;
-           }
+//       foreach ($waitingRobot as $key=>$value)
+//           if($_SESSION['uid']==$value)
+//           {
+//               unset($waitingRobot[$key]);
+//               return ;
+//           }
        // 向所有人发送 
       // GateWay::sendToAll("$client_id logout\r\n");
 
