@@ -116,20 +116,15 @@ function switch_game($client_id,$mid,$data)
         {
             $createroom = new \Proto\CS_CreateCardRoom();
             $createroom->parseFromString($data);
-            $createroom->getPlayerid();
-            $createroom->getRoomType();
-            $createroom->getGameType();
-            $createroom->getPlayers();
-            $createroom->getNumberOfGames();
-            $createroom->getSignUpTime();
-            $createroom->getBeginningTime();
-            $createroom->getRoomName();
-            $createroom->getRoomExplain();
+            room_manager::singleton()->CreateCardRoom($client_id,$createroom);
             break;
         }
         case Message_Id::CS_JoinTheRoom_Id:
         {
-
+            $jointheroom = new \Proto\CS_JoinTheRoom();
+            $jointheroom->parseFromString($data);
+            $jointheroom->getPlayerid();
+            $jointheroom->getRoomId();
         }
     }
 }
