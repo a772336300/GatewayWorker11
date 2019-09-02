@@ -127,5 +127,9 @@ function switch_game($client_id,$mid,$data)
             $createroom->getRoomExplain();
             break;
         }
+        case Message_Id::CS_JoinTheRoom_Id:
+        {
+
+        }
     }
 }
