@@ -228,8 +228,8 @@ function quit_group()
 function roomInfo($roomId,$roomType)
 {
     global $redis;
-    $redis->set($_SESSION('uid').'indexType',$roomType);
-    $redis->sAdd($_SESSION('uid').'listType',$roomType);
+//    $redis->set($_SESSION('uid').'indexType',$roomType);
+//    $redis->sAdd($_SESSION('uid').'listType',$roomType);
 
     $init=array();
     $playerIds=$redis->lRange($roomId.':playerIds',0,-1);
