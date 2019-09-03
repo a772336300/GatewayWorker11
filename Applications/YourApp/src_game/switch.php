@@ -1,4 +1,6 @@
 <?php
+
+use Proto\CS_RoomInfoTable;
 use Proto\Message_Id;
 function switch_game($client_id,$mid,$data)
 {
@@ -126,6 +128,12 @@ function switch_game($client_id,$mid,$data)
             $jointheroom->getPlayerid();
             $jointheroom->getRoomId();
             break;
+        }
+        case Message_Id::CS_RoomInfoTable_Id:
+        {
+            $roominfotable = new CS_RoomInfoTable();
+            $roominfotable->parseFromString($data);
+            room_manager::singleton()->RoomInfoTable($client_id,$roominfotable->getPlayerid());
         }
     }
 }
