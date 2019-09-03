@@ -43,7 +43,8 @@ enum Message_Id
     SC_CreateCardRoom_Id = 26;
     SC_RoomInfoTable_Id = 27;
     CS_JoinTheRoom_Id = 28; //加入房间
-    SC_JoinTheRoom_Id =29;   //返回加入结果
+    SC_JoinTheRoom_Id = 29;   //返回加入结果
+	CS_RoomInfoTable_Id = 30;	//初始化房间
 
 }
 
@@ -282,5 +283,11 @@ message CS_JoinTheRoom
 message SC_JoinTheRoom
 {
      optional int32 result = 1;     //加入房间结果 0失败 1成功
+}
+
+//初始化房间
+message CS_RoomInfoTable
+{
+	optional int32 playerid = 1;
 }
 

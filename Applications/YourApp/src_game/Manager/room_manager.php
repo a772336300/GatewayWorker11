@@ -375,7 +375,6 @@ final class room_manager{
         $roominfotable->setSignUpTime($CreateCardRoom_data->getSignUpTime());
         $roominfotable->setBeginningTime($CreateCardRoom_data->getBeginningTime());
         $roominfotable->setGameState(0);
-
         $Reult->setRoomInfo($roominfotable);
         \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(Message_Id::SC_CreateCardRoom_Id,$Reult->serializeToString()));
 
