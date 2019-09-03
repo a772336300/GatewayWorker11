@@ -1,11 +1,13 @@
 <?php
 
+use Proto\CS_RoomInfoTable;
 use Proto\Message_Id;
 use Proto\RoomInfoTable;
 use Proto\SC_Competition_Result;
 use Proto\SC_Competition_Result_Competition_end;
 use Proto\SC_ComPetition_Start;
 use Proto\SC_CreateCardRoom;
+use Proto\SC_RoomInfoTable;
 use Proto\TimeInfo;
 use Workerman\Lib\Timer;
 
@@ -333,16 +335,31 @@ final class room_manager{
     function CreateCardRoom($client_id,$CreateCardRoom_data){
         $collname='user_create_competition';
         $code = time();
+        $signUpTime = $CreateCardRoom_data->getSignUpTime();
+        $beginningTime = $CreateCardRoom_data->getBeginningTime();
         $db=mongo_db::singleton('func_system');
         $rows = [['Player_id' => $CreateCardRoom_data->getPlayerid(),
+            'gameState' => 0,
             'ROOMTYPE' => ['roomType' => $CreateCardRoom_data->getRoomType(),
-                'GAMETYE' => ['getType' => $CreateCardRoom_data->getGameType(),
+                'GAMETYPE' => ['gameType' => $CreateCardRoom_data->getGameType(),
                     'CODE' => [
                         'code'          => $code,
                         'players'       => $CreateCardRoom_data->getPlayers(),
                         'numberOfGames' => $CreateCardRoom_data->getNumberOfGames(),
-                        'signUpTime'    => $CreateCardRoom_data->getSignUpTime(),
-                        'beginningTime' => $CreateCardRoom_data->getBeginningTime(),
+                        'signUpTime'    => [
+                                'year'  => $signUpTime->getYear(),
+                                'month' => $signUpTime->getMonth(),
+                                'day'   => $signUpTime->getDay(),
+                                'hour'  => $signUpTime->getHour(),
+                                'minute'=> $signUpTime->getMinute()
+                            ],
+                        'beginningTime' => [
+                                'year'  => $beginningTime->getYear(),
+                                'month' => $beginningTime->getMonth(),
+                                'day'   => $beginningTime->getDay(),
+                                'hour'  => $beginningTime->getHour(),
+                                'minute'=> $beginningTime->getMinute()
+                            ],
                         'roomName'      => $CreateCardRoom_data->getRoomName(),
                         'roomExplain'   => $CreateCardRoom_data->getRoomExplain()
                     ]
@@ -378,6 +395,63 @@ final class room_manager{
         $Reult->setRoomInfo($roominfotable);
         \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(Message_Id::SC_CreateCardRoom_Id,$Reult->serializeToString()));
 
+    }
+
+    /*
+     * 初始化房间
+     */
+    function RoomInfoTable($client_id,$playerid){
+        $collname='user_create_competition';
+        $mongodb=mongo_db::singleton('func_system');
+        $filter = [
+            'Player_id'  => $playerid //['$gt' => date('Y-m-d H:i:s')] //条件：大于当前时间
+        ];
+        $queryWriteOps = [
+            'projection'    => ['_id'   =>0],//不输出_id字段
+            'sort'          => ['id'    =>1]//根据id字段排序 1是升序，-1是降序
+        ];
+        $rs = $mongodb->query($collname,$filter,$queryWriteOps);
+        $roominfotable_array = new SC_RoomInfoTable();
+        foreach ($rs as $data)
+        {
+            $roominfo = new RoomInfoTable();
+            if ($data->ROOMTYPE->roomType == 1)
+            {
+                $roominfo->setGameText('地主');
+            }
+            elseif ($data->ROOMTYPE->roomType == 2)
+            {
+                $roominfo->setGameText('麻将');
+            }
+            if ($data->ROOMTYPE->GAMETYPE->gameType == 1)
+            {
+                $roominfo->setTypeText('晋级赛');
+            }
+            elseif ($data->ROOMTYPE->GAMETYPE->gameType == 2)
+            {
+                $roominfo->setTypeText('积分赛');
+            }
+            $roominfo->setRoomId($data->ROOMTYPE->GAMETYPE->CODE->code);
+            $roominfo->setPlayerNum($data->ROOMTYPE->GAMETYPE->CODE->players);
+            $timeinfo = new TimeInfo();
+            $timeinfo->setYear($data->ROOMTYPE->GAMETYPE->CODE->signUpTime->year);
+            $timeinfo->setMonth($data->ROOMTYPE->GAMETYPE->CODE->signUpTime->month);
+            $timeinfo->setDay($data->ROOMTYPE->GAMETYPE->CODE->signUpTime->day);
+            $timeinfo->setHour($data->ROOMTYPE->GAMETYPE->CODE->signUpTime->hour);
+            $timeinfo->setMinute($data->ROOMTYPE->GAMETYPE->CODE->signUpTime->minute);
+            $roominfo->setSignUpTime($timeinfo);
+            $timeinfo->setYear($data->ROOMTYPE->GAMETYPE->CODE->beginningTime->year);
+            $timeinfo->setMonth($data->ROOMTYPE->GAMETYPE->CODE->beginningTime->month);
+            $timeinfo->setDay($data->ROOMTYPE->GAMETYPE->CODE->beginningTime->day);
+            $timeinfo->setHour($data->ROOMTYPE->GAMETYPE->CODE->beginningTime->hour);
+            $timeinfo->setMinute($data->ROOMTYPE->GAMETYPE->CODE->beginningTime->minute);
+            $roominfo->setBeginningTime($timeinfo);
+            $roominfo->setNameText($data->ROOMTYPE->GAMETYPE->CODE->roomName);
+            $roominfo->setGameState($data->gameState);
+
+            $roominfotable_array->appendRoomInfo($roominfo);
+        }
+        \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(Message_Id::SC_RoomInfoTable_Id,$roominfotable_array->serializeToString()));
     }
 }
 
