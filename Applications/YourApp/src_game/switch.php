@@ -64,7 +64,6 @@ function switch_game($client_id,$mid,$data)
             }
         case Message_Id::CS_Competition_SignUp_Id:
             {
-                echo "DDDDDDDDDDDDDDDDDDDDDD\n";
                 $Competition = new \Proto\CS_ComPetition_SignUp();
                 $Competition->parseFromString($data);
                 /**
@@ -79,8 +78,9 @@ function switch_game($client_id,$mid,$data)
                 //测试
                 //测试
                 //测试
-                //room_manager::singleton()->competition_sign_up($Competition->getCompetitionId(),$Competition->getGameType(),10430465,$client_id);
-                //room_manager::singleton()->competition_sign_up($Competition->getCompetitionId(),$Competition->getGameType(),10430458,$client_id);
+                room_manager::singleton()->competition_sign_up($Competition->getCompetitionId(),$Competition->getGameType(),10430458,$client_id);//98
+                room_manager::singleton()->competition_sign_up($Competition->getCompetitionId(),$Competition->getGameType(),10430420,$client_id);//99
+                room_manager::singleton()->start_game_room();
                 break;
             }
         case Message_Id::CS_ComPetition_Group_Id:
@@ -134,6 +134,7 @@ function switch_game($client_id,$mid,$data)
             $roominfotable = new CS_RoomInfoTable();
             $roominfotable->parseFromString($data);
             room_manager::singleton()->RoomInfoTable($client_id,$roominfotable->getPlayerid());
+            break;
         }
     }
 }
