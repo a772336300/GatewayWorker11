@@ -33,7 +33,8 @@ function game_join($client_id,$join)
         util_log("用户id错误！error：3000");
         return;
     }
-    $playerId=ab($_SESSION['uid'],$join->getType());
+    $playerId=$_SESSION['uid'];
+    //$playerId=ab($_SESSION['uid'],$join->getType());
     echo "id:$playerId\n";
     //$gold=game_db_get_gold($playerId);
     if($redis->exists($playerId))
@@ -218,7 +219,7 @@ function quit_group()
     {
         if($type!=$index_type)
         {
-            $roomId=$redis->hGet(ab($_SESSION('uid'),$index_type),'roomId');
+           // $roomId=$redis->hGet(ab($_SESSION('uid'),$index_type),'roomId');
             
             //Gateway::leaveGroup($client_id,$roomId);
         }
@@ -229,6 +230,7 @@ function roomInfo($roomId,$roomType)
     global $redis;
     $redis->set($_SESSION('uid').'indexType',$roomType);
     $redis->sAdd($_SESSION('uid').'listType',$roomType);
+
     $init=array();
     $playerIds=$redis->lRange($roomId.':playerIds',0,-1);
     $init['type']=$redis->hGet($roomId,'channel');
@@ -296,7 +298,8 @@ function abss($playerIds,$mark)
 }
 function ac($playerId)
 {
-    return strstr($playerId,':',true);
+    return $playerId;
+    //return strstr($playerId,':',true);
 }
 function roomInit($playerIds,$channel,$channelNumber=-1,$competition_id=-1,$index=-1)
 {
@@ -304,10 +307,11 @@ function roomInit($playerIds,$channel,$channelNumber=-1,$competition_id=-1,$inde
     // TODO: Implement onmessage() method.
     //有状态
     shuffle($playerIds);
-    if($channelNumber==-1)
-        $playerIds_room=$playerIds;
-    else
-    $playerIds_room=abss($playerIds,$channelNumber);
+    $playerIds_room=$playerIds;
+//    if($channelNumber==-1)
+//        $playerIds_room=$playerIds;
+//    else
+//    $playerIds_room=abss($playerIds,$channelNumber);
     $roomId=roomCreate($playerIds_room,$channel,$channelNumber);
     echo "房间创建成功\r\n";
     //设置房间消息发送器
@@ -1590,7 +1594,8 @@ function game_play($clientId,$payload_buff)
     global $redis;
     //获取本次适配的对象
     $index_type=$redis->get($_SESSION['uid'].'indexType');
-    $playerId=ab($_SESSION['uid'],$index_type);
+    $playerId=$_SESSION['uid'];
+    //$playerId=ab($_SESSION['uid'],$index_type);
     //对象是否存在游戏房间中
     //通过对象获取房间
     $roomId=$redis->hGet($playerId,'roomId');
