@@ -1,6 +1,6 @@
 <?php
 /**
- * Auto generated from doudizhu.proto at 2019-09-02 17:19:41
+ * Auto generated from doudizhu.proto at 2019-09-03 10:38:21
  *
  * proto package
  */
@@ -40,6 +40,7 @@ final class Message_Id
     const SC_RoomInfoTable_Id = 27;
     const CS_JoinTheRoom_Id = 28;
     const SC_JoinTheRoom_Id = 29;
+    const CS_RoomInfoTable_Id = 30;
 
     /**
      * Returns defined enum values
@@ -78,6 +79,7 @@ final class Message_Id
             'SC_RoomInfoTable_Id' => self::SC_RoomInfoTable_Id,
             'CS_JoinTheRoom_Id' => self::CS_JoinTheRoom_Id,
             'SC_JoinTheRoom_Id' => self::SC_JoinTheRoom_Id,
+            'CS_RoomInfoTable_Id' => self::CS_RoomInfoTable_Id,
         );
     }
 }

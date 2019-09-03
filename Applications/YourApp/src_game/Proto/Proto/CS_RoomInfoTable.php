@@ -7,17 +7,17 @@
 
 namespace Proto {
 /**
- * CS_Go_Out message
+ * CS_RoomInfoTable message
  */
-class CS_Go_Out extends \ProtobufMessage
+class CS_RoomInfoTable extends \ProtobufMessage
 {
     /* Field index constants */
-    const TYPE = 1;
+    const PLAYERID = 1;
 
     /* @var array Field descriptors */
     protected static $fields = array(
-        self::TYPE => array(
-            'name' => 'type',
+        self::PLAYERID => array(
+            'name' => 'playerid',
             'required' => false,
             'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
@@ -38,7 +38,7 @@ class CS_Go_Out extends \ProtobufMessage
      */
     public function reset()
     {
-        $this->values[self::TYPE] = null;
+        $this->values[self::PLAYERID] = null;
     }
 
     /**
@@ -52,36 +52,36 @@ class CS_Go_Out extends \ProtobufMessage
     }
 
     /**
-     * Sets value of 'type' property
+     * Sets value of 'playerid' property
      *
      * @param integer $value Property value
      *
      * @return null
      */
-    public function setType($value)
+    public function setPlayerid($value)
     {
-        return $this->set(self::TYPE, $value);
+        return $this->set(self::PLAYERID, $value);
     }
 
     /**
-     * Returns value of 'type' property
+     * Returns value of 'playerid' property
      *
      * @return integer
      */
-    public function getType()
+    public function getPlayerid()
     {
-        $value = $this->get(self::TYPE);
+        $value = $this->get(self::PLAYERID);
         return $value === null ? (integer)$value : $value;
     }
 
     /**
-     * Returns true if 'type' property is set, false otherwise
+     * Returns true if 'playerid' property is set, false otherwise
      *
      * @return boolean
      */
-    public function hasType()
+    public function hasPlayerid()
     {
-        return $this->get(self::TYPE) !== null;
+        return $this->get(self::PLAYERID) !== null;
     }
 }
 }
