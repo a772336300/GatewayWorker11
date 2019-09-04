@@ -423,6 +423,7 @@ final class room_manager
             $roominfotable->setTypeText('积分赛');
         }
         $roominfotable->setPlayerNum(0);
+        $roominfotable->setplayerMax($CreateCardRoom_data->getPlayers());
         //$roominfotable->setSignUpTime($CreateCardRoom_data->getSignUpTime());
         //$roominfotable->setBeginningTime($CreateCardRoom_data->getBeginningTime());
         $roominfotable->setGameState(0);

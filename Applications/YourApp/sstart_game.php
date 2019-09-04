@@ -38,7 +38,6 @@ require_once 'src/Proto/Autoloader.php';
 require_once 'src/mongo_db.php';
 require_once 'src_game/Proto/Autoloader.php';
 require_once 'src_game/play.php';
-//require_once 'src_game/switch.php';
 require_once 'src_game/card.php';
 require_once 'src_game/db_repository.php';
 require_once 'src_game/redis.php';
