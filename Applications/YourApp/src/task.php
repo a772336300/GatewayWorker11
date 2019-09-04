@@ -232,13 +232,7 @@ function get_award($task_id,$user_id){
     if($user["nullity"]==0){
         return 2;
     }
-    //查询玩家今日是否还能领取
-    $nowTime=date('Y-m-d', time());
-    $sql="select count(*) totalNum from `func_system`.`game_task_log` where DATE_FORMAT(log_time,'%Y-%m-%d')='$nowTime' and user_id=$user_id and task_name_type=4";
-    $totalNum = db_query($sql)[0]["totalNum"];
-    if($totalNum>=500){
-        return 5;
-    }
+
     //查询任务是否可以领取
     $sql="select * from func_system.user_task where user_id=$user_id and task_id=".$task_id;
     $user_task = db_query($sql)[0];
@@ -246,10 +240,21 @@ function get_award($task_id,$user_id){
         //查询任务奖励
         $sql="select u_coin_first,u_coin_agent,u_coin_normal,behaviorId_first,behaviorId_agent,behaviorId_normal,task_id,task_name,task_name_type from func_system.task_config where task_id=".$task_id;
         $task_config = db_query($sql)[0];
+        $task_name_type=$task_config["task_name_type"];
+        //游戏任务
+        if($task_name_type==4){
+            //查询玩家今日是否还能领取
+            $nowTime=date('Y-m-d', time());
+            $sql="select sum(get_uoin) totalNum from `func_system`.`game_task_log` where DATE_FORMAT(log_time,'%Y-%m-%d')='$nowTime' and user_id=$user_id and task_name_type=4";
+            $totalNum = db_query($sql)[0]["totalNum"];
+            if($totalNum>=500){
+                return 5;
+            }
+        }
         //查询玩家是否是初次领取
         $u_oin=$task_config["u_coin_normal"];
         $behaviorId=$task_config["behaviorId_normal"];
-        $task_name_type=$task_config["task_name_type"];
+
         if($task_name_type==1){
             if($user["user_type"]>1||$user["vip_num"]>0){//代理
                 $u_oin=$task_config["u_coin_agent"];
