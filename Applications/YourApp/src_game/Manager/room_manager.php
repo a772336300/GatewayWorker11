@@ -70,8 +70,8 @@ final class room_manager
      */
     function start_game_room()
     {
-        //$this->__timer_id_read=Timer::add(20,function ()
-        //{
+        $this->__timer_id_read=Timer::add(20,function ()
+        {
             if (isset($this->rooms))
             {
                 //$competition_id = $this->rooms[competition_id]
@@ -91,7 +91,7 @@ final class room_manager
                                     //$room = $this->rooms[competition_id][room_type]['rooms_data'][index][code]
                                     foreach ($index as $roomcode => $room)
                                     {
-                                        if (is_array($this->users[$competition_id_key][$room_type_key]['socket_id']))
+                                        if (isset($this->users[$competition_id_key][$room_type_key]['socket_id']) && is_array($this->users[$competition_id_key][$room_type_key]['socket_id']))
                                         {
                                             if ($room->get_bsend_start() == false)
                                             {
@@ -114,14 +114,13 @@ final class room_manager
                                                 if ($room->get_bnumber() == true)
                                                 {  //人满开
                                                     $user_ids = array();
-                                                    if (is_array($this->users[$competition_id_key][$room_type_key]['socket_id']))
+                                                    if (isset($this->users[$competition_id_key][$room_type_key]['socket_id']) && is_array($this->users[$competition_id_key][$room_type_key]['socket_id']))
                                                     {
                                                         foreach ($this->users[$competition_id_key][$room_type_key]['socket_id'] as $uid_key => $socket)
                                                         {
                                                             array_push($user_ids,$uid_key);
                                                             if (count($user_ids) == 3)
                                                             {
-                                                                echo "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDdd\n";
                                                                 roomInit($user_ids,$room->get_gtype(), $room->get_code(), $room->get_competition_id(), $room->get_top_index());
                                                                 $room->set_bstart(true);
                                                                 $user_ids = array();
@@ -163,7 +162,7 @@ final class room_manager
                     }
                 }
             }
-        //});
+        });
     }
 
     /**
@@ -312,6 +311,7 @@ final class room_manager
 
     function roomGame_Calculation($competition_id,$room_type,$room_id,$index,$data)
     {
+        echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n";
         if (isset($this->rooms[$competition_id][$room_type][$room_id])){
             foreach ($data as $userid => $item){
                 $this->users[$competition_id][$room_type]['integral'][$index][$userid] = $item->gold;
