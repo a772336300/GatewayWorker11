@@ -1,23 +1,23 @@
 <?php
 /**
- * Auto generated from doudizhu.proto at 2019-09-04 16:57:37
+ * Auto generated from doudizhu.proto at 2019-09-04 16:57:38
  *
  * proto package
  */
 
 namespace Proto {
 /**
- * SC_Go_Out message
+ * CS_RoomDel message
  */
-class SC_Go_Out extends \ProtobufMessage
+class CS_RoomDel extends \ProtobufMessage
 {
     /* Field index constants */
-    const TYPE = 1;
+    const ROOMID = 1;
 
     /* @var array Field descriptors */
     protected static $fields = array(
-        self::TYPE => array(
-            'name' => 'type',
+        self::ROOMID => array(
+            'name' => 'roomId',
             'required' => false,
             'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
@@ -38,7 +38,7 @@ class SC_Go_Out extends \ProtobufMessage
      */
     public function reset()
     {
-        $this->values[self::TYPE] = null;
+        $this->values[self::ROOMID] = null;
     }
 
     /**
@@ -52,36 +52,36 @@ class SC_Go_Out extends \ProtobufMessage
     }
 
     /**
-     * Sets value of 'type' property
+     * Sets value of 'roomId' property
      *
      * @param integer $value Property value
      *
      * @return null
      */
-    public function setType($value)
+    public function setRoomId($value)
     {
-        return $this->set(self::TYPE, $value);
+        return $this->set(self::ROOMID, $value);
     }
 
     /**
-     * Returns value of 'type' property
+     * Returns value of 'roomId' property
      *
      * @return integer
      */
-    public function getType()
+    public function getRoomId()
     {
-        $value = $this->get(self::TYPE);
+        $value = $this->get(self::ROOMID);
         return $value === null ? (integer)$value : $value;
     }
 
     /**
-     * Returns true if 'type' property is set, false otherwise
+     * Returns true if 'roomId' property is set, false otherwise
      *
      * @return boolean
      */
-    public function hasType()
+    public function hasRoomId()
     {
-        return $this->get(self::TYPE) !== null;
+        return $this->get(self::ROOMID) !== null;
     }
 }
 }
