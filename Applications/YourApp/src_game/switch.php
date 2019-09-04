@@ -1,5 +1,6 @@
 <?php
 
+use Proto\CS_RoomDel;
 use Proto\CS_RoomInfoTable;
 use Proto\Message_Id;
 function switch_game($client_id,$mid,$data)
@@ -132,6 +133,13 @@ function switch_game($client_id,$mid,$data)
             $roominfotable = new CS_RoomInfoTable();
             $roominfotable->parseFromString($data);
             room_manager::singleton()->RoomInfoTable($client_id,$roominfotable->getPlayerid());
+            break;
+        }
+        case Message_Id::CS_RoomDel_Id:
+        {
+            $delroom = new CS_RoomDel();
+            $delroom->parseFromString($data);
+            room_manager::singleton()->delRoom($delroom->getPlayerid(),$delroom->getRoomId());
             break;
         }
     }

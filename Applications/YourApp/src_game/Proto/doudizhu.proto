@@ -297,7 +297,8 @@ message CS_RoomInfoTable
 //删除房间
 message CS_RoomDel
 {
-	optional int32 roomId = 1;
+	optional int32 playerid = 1;
+	optional int32 roomId = 2;
 }
 //删除房间
 message SC_RoomDel

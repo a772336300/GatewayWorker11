@@ -492,6 +492,13 @@ final class room_manager
         }
         \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(Message_Id::SC_RoomInfoTable_Id,$roominfotable_array->serializeToString()));
     }
+    /*
+     * 删除房间
+     */
+    function delRoom($playerid,$roomid)
+    {
+
+    }
 }
 
 ?>//php
