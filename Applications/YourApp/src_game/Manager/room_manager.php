@@ -468,7 +468,8 @@ final class room_manager
                 $roominfo->setTypeText('积分赛');
             }
             $roominfo->setRoomId($data->ROOMTYPE->GAMETYPE->CODE->code);
-            $roominfo->setPlayerNum($data->ROOMTYPE->GAMETYPE->CODE->players);
+            $roominfo->setPlayerNum(0);
+            $roominfo->setPlayerMax($data->ROOMTYPE->GAMETYPE->CODE->players);
             /*
             $timeinfo = new TimeInfo();
             $timeinfo->setYear($data->ROOMTYPE->GAMETYPE->CODE->signUpTime->year);

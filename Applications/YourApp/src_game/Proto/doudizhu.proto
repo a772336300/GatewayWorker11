@@ -45,6 +45,8 @@ enum Message_Id
     CS_JoinTheRoom_Id = 28; //加入房间
     SC_JoinTheRoom_Id = 29;   //返回加入结果
 	CS_RoomInfoTable_Id = 30;	//初始化房间
+	CS_RoomDel_Id = 31;		//删除房间
+	SC_RoomDel_Id = 32;
 
 }
 
@@ -290,5 +292,16 @@ message SC_JoinTheRoom
 message CS_RoomInfoTable
 {
 	optional int32 playerid = 1;
+}
+
+//删除房间
+message CS_RoomDel
+{
+	optional int32 roomId = 1;
+}
+//删除房间
+message SC_RoomDel
+{
+	optional int32 roomId = 1;
 }
 
