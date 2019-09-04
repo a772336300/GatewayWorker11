@@ -1,6 +1,6 @@
 <?php
 /**
- * Auto generated from doudizhu.proto at 2019-09-03 10:38:21
+ * Auto generated from doudizhu.proto at 2019-09-04 16:26:46
  *
  * proto package
  */
@@ -20,6 +20,7 @@ class RoomInfoTable extends \ProtobufMessage
     const SIGNUPTIME = 6;
     const BEGINNINGTIME = 7;
     const GAMESTATE = 8;
+    const PLAYERMAX = 9;
 
     /* @var array Field descriptors */
     protected static $fields = array(
@@ -63,6 +64,11 @@ class RoomInfoTable extends \ProtobufMessage
             'required' => false,
             'type' => \ProtobufMessage::PB_TYPE_STRING,
         ),
+        self::PLAYERMAX => array(
+            'name' => 'playerMax',
+            'required' => false,
+            'type' => \ProtobufMessage::PB_TYPE_INT,
+        ),
     );
 
     /**
@@ -88,6 +94,7 @@ class RoomInfoTable extends \ProtobufMessage
         $this->values[self::SIGNUPTIME] = null;
         $this->values[self::BEGINNINGTIME] = null;
         $this->values[self::GAMESTATE] = null;
+        $this->values[self::PLAYERMAX] = null;
     }
 
     /**
@@ -360,6 +367,39 @@ class RoomInfoTable extends \ProtobufMessage
     public function hasGameState()
     {
         return $this->get(self::GAMESTATE) !== null;
+    }
+
+    /**
+     * Sets value of 'playerMax' property
+     *
+     * @param integer $value Property value
+     *
+     * @return null
+     */
+    public function setPlayerMax($value)
+    {
+        return $this->set(self::PLAYERMAX, $value);
+    }
+
+    /**
+     * Returns value of 'playerMax' property
+     *
+     * @return integer
+     */
+    public function getPlayerMax()
+    {
+        $value = $this->get(self::PLAYERMAX);
+        return $value === null ? (integer)$value : $value;
+    }
+
+    /**
+     * Returns true if 'playerMax' property is set, false otherwise
+     *
+     * @return boolean
+     */
+    public function hasPlayerMax()
+    {
+        return $this->get(self::PLAYERMAX) !== null;
     }
 }
 }
