@@ -47,6 +47,7 @@ enum Message_Id
 	CS_RoomInfoTable_Id = 30;	//初始化房间
 	CS_RoomDel_Id = 31;		//删除房间
 	SC_RoomDel_Id = 32;
+	SC_RoomNumber_Id = 33;	//房间人数
 
 }
 
@@ -304,5 +305,11 @@ message CS_RoomDel
 message SC_RoomDel
 {
 	optional int32 roomId = 1;
+}
+//房间人数
+message SC_RoomNumber
+{
+	optional int32 roomId = 1;
+	optional int32 number = 2;
 }
 

@@ -68,8 +68,6 @@ function message_switch($client_id,$mid,$data)
     if($mid == 701)
     {
         echo "get password request!";
-        $startTime=intval((microtime(true)*1000));
-        echo "开始时间：$startTime";
         //获取请求对象
         $cs_get_password = new CS_Get_Password();
 
@@ -196,8 +194,6 @@ function message_switch($client_id,$mid,$data)
     if($mid==710)
     {
 
-        $startTime=intval((microtime(true)*1000));
-        echo "开始时间：$startTime";
         echo "client login request!";
         //获取请求对象
         $cs_client_login = new \Proto\CS_Client_Login();
@@ -213,9 +209,6 @@ function message_switch($client_id,$mid,$data)
         }
 
         $get_user=db_get_user_by_verify($cs_client_login->getPhone(),$cs_client_login->getPassword());
-        $time=intval((microtime(true)*1000)) - intval($startTime);
-        echo "\n---------------------步骤6：".$time;
-        $startTime=intval((microtime(true)*1000));
         //var_dump($get_user);
         $is_success=false;
         $binded=0;
@@ -224,9 +217,6 @@ function message_switch($client_id,$mid,$data)
             $nowTime=date('Y-m-d h:i:s', time());
             //验证账号是否有问题
             $get_user_info=db_exist_user_info($cs_client_login->getPhone());
-            $time=intval((microtime(true)*1000)) - intval($startTime);
-            echo "\n---------------------步骤7：".$time;
-            $startTime=intval((microtime(true)*1000));
 
             //拦截冻结用户
             if ($get_user_info['nullity']==0)
@@ -239,19 +229,10 @@ function message_switch($client_id,$mid,$data)
             {
                 if(!db_delete_user($get_user[0]['uid']))
                 {
-                    $time=intval((microtime(true)*1000)) - intval($startTime);
-                    echo "\n---------------------步骤8：".$time;
-                    $startTime=intval((microtime(true)*1000));
-
                     send_notice_by_client_id($client_id,1,'注册失败！error:1005');
                     util_log("db_add_user fail!游戏服务器注册失败!phone: ".$cs_client_login->getPhone());
                     return ;
                 }
-
-                $time=intval((microtime(true)*1000)) - intval($startTime);
-                echo "\n---------------------步骤9：".$time;
-                $startTime=intval((microtime(true)*1000));
-
                 return;
             }
             $is_success=true;
@@ -286,48 +267,23 @@ function message_switch($client_id,$mid,$data)
             $uid=$_SESSION['uid'];
             //修改用户登陆时间信息
             $sql="update bolaik_user.user_info set login_time='$nowTime',rmb=1 where user_id=$uid";
-            echo "\n$sql\n";
             db_query($sql);
-            $time=intval((microtime(true)*1000)) - intval($startTime);
-            echo "\n---------------------步骤10：".$time;
-            $startTime=intval((microtime(true)*1000));
-
             $sql="insert into bolaik_user.user_stat_time(user_id) values($uid)";
             db_query($sql);
-            $time=intval((microtime(true)*1000)) - intval($startTime);
-            echo "\n---------------------步骤11：".$time;
-            $startTime=intval((microtime(true)*1000));
-
             //记录今日最高在线人数
             $date=date('Y-m-d', time());
             $time=date('h:i:s', time());
             $sql="select max_user from bolaik_user.user_online where date_time='$date'";
             $online=db_query($sql);
-
-            $time=intval((microtime(true)*1000)) - intval($startTime);
-            echo "\n---------------------步骤12：".$time;
-            $startTime=intval((microtime(true)*1000));
-
             $max=count($online)>0?$online[0]['max_user']:1000;
             global $connection_count;
             if($connection_count>$max){
                 $sql="update bolaik_user.user_online set max_user= $connection_count,max_time='$time' where date_time='$date'";
                 db_query($sql);
-
-                $time=intval((microtime(true)*1000)) - intval($startTime);
-                echo "\n---------------------步骤13：".$time;
-                $startTime=intval((microtime(true)*1000));
-
             }
             //判断是否绑定邀请码
             $sql="SELECT agent_id FROM `bolaik_user`.`user_info` WHERE user_id=$uid";
-            echo "\n$sql\n";
             $rs=db_query($sql);
-
-            $time=intval((microtime(true)*1000)) - intval($startTime);
-            echo "\n---------------------步骤14：".$time;
-            $startTime=intval((microtime(true)*1000));
-
             if($rs[0]["agent_id"]!=""){
                 $binded=1;
             }
@@ -360,16 +316,8 @@ function message_switch($client_id,$mid,$data)
         //用户信息请求
         case 800:
             {
-                $startTime=intval((microtime(true)*1000));
-                echo "---------大厅开始时间：$startTime";
-                echo "client login request!";
                 echo "init user !";
                 $user_info = db_get_user_info_by_uid($_SESSION['uid']);
-
-                $time=intval((microtime(true)*1000)) - intval($startTime);
-                echo "\n---------------------大厅步骤1：".$time;
-                $startTime=intval((microtime(true)*1000));
-
                 if($user_info==null)
                 {
                     echo "get user error";
@@ -377,11 +325,6 @@ function message_switch($client_id,$mid,$data)
                 }
                 $vip_day = 0;
                 $user_info_vip = db_get_user_info_vip($_SESSION['uid']);
-
-                $time=intval((microtime(true)*1000)) - intval($startTime);
-                echo "\n---------------------大厅步骤2：".$time;
-                $startTime=intval((microtime(true)*1000));
-
                 if(isset($user_info_vip['vip_num'])&&$user_info_vip['vip_num']!=null&&$user_info_vip['vip_num']>0)
                 {
                     $vip_day = $user_info_vip['vip_num'];
@@ -399,20 +342,10 @@ function message_switch($client_id,$mid,$data)
                 send_pack_user_info($client_id,$user_info[0]);
                 send_pack_task_reward($client_id);
                 $user_info_bag = db_get_user_bag_info_by_uid($_SESSION['uid']);
-
-                $time=intval((microtime(true)*1000)) - intval($startTime);
-                echo "\n---------------------大厅步骤3：".$time;
-                $startTime=intval((microtime(true)*1000));
-
                 var_dump($user_info_bag);
                 send_pack_user_bag_info($client_id,$user_info_bag[0]);
                 //发送任务列表
                 get_user_task_list($_SESSION['uid']);
-
-                $time=intval((microtime(true)*1000)) - intval($startTime);
-                echo "\n---------------------大厅步骤3_1：".$time;
-                $startTime=intval((microtime(true)*1000));
-
                 if($user_info_vip['b_qq']==null){
                     //获取绑定手机的BU奖励
                     $bu=getBuRemain($_SESSION["phone"]);
@@ -423,19 +356,11 @@ function message_switch($client_id,$mid,$data)
                     $uid=$_SESSION['uid'];
                     $sql="update `bolaik_user`.`user_info` set b_qq=1 where user_id='$uid'";
                     db_query($sql);
-
-                    $time=intval((microtime(true)*1000)) - intval($startTime);
-                    echo "\n---------------------大厅步骤4：".$time;
-                    $startTime=intval((microtime(true)*1000));
-
                 }
                 //发送跑马灯信息
                 hall_message_switch(20027,null);
-
-                $time=intval((microtime(true)*1000)) - intval($startTime);
-                echo "\n---------------------大厅步骤5：".$time;
-                $startTime=intval((microtime(true)*1000));
-
+                //发送公告信息
+                hall_message_switch(20033,null);
                 break;
             }
         //游戏完成
