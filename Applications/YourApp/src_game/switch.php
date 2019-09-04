@@ -78,9 +78,8 @@ function switch_game($client_id,$mid,$data)
                 //测试
                 //测试
                 //测试
-                room_manager::singleton()->competition_sign_up($Competition->getCompetitionId(),$Competition->getGameType(),10430458,$client_id);//98
-                room_manager::singleton()->competition_sign_up($Competition->getCompetitionId(),$Competition->getGameType(),10430420,$client_id);//99
-                room_manager::singleton()->start_game_room();
+                //room_manager::singleton()->competition_sign_up($Competition->getCompetitionId(),$Competition->getGameType(),10430458,$client_id);//98
+                //room_manager::singleton()->competition_sign_up($Competition->getCompetitionId(),$Competition->getGameType(),10430420,$client_id);//99
                 break;
             }
         case Message_Id::CS_ComPetition_Group_Id:
