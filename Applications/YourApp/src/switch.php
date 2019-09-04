@@ -359,6 +359,8 @@ function message_switch($client_id,$mid,$data)
                 }
                 //发送跑马灯信息
                 hall_message_switch(20027,null);
+                //发送公告信息
+                hall_message_switch(20033,null);
                 break;
             }
         //游戏完成

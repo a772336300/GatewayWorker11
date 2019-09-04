@@ -488,6 +488,14 @@ function send_pack_chase_info($uid,$content,$state)
     \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20028,$object->serializeToString()));
 }
 
+function send_pack_notice_info($uid,$content,$state)
+{
+    $object= new \Proto\SC_User_Notice_Info();
+    $object->setContent($content);
+    $object->setState($state);
+    \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20034,$object->serializeToString()));
+}
+
 function send_pack_spread_info($uid,$user,$data)
 {
     $object= new \Proto\SC_User_Spread_info();
