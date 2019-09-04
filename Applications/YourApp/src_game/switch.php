@@ -124,8 +124,7 @@ function switch_game($client_id,$mid,$data)
         {
             $jointheroom = new \Proto\CS_JoinTheRoom();
             $jointheroom->parseFromString($data);
-            $jointheroom->getPlayerid();
-            $jointheroom->getRoomId();
+            room_manager::singleton()->JoinTheRoom($jointheroom->getPlayerid(),$jointheroom->getRoomId());
             break;
         }
         case Message_Id::CS_RoomInfoTable_Id:

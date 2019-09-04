@@ -312,38 +312,19 @@ final class room_manager
     function roomGame_Calculation($competition_id,$room_type,$room_id,$index,$data)
     {
         echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n";
-        if (isset($this->rooms[$competition_id][$room_type][$room_id])){
+        if (isset($data))
+        {
             foreach ($data as $userid => $item){
                 $this->users[$competition_id][$room_type]['integral'][$index][$userid] = $item->gold;
             }
 
-            if (count($this->users[$competition_id][$room_type]['socket_id'][$index]) == $this->rooms[$competition_id][$room_type]['room_max'][$index]){
+            if (isset($this->users[$competition_id][$room_type]['socket_id']) && count($this->users[$competition_id][$room_type]['socket_id']) == $this->rooms[$competition_id][$room_type]['room_max'][$index])
+            {
                 arsort($this->users[$competition_id][$room_type]['integral'][$index]);
-                /**
-                 * message SC_Competition_Result
-                {
-                    optional int32  Competition_id  = 1;
-                    message Competition_end
-                    {
-                        optional int32  playerId    = 1;
-                        repeated int32  levelUp     = 2;    //赛制
-                        optional bool   to_up       = 3;    //晋级
-                        message gold
-                        {
-                            optional int32  id      = 1;
-                            optional int32  number  = 2;
-                        }
-                        repeated gold  golds        = 4;    //奖励
-                    }
-                    optional Competition_end    competition = 2;
-                    optional string             top_list    = 3;
-                    optional bool               over        = 4;    //所有比赛结束
-                }
-                 */
                 $competition_result = new SC_Competition_Result();
                 $begin = 0;
-                foreach ($this->users[$competition_id][$room_type][$index]['socket_id'] as $uid => $socket){
-                    //foreach ($this->rooms[$competition_id][$room_type]['to_list'] as $)
+                foreach ($this->users[$competition_id][$room_type]['socket_id'] as $uid => $socket)
+                {
                     $competition_result->setCompetitionId($competition_id); //competition_id
                     $competition_end = new SC_Competition_Result_Competition_end();
                     $competition_end->setPlayerId($uid);
@@ -360,7 +341,8 @@ final class room_manager
                     $competition_result->setCompetition($competition_end); //competition
                     $competition_result->setTopList($this->rooms[$competition_id][$room_type]['top_list_str']);
 
-                    if ($index + 1 == count($this->rooms[$competition_id][$room_type]['top_list'])){ //over
+                    if ($index + 1 == count($this->rooms[$competition_id][$room_type]['top_list']))
+                    { //over
                         $competition_result->setOver(true);
                     }
                     else
@@ -370,8 +352,12 @@ final class room_manager
                     \GatewayWorker\Lib\Gateway::sendToClient($socket,my_pack(Message_Id::SC_Competition_Result_Id,$competition_result->serializeToString()));
                 }
             }
-            //unset($this->rooms[$competition_id][$room_type][$index][$room_id]);
         }
+    }
+
+    function JoinTheRoom($playerid,$roomid)
+    {
+
     }
 
     /*
@@ -392,6 +378,7 @@ final class room_manager
                         'code'          => $code,
                         'players'       => $CreateCardRoom_data->getPlayers(),
                         'numberOfGames' => $CreateCardRoom_data->getNumberOfGames(),
+                        /*
                         'signUpTime'    => [
                                 'year'  => $signUpTime->getYear(),
                                 'month' => $signUpTime->getMonth(),
@@ -406,6 +393,7 @@ final class room_manager
                                 'hour'  => $beginningTime->getHour(),
                                 'minute'=> $beginningTime->getMinute()
                             ],
+                        */
                         'roomName'      => $CreateCardRoom_data->getRoomName(),
                         'roomExplain'   => $CreateCardRoom_data->getRoomExplain()
                     ]
@@ -434,9 +422,9 @@ final class room_manager
         {
             $roominfotable->setTypeText('积分赛');
         }
-        $roominfotable->setPlayerNum(1);
-        $roominfotable->setSignUpTime($CreateCardRoom_data->getSignUpTime());
-        $roominfotable->setBeginningTime($CreateCardRoom_data->getBeginningTime());
+        $roominfotable->setPlayerNum(0);
+        //$roominfotable->setSignUpTime($CreateCardRoom_data->getSignUpTime());
+        //$roominfotable->setBeginningTime($CreateCardRoom_data->getBeginningTime());
         $roominfotable->setGameState(0);
         $Reult->setRoomInfo($roominfotable);
         \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(Message_Id::SC_CreateCardRoom_Id,$Reult->serializeToString()));
@@ -480,6 +468,7 @@ final class room_manager
             }
             $roominfo->setRoomId($data->ROOMTYPE->GAMETYPE->CODE->code);
             $roominfo->setPlayerNum($data->ROOMTYPE->GAMETYPE->CODE->players);
+            /*
             $timeinfo = new TimeInfo();
             $timeinfo->setYear($data->ROOMTYPE->GAMETYPE->CODE->signUpTime->year);
             $timeinfo->setMonth($data->ROOMTYPE->GAMETYPE->CODE->signUpTime->month);
@@ -493,6 +482,7 @@ final class room_manager
             $timeinfo->setHour($data->ROOMTYPE->GAMETYPE->CODE->beginningTime->hour);
             $timeinfo->setMinute($data->ROOMTYPE->GAMETYPE->CODE->beginningTime->minute);
             $roominfo->setBeginningTime($timeinfo);
+            */
             $roominfo->setNameText($data->ROOMTYPE->GAMETYPE->CODE->roomName);
             $roominfo->setGameState($data->gameState);
 

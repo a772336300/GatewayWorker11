@@ -455,7 +455,7 @@ function initRoomState($roomId,$compareValue,$currentValue)
     $redis->hSet($roomId,'compareValue',json_encode($compareValue));
     $redis->hSet($roomId,'currentValue',json_encode($currentValue));
 }
-function roomTick($roomId,$times,$timeSecond=1000044400)
+function roomTick($roomId,$times,$timeSecond=15)
 {
     global $redis;
     $tick=$redis->hIncrBy($roomId,'tick',$times);
@@ -1183,7 +1183,11 @@ function gameOver($roomId,$winner=null)
     //比赛房间计算
     if ($redis->hGet($roomId,'roomtype') == \Proto\Room_Type::bisai_dizhu)
     {
-        room_manager::singleton()->roomGame_Calculation($redis->hGet($roomId,'competition_id'),$redis->hGet($roomId,'roomtype'),$roomId,$redis->hGet($roomId,'index'),$result);
+        $competition_id = $redis->hGet($roomId,'competition_id');
+        $roomtype = $redis->hGet($roomId,'roomtype');
+        $index = $redis->hGet($roomId,'index');
+        //room_manager::singleton()->roomGame_Calculation(1,2,3,4,null);
+        room_manager::singleton()->roomGame_Calculation(intval($redis->hGet($roomId,'competition_id')),intval($redis->hGet($roomId,'roomtype')),$roomId,intval($redis->hGet($roomId,'index')),$result);
     }
 
     game_send_game_result($roomId,$result);
