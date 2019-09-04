@@ -838,7 +838,7 @@ message CS_User_Get_Task_Award
 message SC_User_Get_Task_Award
 {
 	//option (msgid) = 20024;
-	optional  int32 code= 1;//0成功，1需要成为超级会员，才能领取奖励,2账号已被冻结,3不是可以领取的状态,4失败
+	optional  int32 code= 1;//0成功，1需要成为超级会员，才能领取奖励,2账号已被冻结,3不是可以领取的状态,4失败,5游戏任务每日最多领取500BU
 }
 
 //绑定邀请码
