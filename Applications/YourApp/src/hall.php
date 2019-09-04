@@ -509,7 +509,7 @@ function hall_message_switch($mid,$data){
                             //查询用户信息
                             $sql="SELECT * FROM `bolaik_db`.`user` WHERE uid=$uid";
                             $user_info=db_query($sql)[0];
-                            $rows=[['uid'=>$uid,'name'=>$user_info['name'],'touxiang'=>$user_info['touxiang'],'agent_id'=>(int)$agent_id,'bind_time'=>$nowTime,'state'=>0]];
+                            $rows=[['uid'=>$uid,'name'=>$user_info['name'],'touxiang'=>$user_info['touxiang'],'agent_id'=>(int)$agent_id,'bind_time'=>$nowTime,'state'=>0,'super_agent'=>0]];
                             $hall_log->insert("spread_log", $rows);
 							//查询被绑定的玩家或代理是否能升级和获得奖励
 							if($agent["user_type"]==1){
@@ -537,7 +537,7 @@ function hall_message_switch($mid,$data){
             $queryWriteOps = [
                 "limit"=>1
             ];
-            $rs = $hall_log->query($collname, $filter, $queryWriteOps);
+            $rs = $hall_config->query($collname, $filter, $queryWriteOps);
             echo "最终输出：\n";
             print_r($rs);
             if(count($rs)>0){
@@ -625,6 +625,23 @@ function hall_message_switch($mid,$data){
                 $code=2;
             }
             send_user_get_spread_award($uid,$code);
+            break;
+            //获取公告信息
+        case 20033:
+            echo "\n---------- 获取公告信息 -----------\n";
+            $collname="notice_config";
+            $filter = [
+                "state"=>1
+            ];
+            $queryWriteOps = [
+                "limit"=>1
+            ];
+            $rs = $hall_config->query($collname, $filter, $queryWriteOps);
+            echo "最终输出：\n";
+            print_r($rs);
+            if(count($rs)>0){
+                send_pack_notice_info($uid,$rs[0]->content,$rs[0]->state);
+            }
             break;
     }
 }
@@ -931,6 +948,55 @@ function add_lianhuanbi_logs($uid,$type,$remark,$num){
     $hall_log = mongo_db::singleton("hall_log");
     $rows=[['uid'=>$uid,'add_time'=>time(),'type'=>$type,'remark'=>$remark,'num'=>$num]];
     $hall_log->insert("lianhuanbi_logs", $rows);
+}
+
+/**普通用户打完比赛，超级代理获得1联欢豆,上级代理获得3个
+ * @param $uid用户id
+ * @param $changci场次
+ */
+function add_super_agent_lhd_logs($uid,$changci){
+    //查询上级代理
+    $sql="SELECT agent_id,user_type FROM `bolaik_user`.`user_info` where user_id=$uid";
+    $user=db_query($sql)[0];
+    $agent_id=$user["agent_id"];
+    $is_super=$user["user_type"]==4?1:0;
+    $sql="SELECT * FROM `bolaik_db`.`user` WHERE uid=$uid";
+    $dbUser=db_query($sql);
+    $name=$dbUser[0]["name"];
+
+    //上级代理获得3联欢豆
+    $sql="update `bolaik_user`.`user_info` set lhd=lhd+3 where user_id=$agent_id";
+    db_query($sql);
+    //上级代理添加获取联欢豆记录
+    $hall_log = mongo_db::singleton("hall_log");
+    $rows=[['uid'=>$uid,'agent_id'=>$agent_id,'is_super'=>$is_super,'name'=>$name,'add_time'=>time(),'changci'=>$changci,'coin'=>3]];
+    $hall_log->insert("agent_lhd_logs", $rows);
+    //查询超级代理
+    $super_id=get_super_agent($uid);
+    if($super_id!=0){
+        //超级代理获得1联欢豆
+        $sql="update `bolaik_user`.`user_info` set lhd=lhd+1 where user_id=$super_id";
+        db_query($sql);
+        //添加超级代理获取联欢豆记录
+        $rows=[['uid'=>$uid,'agent_id'=>$super_id,'is_super'=>$is_super,'name'=>$name,'add_time'=>time(),'changci'=>$changci,'coin'=>1]];
+        $hall_log->insert("agent_lhd_logs", $rows);
+    }
+}
+
+function get_super_agent($uid){
+    $sql="SELECT agent_id,user_type FROM `bolaik_user`.`user_info` where user_id=$uid";
+    $user=db_query($sql)[0];
+    $agent_id=$user["agent_id"];
+    $user_type=$user["user_type"];
+    if($agent_id==""){
+        if($user_type==4){
+            return (int)$agent_id;
+        }else{
+            return 0;
+        }
+    }else{
+        get_super_agent($agent_id);
+    }
 }
 
 
