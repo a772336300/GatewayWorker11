@@ -995,7 +995,7 @@ function get_super_agent($uid){
             return 0;
         }
     }else{
-        get_super_agent($agent_id);
+        return get_super_agent($agent_id);
     }
 }
 
