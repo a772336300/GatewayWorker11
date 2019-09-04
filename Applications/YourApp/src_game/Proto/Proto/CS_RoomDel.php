@@ -1,6 +1,6 @@
 <?php
 /**
- * Auto generated from doudizhu.proto at 2019-09-04 16:57:38
+ * Auto generated from doudizhu.proto at 2019-09-04 17:17:32
  *
  * proto package
  */
@@ -12,10 +12,16 @@ namespace Proto {
 class CS_RoomDel extends \ProtobufMessage
 {
     /* Field index constants */
-    const ROOMID = 1;
+    const PLAYERID = 1;
+    const ROOMID = 2;
 
     /* @var array Field descriptors */
     protected static $fields = array(
+        self::PLAYERID => array(
+            'name' => 'playerid',
+            'required' => false,
+            'type' => \ProtobufMessage::PB_TYPE_INT,
+        ),
         self::ROOMID => array(
             'name' => 'roomId',
             'required' => false,
@@ -38,6 +44,7 @@ class CS_RoomDel extends \ProtobufMessage
      */
     public function reset()
     {
+        $this->values[self::PLAYERID] = null;
         $this->values[self::ROOMID] = null;
     }
 
@@ -49,6 +56,39 @@ class CS_RoomDel extends \ProtobufMessage
     public function fields()
     {
         return self::$fields;
+    }
+
+    /**
+     * Sets value of 'playerid' property
+     *
+     * @param integer $value Property value
+     *
+     * @return null
+     */
+    public function setPlayerid($value)
+    {
+        return $this->set(self::PLAYERID, $value);
+    }
+
+    /**
+     * Returns value of 'playerid' property
+     *
+     * @return integer
+     */
+    public function getPlayerid()
+    {
+        $value = $this->get(self::PLAYERID);
+        return $value === null ? (integer)$value : $value;
+    }
+
+    /**
+     * Returns true if 'playerid' property is set, false otherwise
+     *
+     * @return boolean
+     */
+    public function hasPlayerid()
+    {
+        return $this->get(self::PLAYERID) !== null;
     }
 
     /**
