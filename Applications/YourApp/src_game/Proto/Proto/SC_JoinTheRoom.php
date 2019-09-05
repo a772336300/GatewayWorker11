@@ -1,6 +1,6 @@
 <?php
 /**
- * Auto generated from doudizhu.proto at 2019-09-05 14:45:16
+ * Auto generated from doudizhu.proto at 2019-09-05 16:14:52
  *
  * proto package
  */
@@ -13,7 +13,7 @@ class SC_JoinTheRoom extends \ProtobufMessage
 {
     /* Field index constants */
     const RESULT = 1;
-    const NUMBER = 2;
+    const ROOMINFO = 2;
 
     /* @var array Field descriptors */
     protected static $fields = array(
@@ -22,10 +22,10 @@ class SC_JoinTheRoom extends \ProtobufMessage
             'required' => false,
             'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
-        self::NUMBER => array(
-            'name' => 'number',
+        self::ROOMINFO => array(
+            'name' => 'roomInfo',
             'required' => false,
-            'type' => \ProtobufMessage::PB_TYPE_INT,
+            'type' => '\Proto\RoomInfoTable'
         ),
     );
 
@@ -45,7 +45,7 @@ class SC_JoinTheRoom extends \ProtobufMessage
     public function reset()
     {
         $this->values[self::RESULT] = null;
-        $this->values[self::NUMBER] = null;
+        $this->values[self::ROOMINFO] = null;
     }
 
     /**
@@ -92,36 +92,35 @@ class SC_JoinTheRoom extends \ProtobufMessage
     }
 
     /**
-     * Sets value of 'number' property
+     * Sets value of 'roomInfo' property
      *
-     * @param integer $value Property value
+     * @param \Proto\RoomInfoTable $value Property value
      *
      * @return null
      */
-    public function setNumber($value)
+    public function setRoomInfo(\Proto\RoomInfoTable $value=null)
     {
-        return $this->set(self::NUMBER, $value);
+        return $this->set(self::ROOMINFO, $value);
     }
 
     /**
-     * Returns value of 'number' property
+     * Returns value of 'roomInfo' property
      *
-     * @return integer
+     * @return \Proto\RoomInfoTable
      */
-    public function getNumber()
+    public function getRoomInfo()
     {
-        $value = $this->get(self::NUMBER);
-        return $value === null ? (integer)$value : $value;
+        return $this->get(self::ROOMINFO);
     }
 
     /**
-     * Returns true if 'number' property is set, false otherwise
+     * Returns true if 'roomInfo' property is set, false otherwise
      *
      * @return boolean
      */
-    public function hasNumber()
+    public function hasRoomInfo()
     {
-        return $this->get(self::NUMBER) !== null;
+        return $this->get(self::ROOMINFO) !== null;
     }
 }
 }
