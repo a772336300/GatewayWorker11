@@ -289,7 +289,7 @@ message CS_JoinTheRoom
 message SC_JoinTheRoom
 {
      optional int32 result = 1;     //加入房间结果 0失败 1成功
-	 optional int32 number = 2;		//当前人数
+	 optional RoomInfoTable roomInfo = 2;		//房间信息
 }
 
 //初始化房间
