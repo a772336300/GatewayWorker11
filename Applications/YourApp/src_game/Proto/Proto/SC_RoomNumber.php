@@ -7,17 +7,23 @@
 
 namespace Proto {
 /**
- * SC_RoomDel message
+ * SC_RoomNumber message
  */
-class SC_RoomDel extends \ProtobufMessage
+class SC_RoomNumber extends \ProtobufMessage
 {
     /* Field index constants */
     const ROOMID = 1;
+    const NUMBER = 2;
 
     /* @var array Field descriptors */
     protected static $fields = array(
         self::ROOMID => array(
             'name' => 'roomId',
+            'required' => false,
+            'type' => \ProtobufMessage::PB_TYPE_INT,
+        ),
+        self::NUMBER => array(
+            'name' => 'number',
             'required' => false,
             'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
@@ -39,6 +45,7 @@ class SC_RoomDel extends \ProtobufMessage
     public function reset()
     {
         $this->values[self::ROOMID] = null;
+        $this->values[self::NUMBER] = null;
     }
 
     /**
@@ -82,6 +89,39 @@ class SC_RoomDel extends \ProtobufMessage
     public function hasRoomId()
     {
         return $this->get(self::ROOMID) !== null;
+    }
+
+    /**
+     * Sets value of 'number' property
+     *
+     * @param integer $value Property value
+     *
+     * @return null
+     */
+    public function setNumber($value)
+    {
+        return $this->set(self::NUMBER, $value);
+    }
+
+    /**
+     * Returns value of 'number' property
+     *
+     * @return integer
+     */
+    public function getNumber()
+    {
+        $value = $this->get(self::NUMBER);
+        return $value === null ? (integer)$value : $value;
+    }
+
+    /**
+     * Returns true if 'number' property is set, false otherwise
+     *
+     * @return boolean
+     */
+    public function hasNumber()
+    {
+        return $this->get(self::NUMBER) !== null;
     }
 }
 }
