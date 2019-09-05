@@ -48,6 +48,8 @@ enum Message_Id
 	CS_RoomDel_Id = 31;		//删除房间
 	SC_RoomDel_Id = 32;
 	SC_RoomNumber_Id = 33;	//房间人数
+	CS_RoomOut_Id	= 34;	//退出自定义房间
+	SC_RoomOut_Id	= 35;
 
 }
 
@@ -287,6 +289,7 @@ message CS_JoinTheRoom
 message SC_JoinTheRoom
 {
      optional int32 result = 1;     //加入房间结果 0失败 1成功
+	 optional int32 number = 2;		//当前人数
 }
 
 //初始化房间
@@ -311,5 +314,15 @@ message SC_RoomNumber
 {
 	optional int32 roomId = 1;
 	optional int32 number = 2;
+}
+//退出自定义房间
+message CS_RoomOut
+{
+	optional int32 playerid = 1;
+	optional int32 roomId	= 2;
+}
+message SC_RoomOut
+{
+	optional int32 roomId	= 1;
 }
 
