@@ -245,7 +245,8 @@ final class room_manager
                     $tmproom = new room_base();
                     $tmproom->set_competition_id($data->id);
                     $tmproom->set_gtype($data->type);
-                    $tmproom->set_code(time());
+                    $code = substr(time(),-9);
+                    $tmproom->set_code(intval($code));
                     $tmproom->set_starttime($data->starttime);
                     $tmproom->set_max(3);
                     $tmproom->set_top_index($data->index);
@@ -406,7 +407,8 @@ final class room_manager
                             $user_ids[] = $uid;
                             if (count($user_ids) == 3)
                             {
-                                roomInit($user_ids,$room_type, time(), $competition_id, $index);
+                                $code = substr(time(),-9);
+                                roomInit($user_ids,$room_type, intval($code), $competition_id, $index);
                                 $user_ids = array();
                             }
                             $begin++;
@@ -517,13 +519,13 @@ final class room_manager
     function CreateCardRoom($client_id,$CreateCardRoom_data)
     {
         $collname='user_create_competition';
-        $code = time();
+        $code = substr(time(),-9);
         //$signUpTime = $CreateCardRoom_data->getSignUpTime();
         //$beginningTime = $CreateCardRoom_data->getBeginningTime();
         $db=mongo_db::singleton('func_system');
         $rows = [['Player_id' => $CreateCardRoom_data->getPlayerid(),
             'gameState' => 0,
-            'code'      => $code,
+            'code'      => intval($code),
             'ROOMTYPE' => ['roomType' => $CreateCardRoom_data->getRoomType(),
                 'GAMETYPE' => ['gameType' => $CreateCardRoom_data->getGameType(),
                     'CODE' => [
