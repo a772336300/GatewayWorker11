@@ -4,6 +4,7 @@ use Proto\CS_RoomDel;
 use Proto\CS_RoomInfoTable;
 use Proto\CS_RoomOut;
 use Proto\Message_Id;
+
 function switch_game($client_id,$mid,$data)
 {
     switch ($mid)

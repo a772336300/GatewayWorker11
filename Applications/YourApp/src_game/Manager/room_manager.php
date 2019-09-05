@@ -1,6 +1,5 @@
 <?php
 
-use Proto\CS_RoomInfoTable;
 use Proto\Message_Id;
 use Proto\RoomInfoTable;
 use Proto\SC_Competition_Result;
@@ -12,7 +11,6 @@ use Proto\SC_RoomDel;
 use Proto\SC_RoomInfoTable;
 use Proto\SC_RoomNumber;
 use Proto\SC_RoomOut;
-use Proto\TimeInfo;
 use Workerman\Lib\Timer;
 
 require_once 'room_base.php';
