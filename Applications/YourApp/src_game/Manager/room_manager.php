@@ -426,13 +426,13 @@ final class room_manager
                     $this->user_crooms[$roomid]['playerid'][] = $playerid;
                     $result = new SC_JoinTheRoom();
                     $result->setResult(1);
-                    $result->setNumber(count($this->user_crooms[$roomid]['playerid']));
+                    //$result->setNumber(count($this->user_crooms[$roomid]['playerid']));
                     \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(Message_Id::SC_JoinTheRoom_Id,$result->serializeToString()));
                     if ($create_socket > 0)
                     {
                         $number = new SC_RoomNumber();
                         $number->setRoomId($roomid);
-                        $number->setNumber(count($this->user_crooms[$roomid]['playerid']));
+                        //$number->setNumber(count($this->user_crooms[$roomid]['playerid']));
                         \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(Message_Id::SC_RoomNumber_Id,$number->serializeToString()));
                     }
                 }
@@ -448,13 +448,13 @@ final class room_manager
                 $this->user_crooms[$roomid]['playerid'][] = $playerid;
                 $result = new SC_JoinTheRoom();
                 $result->setResult(1);
-                $result->setNumber(count($this->user_crooms[$roomid]['playerid']));
+                //$result->setNumber(count($this->user_crooms[$roomid]['playerid']));
                 \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(Message_Id::SC_JoinTheRoom_Id,$result->serializeToString()));
                 if ($create_socket > 0)
                 {
                     $number = new SC_RoomNumber();
                     $number->setRoomId($roomid);
-                    $number->setNumber(count($this->user_crooms[$roomid]['playerid']));
+                    //$number->setNumber(count($this->user_crooms[$roomid]['playerid']));
                     \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(Message_Id::SC_RoomNumber_Id,$number->serializeToString()));
                 }
             }
