@@ -7,23 +7,23 @@
 
 namespace Proto {
 /**
- * gold message embedded in Competition_end/SC_Competition_Result message
+ * CS_RoomOut message
  */
-class SC_Competition_Result_Competition_end_gold extends \ProtobufMessage
+class CS_RoomOut extends \ProtobufMessage
 {
     /* Field index constants */
-    const ID = 1;
-    const NUMBER = 2;
+    const PLAYERID = 1;
+    const ROOMID = 2;
 
     /* @var array Field descriptors */
     protected static $fields = array(
-        self::ID => array(
-            'name' => 'id',
+        self::PLAYERID => array(
+            'name' => 'playerid',
             'required' => false,
             'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
-        self::NUMBER => array(
-            'name' => 'number',
+        self::ROOMID => array(
+            'name' => 'roomId',
             'required' => false,
             'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
@@ -44,8 +44,8 @@ class SC_Competition_Result_Competition_end_gold extends \ProtobufMessage
      */
     public function reset()
     {
-        $this->values[self::ID] = null;
-        $this->values[self::NUMBER] = null;
+        $this->values[self::PLAYERID] = null;
+        $this->values[self::ROOMID] = null;
     }
 
     /**
@@ -59,69 +59,69 @@ class SC_Competition_Result_Competition_end_gold extends \ProtobufMessage
     }
 
     /**
-     * Sets value of 'id' property
+     * Sets value of 'playerid' property
      *
      * @param integer $value Property value
      *
      * @return null
      */
-    public function setId($value)
+    public function setPlayerid($value)
     {
-        return $this->set(self::ID, $value);
+        return $this->set(self::PLAYERID, $value);
     }
 
     /**
-     * Returns value of 'id' property
+     * Returns value of 'playerid' property
      *
      * @return integer
      */
-    public function getId()
+    public function getPlayerid()
     {
-        $value = $this->get(self::ID);
+        $value = $this->get(self::PLAYERID);
         return $value === null ? (integer)$value : $value;
     }
 
     /**
-     * Returns true if 'id' property is set, false otherwise
+     * Returns true if 'playerid' property is set, false otherwise
      *
      * @return boolean
      */
-    public function hasId()
+    public function hasPlayerid()
     {
-        return $this->get(self::ID) !== null;
+        return $this->get(self::PLAYERID) !== null;
     }
 
     /**
-     * Sets value of 'number' property
+     * Sets value of 'roomId' property
      *
      * @param integer $value Property value
      *
      * @return null
      */
-    public function setNumber($value)
+    public function setRoomId($value)
     {
-        return $this->set(self::NUMBER, $value);
+        return $this->set(self::ROOMID, $value);
     }
 
     /**
-     * Returns value of 'number' property
+     * Returns value of 'roomId' property
      *
      * @return integer
      */
-    public function getNumber()
+    public function getRoomId()
     {
-        $value = $this->get(self::NUMBER);
+        $value = $this->get(self::ROOMID);
         return $value === null ? (integer)$value : $value;
     }
 
     /**
-     * Returns true if 'number' property is set, false otherwise
+     * Returns true if 'roomId' property is set, false otherwise
      *
      * @return boolean
      */
-    public function hasNumber()
+    public function hasRoomId()
     {
-        return $this->get(self::NUMBER) !== null;
+        return $this->get(self::ROOMID) !== null;
     }
 }
 }

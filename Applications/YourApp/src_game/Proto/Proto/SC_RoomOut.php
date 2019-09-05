@@ -7,17 +7,17 @@
 
 namespace Proto {
 /**
- * SC_Is_Gaming message
+ * SC_RoomOut message
  */
-class SC_Is_Gaming extends \ProtobufMessage
+class SC_RoomOut extends \ProtobufMessage
 {
     /* Field index constants */
-    const DATA = 1;
+    const ROOMID = 1;
 
     /* @var array Field descriptors */
     protected static $fields = array(
-        self::DATA => array(
-            'name' => 'data',
+        self::ROOMID => array(
+            'name' => 'roomId',
             'required' => false,
             'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
@@ -38,7 +38,7 @@ class SC_Is_Gaming extends \ProtobufMessage
      */
     public function reset()
     {
-        $this->values[self::DATA] = null;
+        $this->values[self::ROOMID] = null;
     }
 
     /**
@@ -52,36 +52,36 @@ class SC_Is_Gaming extends \ProtobufMessage
     }
 
     /**
-     * Sets value of 'data' property
+     * Sets value of 'roomId' property
      *
      * @param integer $value Property value
      *
      * @return null
      */
-    public function setData($value)
+    public function setRoomId($value)
     {
-        return $this->set(self::DATA, $value);
+        return $this->set(self::ROOMID, $value);
     }
 
     /**
-     * Returns value of 'data' property
+     * Returns value of 'roomId' property
      *
      * @return integer
      */
-    public function getData()
+    public function getRoomId()
     {
-        $value = $this->get(self::DATA);
+        $value = $this->get(self::ROOMID);
         return $value === null ? (integer)$value : $value;
     }
 
     /**
-     * Returns true if 'data' property is set, false otherwise
+     * Returns true if 'roomId' property is set, false otherwise
      *
      * @return boolean
      */
-    public function hasData()
+    public function hasRoomId()
     {
-        return $this->get(self::DATA) !== null;
+        return $this->get(self::ROOMID) !== null;
     }
 }
 }
