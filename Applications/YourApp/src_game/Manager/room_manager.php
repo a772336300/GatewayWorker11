@@ -459,8 +459,12 @@ final class room_manager
         //$roominfotable->setBeginningTime($CreateCardRoom_data->getBeginningTime());
         $roominfotable->setGameState(0);
         $result->setRoomInfo($roominfotable);
-        \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(Message_Id::SC_CreateCardRoom_Id,$result->serializeToString()));
 
+        if (!isset($this->user_crooms[$code]['playermax']))
+        {
+            $this->user_crooms[$code]['playermax'] = $CreateCardRoom_data->getPlayers();
+            \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(Message_Id::SC_CreateCardRoom_Id,$result->serializeToString()));
+        }
     }
 
     /*
@@ -531,11 +535,15 @@ final class room_manager
         $collname='user_create_competition';
         $mongodb=mongo_db::singleton('func_system');
         $delets = [
-            ['Player_id' => $playerid, 'code' => $roomid]
+            ['q' =>['Player_id' => $playerid, 'code' => $roomid], 'limit' =>0]
         ];
         $rs = $mongodb->del($collname, $delets);
         $scdel = new SC_RoomDel();
         $scdel->setRoomId($roomid);
+        if (isset($this->user_crooms[$roomid]))
+        {
+            unset($this->user_crooms[$roomid]);
+        }
         \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(Message_Id::SC_RoomDel_Id,$scdel->serializeToString()));
     }
 }
