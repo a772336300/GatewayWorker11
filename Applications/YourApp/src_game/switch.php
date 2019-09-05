@@ -2,6 +2,7 @@
 
 use Proto\CS_RoomDel;
 use Proto\CS_RoomInfoTable;
+use Proto\CS_RoomOut;
 use Proto\Message_Id;
 function switch_game($client_id,$mid,$data)
 {
@@ -125,7 +126,7 @@ function switch_game($client_id,$mid,$data)
         {
             $jointheroom = new \Proto\CS_JoinTheRoom();
             $jointheroom->parseFromString($data);
-            room_manager::singleton()->JoinTheRoom($jointheroom->getPlayerid(),$jointheroom->getRoomId());
+            room_manager::singleton()->JoinTheRoom($client_id,$jointheroom->getPlayerid(),$jointheroom->getRoomId());
             break;
         }
         case Message_Id::CS_RoomInfoTable_Id:
@@ -140,6 +141,13 @@ function switch_game($client_id,$mid,$data)
             $delroom = new CS_RoomDel();
             $delroom->parseFromString($data);
             room_manager::singleton()->delRoom($client_id,$delroom->getPlayerid(),$delroom->getRoomId());
+            break;
+        }
+        case Message_Id::CS_RoomOut_Id:
+        {
+            $outroom = new CS_RoomOut();
+            $outroom->parseFromString($data);
+            room_manager::singleton()->outRoom($client_id,$outroom->getPlayerid(),$outroom->getRoomId());
             break;
         }
     }

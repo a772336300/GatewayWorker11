@@ -34,6 +34,8 @@ $model_router = [
     29=>'game_worker',
     30=>'game_worker',
     31=>'game_worker',
-    32=>'game_worker'
+    32=>'game_worker',
+    33=>'game_worker',
+    34=>'game_worker'
 
 ];

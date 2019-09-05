@@ -10,6 +10,8 @@ use Proto\SC_CreateCardRoom;
 use Proto\SC_JoinTheRoom;
 use Proto\SC_RoomDel;
 use Proto\SC_RoomInfoTable;
+use Proto\SC_RoomNumber;
+use Proto\SC_RoomOut;
 use Proto\TimeInfo;
 use Workerman\Lib\Timer;
 
@@ -121,7 +123,7 @@ final class room_manager
                                                     {
                                                         foreach ($this->users[$competition_id_key][$room_type_key]['socket_id'] as $uid_key => $socket)
                                                         {
-                                                            array_push($user_ids,$uid_key);
+                                                            $user_ids[] = $uid_key;
                                                             if (count($user_ids) == 3)
                                                             {
                                                                 roomInit($user_ids,$room->get_gtype(), $room->get_code(), $room->get_competition_id(), $room->get_top_index());
@@ -191,6 +193,28 @@ final class room_manager
                 $data->index = 0;
                 $this->create_room($data);
             }
+        }
+    }
+
+    /*
+     * 读取用户自定义比赛
+     */
+    function load_user_room()
+    {
+        $collname='user_create_competition';
+        $mongodb=mongo_db::singleton('func_system');
+        $filter = [
+            'Player_id'  => ['$gt' => 0]
+        ];
+        $queryWriteOps = [
+            'projection'    => ['_id'   =>0],//,//不输出_id字段
+            'sort'          => ['Player_id'    =>1]//根据Player_id字段排序 1是升序，-1是降序
+        ];
+        $rs = $mongodb->query($collname,$filter,$queryWriteOps);
+        foreach ($rs as $data)
+        {
+            $this->user_crooms[$data->code]['playermax'] = $data->ROOMTYPE->GAMETYPE->CODE->players;
+            $this->user_crooms[$data->code]['createplayer'] = $data->Player_id;
         }
     }
 
@@ -317,15 +341,21 @@ final class room_manager
         echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n";
         if (isset($data))
         {
+            /*
+             * 所有参加者积分（本轮）
+             */
             foreach ($data as $userid => $item){
                 $this->users[$competition_id][$room_type]['integral'][$index][$userid] = $item->gold;
             }
 
             if (isset($this->users[$competition_id][$room_type]['socket_id']) && count($this->users[$competition_id][$room_type]['socket_id']) == $this->rooms[$competition_id][$room_type]['room_max'][$index])
             {
+                /*
+                 * 对本轮积分排序
+                 */
                 arsort($this->users[$competition_id][$room_type]['integral'][$index]);
                 $competition_result = new SC_Competition_Result();
-                $begin = 0;
+                $begin = 1;
                 foreach ($this->users[$competition_id][$room_type]['socket_id'] as $uid => $socket)
                 {
                     $competition_result->setCompetitionId($competition_id); //competition_id
@@ -341,6 +371,7 @@ final class room_manager
                     {
                         $competition_end->setToUp(false);
                     }
+
                     $competition_result->setCompetition($competition_end); //competition
                     $competition_result->setTopList($this->rooms[$competition_id][$room_type]['top_list_str']);
 
@@ -353,6 +384,30 @@ final class room_manager
                         $competition_result->setOver(false);
                     }
                     \GatewayWorker\Lib\Gateway::sendToClient($socket,my_pack(Message_Id::SC_Competition_Result_Id,$competition_result->serializeToString()));
+                    $begin++;
+                }
+
+                /*
+                 * 开始下一轮组合
+                 */
+                $index++;
+                if ($index <= count($this->rooms[$competition_id][$room_type]['top_list']))
+                {
+                    $begin = 0;
+                    $user_ids = array();
+                    foreach ($this->users[$competition_id][$room_type]['socket_id'] as $uid => $socket)
+                    {
+                        if ($begin < $this->rooms[$competition_id][$room_type]['top_list'][$index])
+                        {
+                            $user_ids[] = $uid;
+                            if (count($user_ids) == 3)
+                            {
+                                roomInit($user_ids,$room_type, time(), $competition_id, $index);
+                                $user_ids = array();
+                            }
+                            $begin++;
+                        }
+                    }
                 }
             }
         }
@@ -365,28 +420,45 @@ final class room_manager
     {
         if (isset($this->user_crooms[$roomid]['playermax']))
         {
-            if (is_array($this->user_crooms[$roomid]['playerid']))
+            $create_socket = \GatewayWorker\Lib\Gateway::isUidOnline($this->user_crooms[$roomid]['createplayer']);
+            if (isset($this->user_crooms[$roomid]['playerid']) && is_array($this->user_crooms[$roomid]['playerid']))
             {
                 if (count($this->user_crooms[$roomid]['playerid']) < $this->user_crooms[$roomid]['playermax'])
                 {
-                    array_push($this->user_crooms[$roomid]['playerid'],$playerid);
+                    $this->user_crooms[$roomid]['playerid'][] = $playerid;
                     $result = new SC_JoinTheRoom();
-                    $result->setResult(0);
-                    \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(Message_Id::SC_Competition_Result_Id,$result->serializeToString()));
+                    $result->setResult(1);
+                    $result->setNumber(count($this->user_crooms[$roomid]['playerid']));
+                    \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(Message_Id::SC_JoinTheRoom_Id,$result->serializeToString()));
+                    if ($create_socket > 0)
+                    {
+                        $number = new SC_RoomNumber();
+                        $number->setRoomId($roomid);
+                        $number->setNumber(count($this->user_crooms[$roomid]['playerid']));
+                        \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(Message_Id::SC_RoomNumber_Id,$number->serializeToString()));
+                    }
                 }
                 else
                 {
                     $result = new SC_JoinTheRoom();
-                    $result->setResult(1);
-                    \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(Message_Id::SC_Competition_Result_Id,$result->serializeToString()));
+                    $result->setResult(0);
+                    \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(Message_Id::SC_JoinTheRoom_Id,$result->serializeToString()));
                 }
             }
             else
             {
-                array_push($this->user_crooms[$roomid]['playerid'],$playerid);
+                $this->user_crooms[$roomid]['playerid'][] = $playerid;
                 $result = new SC_JoinTheRoom();
-                $result->setResult(0);
-                \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(Message_Id::SC_Competition_Result_Id,$result->serializeToString()));
+                $result->setResult(1);
+                $result->setNumber(count($this->user_crooms[$roomid]['playerid']));
+                \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(Message_Id::SC_JoinTheRoom_Id,$result->serializeToString()));
+                if ($create_socket > 0)
+                {
+                    $number = new SC_RoomNumber();
+                    $number->setRoomId($roomid);
+                    $number->setNumber(count($this->user_crooms[$roomid]['playerid']));
+                    \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(Message_Id::SC_RoomNumber_Id,$number->serializeToString()));
+                }
             }
         }
     }
@@ -463,6 +535,7 @@ final class room_manager
         if (!isset($this->user_crooms[$code]['playermax']))
         {
             $this->user_crooms[$code]['playermax'] = $CreateCardRoom_data->getPlayers();
+            $this->user_crooms[$code]['createplayer'] = $CreateCardRoom_data->getPlayerid();
             \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(Message_Id::SC_CreateCardRoom_Id,$result->serializeToString()));
         }
     }
@@ -545,6 +618,26 @@ final class room_manager
             unset($this->user_crooms[$roomid]);
         }
         \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(Message_Id::SC_RoomDel_Id,$scdel->serializeToString()));
+    }
+    /*
+     * 退出自定义比赛
+     */
+    function outRoom($client_id,$playerid,$roomid)
+    {
+        if (isset($this->user_crooms[$roomid]['playerid']))
+        {
+            foreach ($this->user_crooms[$roomid]['playerid'] as $key => $uid)
+            {
+                if ($uid == $playerid)
+                {
+                    unset($this->user_crooms[$roomid]['playerid'][$key]);
+                    break;
+                }
+            }
+            $outroom = new SC_RoomOut();
+            $outroom->setRoomId($roomid);
+            \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(Message_Id::SC_RoomOut_Id,$outroom->serializeToString()));
+        }
     }
 }
 
