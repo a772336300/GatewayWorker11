@@ -506,18 +506,18 @@ final class room_manager
                 $roominfo->setNameText($this->user_crooms[$roomid]['config']['name']);
                 if (isset($this->user_crooms[$roomid]['config']['gameType']) && $this->user_crooms[$roomid]['config']['gameType'] == 1)
                 {
-                    $roominfo->setTypeText(晋级赛);
+                    $roominfo->setTypeText('晋级赛');
                 }
                 elseif (isset($this->user_crooms[$roomid]['config']['gameType']) && $this->user_crooms[$roomid]['config']['gameType'] == 2)
                 {
-                    $roominfo->setTypeText(积分赛);
+                    $roominfo->setTypeText('积分赛');
                 }
                 $roominfo->setPlayerNum(count($this->user_crooms[$roomid]['playerid']));
                 $roominfo->setPlayerMax($this->user_crooms[$roomid]['config']['playermax']);
 
                 $result->setRoomInfo($roominfo);
                 \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(Message_Id::SC_JoinTheRoom_Id,$result->serializeToString()));
-                if ($create_socket > 0)
+                if (\GatewayWorker\Lib\Gateway::isUidOnline($this->user_crooms[$roomid]['createplayer']))
                 {
                     $number = new SC_RoomNumber();
                     $number->setRoomId($roomid);
