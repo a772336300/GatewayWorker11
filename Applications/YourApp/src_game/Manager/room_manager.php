@@ -487,7 +487,11 @@ final class room_manager
                     {
                         $roominfo->setGameText('麻将');
                     }
-                    $roominfo->setNameText($this->user_crooms[$roomid]['config']['name']);
+                    if (isset($this->user_crooms[$roomid]['config']['name']))
+                    {
+                        $roominfo->setNameText($this->user_crooms[$roomid]['config']['name']);
+                    }
+
                     if (isset($this->user_crooms[$roomid]['config']['gameType']) && $this->user_crooms[$roomid]['config']['gameType'] == 1)
                     {
                         $roominfo->setTypeText('晋级赛');
@@ -537,7 +541,11 @@ final class room_manager
                 {
                     $roominfo->setGameText('麻将');
                 }
-                $roominfo->setNameText($this->user_crooms[$roomid]['config']['name']);
+                if (isset($this->user_crooms[$roomid]['config']['name']))
+                {
+                    $roominfo->setNameText($this->user_crooms[$roomid]['config']['name']);
+                }
+
                 if (isset($this->user_crooms[$roomid]['config']['gameType']) && $this->user_crooms[$roomid]['config']['gameType'] == 1)
                 {
                     $roominfo->setTypeText('晋级赛');
