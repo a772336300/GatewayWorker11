@@ -226,8 +226,67 @@ final class room_manager
             $this->user_crooms[$data->code]['config']['explain']        = $data->ROOMTYPE->GAMETYPE->CODE->roomExplain;
             $this->user_crooms[$data->code]['config']['playermax']      = $data->ROOMTYPE->GAMETYPE->CODE->players;
             $this->user_crooms[$data->code]['config']['numberOfGames']  = $data->ROOMTYPE->GAMETYPE->CODE->numberOfGames;
+            $this->user_crooms[$data->code]['config']['top_list']       = array();
+            $this->set_top_list($data->code,$data->ROOMTYPE->GAMETYPE->CODE->players);
         }
         $this->bLoad_user_create_room=true;
+    }
+
+    function set_top_list($RoomId,$PlayerNumber)
+    {
+        if (isset($this->user_crooms[$RoomId]))
+        {
+            switch ($PlayerNumber)
+            {
+                case 12:
+                    $this->user_crooms[$RoomId]['config']['top_list_str'] = '12,9,6,3';
+                    array_push($this->user_crooms[$RoomId]['config']['top_list'],12);
+                    array_push($this->user_crooms[$RoomId]['config']['top_list'],9);
+                    array_push($this->user_crooms[$RoomId]['config']['top_list'],6);
+                    array_push($this->user_crooms[$RoomId]['config']['top_list'],3);
+                    break;
+                case 24:
+                    $this->user_crooms[$RoomId]['config']['top_list_str'] = '24,18,12,6,3';
+                    array_push($this->user_crooms[$RoomId]['config']['top_list'],24);
+                    array_push($this->user_crooms[$RoomId]['config']['top_list'],18);
+                    array_push($this->user_crooms[$RoomId]['config']['top_list'],12);
+                    array_push($this->user_crooms[$RoomId]['config']['top_list'],6);
+                    array_push($this->user_crooms[$RoomId]['config']['top_list'],3);
+                    break;
+                case 48:
+                    $this->user_crooms[$RoomId]['config']['top_list_str'] = '48,30,21,15,9,3';
+                    array_push($this->user_crooms[$RoomId]['config']['top_list'],48);
+                    array_push($this->user_crooms[$RoomId]['config']['top_list'],30);
+                    array_push($this->user_crooms[$RoomId]['config']['top_list'],21);
+                    array_push($this->user_crooms[$RoomId]['config']['top_list'],15);
+                    array_push($this->user_crooms[$RoomId]['config']['top_list'],9);
+                    array_push($this->user_crooms[$RoomId]['config']['top_list'],3);
+                    break;
+                case 96:
+                    $this->user_crooms[$RoomId]['config']['top_list_str'] = '96,60,36,24,15,6,3';
+                    array_push($this->user_crooms[$RoomId]['config']['top_list'],96);
+                    array_push($this->user_crooms[$RoomId]['config']['top_list'],60);
+                    array_push($this->user_crooms[$RoomId]['config']['top_list'],36);
+                    array_push($this->user_crooms[$RoomId]['config']['top_list'],24);
+                    array_push($this->user_crooms[$RoomId]['config']['top_list'],15);
+                    array_push($this->user_crooms[$RoomId]['config']['top_list'],6);
+                    array_push($this->user_crooms[$RoomId]['config']['top_list'],3);
+                    break;
+                case 120:
+                    $this->user_crooms[$RoomId]['config']['top_list_str'] = '120,72,48,32,18,9,6,3';
+                    array_push($this->user_crooms[$RoomId]['config']['top_list'],120);
+                    array_push($this->user_crooms[$RoomId]['config']['top_list'],72);
+                    array_push($this->user_crooms[$RoomId]['config']['top_list'],48);
+                    array_push($this->user_crooms[$RoomId]['config']['top_list'],32);
+                    array_push($this->user_crooms[$RoomId]['config']['top_list'],18);
+                    array_push($this->user_crooms[$RoomId]['config']['top_list'],9);
+                    array_push($this->user_crooms[$RoomId]['config']['top_list'],6);
+                    array_push($this->user_crooms[$RoomId]['config']['top_list'],3);
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     /**
@@ -482,28 +541,18 @@ final class room_manager
                         }
                     }
 
-                    if ($index > 0)
+                    if ($this->Get_User_GameOver($competition_id))
                     {
                         /**
                          * 对积分排序
                          */
                         arsort($this->user_crooms[$competition_id]['integral']);
                         /**
-                         * 结束了
+                         * 所有人都结束了
                          */
                         $begin = 1;
                         foreach ($this->user_crooms[$competition_id]['playerid'] as $key => $uid)
                         {
-                            if (isset($this->user_crooms[$competition_id]['playerid'][$uid]['num']))
-                            {
-                                $num = $this->user_crooms[$competition_id]['playerid'][$uid]['num'];
-                                $this->user_crooms[$competition_id]['playerid'][$uid]['num'] = $num - 1;
-                            }
-                            else
-                            {
-                                $num = $this->user_crooms[$competition_id]['config']['numberOfGames'];
-                                $this->user_crooms[$competition_id]['playerid'][$uid] = $num - 1;
-                            }
                             $resul = new SC_Competition_Result();
                             $resul->setCompetitionId($competition_id);
                             $competition = new SC_Competition_Result_Competition_end();
@@ -512,6 +561,7 @@ final class room_manager
                             $resul->setCompetition($competition);
                             $resul->setTopList($this->user_crooms[$competition_id]['config']['toplist']);
                             $resul->setOver(true);
+
                             if (\GatewayWorker\Lib\Gateway::isUidOnline($uid))
                             {
                                 \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(Message_Id::SC_Competition_Result_Id,$resul->serializeToString()));
@@ -731,7 +781,6 @@ final class room_manager
         }
         $this->user_crooms[$roomid]['number'][$playerid] = $this->user_crooms[$roomid]['config']['numberOfGames'];
         $this->User_Competition_game($roomid);
-        $this->Get_User_GameOver($roomid);
     }
 
     /**
@@ -813,6 +862,8 @@ final class room_manager
             $this->user_crooms[intval($code)]['config']['roomType']         = $CreateCardRoom_data->getRoomType();
             $this->user_crooms[intval($code)]['config']['gameType']         = $CreateCardRoom_data->getGameType();
             $this->user_crooms[intval($code)]['number']                     = array();
+            $this->user_crooms[intval($code)]['config']['top_list']         = array();
+            $this->set_top_list(intval($code),$CreateCardRoom_data->getPlayers());
 
             \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(Message_Id::SC_CreateCardRoom_Id,$result->serializeToString()));
         }
