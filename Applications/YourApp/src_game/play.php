@@ -1175,6 +1175,10 @@ function gameOver($roomId,$winner=null)
             $redis->hSet($roomId,'ratio',-1);
         }
         $result=experienceAndGold($roomId);
+        if(is_callable('onGameOver'))
+        {
+            call_user_func('onGameOver',$result);
+        }
         game_db_store_game_result($roomId,$result,$redis->hGet($roomId,'channel'));
         //游戏结果任务
         game_over_task($roomId);
