@@ -218,7 +218,7 @@ final class room_manager
         foreach ($rs as $data)
         {
             $this->user_crooms[$data->code]['createplayer']             = $data->Player_id;
-            $this->user_crooms[$data->code]['gameover']                 = false;
+            $this->user_crooms[$data->code]['number']                   = array();
             $this->user_crooms[$data->code]['playerid']                 = array();
             $this->user_crooms[$data->code]['config']['roomType']       = $data->ROOMTYPE->roomType;
             $this->user_crooms[$data->code]['config']['gameType']       = $data->ROOMTYPE->GAMETYPE->gameType;
@@ -530,19 +530,28 @@ final class room_manager
         }
     }
 
+    /**
+     * 获取房间中都结束了游戏S
+     * @param $roomid
+     * @return bool
+     */
     function Get_User_GameOver($roomid)
     {
-        if (isset($this->user_crooms[$roomid]['playerid']))
+        if (isset($this->user_crooms[$roomid]['number']))
         {
-            foreach ($this->user_crooms[$roomid]['playerid'] as $key => $uid)
+            foreach ($this->user_crooms[$roomid]['number'] as $uid => $num)
             {
-                return true;
+                if ($num > 0)
+                {
+                    return false;
+                }
             }
         }
         else
         {
             return false;
         }
+        return true;
     }
 
     /**
@@ -720,7 +729,9 @@ final class room_manager
                 }
             }
         }
+        $this->user_crooms[$roomid]['number'][$playerid] = $this->user_crooms[$roomid]['config']['numberOfGames'];
         $this->User_Competition_game($roomid);
+        $this->Get_User_GameOver($roomid);
     }
 
     /**
@@ -801,7 +812,7 @@ final class room_manager
             $this->user_crooms[intval($code)]['config']['playermax']        = $CreateCardRoom_data->getPlayers();
             $this->user_crooms[intval($code)]['config']['roomType']         = $CreateCardRoom_data->getRoomType();
             $this->user_crooms[intval($code)]['config']['gameType']         = $CreateCardRoom_data->getGameType();
-            $this->user_crooms[intval($code)]['gameover']                   = false;
+            $this->user_crooms[intval($code)]['number']                     = array();
 
             \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(Message_Id::SC_CreateCardRoom_Id,$result->serializeToString()));
         }
@@ -906,6 +917,7 @@ final class room_manager
                 if ($uid == $playerid)
                 {
                     unset($this->user_crooms[$roomid]['playerid'][$key]);
+                    unset($this->user_crooms[$roomid]['number'][$uid]);
                     break;
                 }
             }
