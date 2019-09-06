@@ -538,7 +538,7 @@ final class room_manager
                         $number = new SC_RoomNumber();
                         $number->setRoomId($roomid);
                         $number->setNumber(count($this->user_crooms[$roomid]['playerid']));
-                        if (\GatewayWorker\Lib\Gateway::isUidOnline($uid) > 0)
+                        if (\GatewayWorker\Lib\Gateway::isUidOnline($uid))
                             \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(Message_Id::SC_RoomNumber_Id,$number->serializeToString()));
                     }
                 }
