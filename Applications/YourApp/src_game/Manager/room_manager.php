@@ -35,6 +35,9 @@ final class room_manager
     private $__time_id_start;
     private $bLoad_user_create_room;    //是否加载用户自定义比赛
 
+    /**
+     * room_manager constructor.
+     */
     private function __construct()
     {
         echo sprintf("room manager construct %s\n",date("Y-m-d H:i:s"));
@@ -245,7 +248,8 @@ final class room_manager
         {
             case \Proto\Room_Type::bisai_dizhu:
                 $count = intval($data->number/3);
-                for ($i=0;$i<$count;$i++){
+                for ($i=0;$i<$count;$i++)
+                {
                     $tmproom = new room_base();
                     $tmproom->set_competition_id($data->id);
                     $tmproom->set_gtype($data->type);
@@ -273,9 +277,12 @@ final class room_manager
     /**
      * @return 获取可用房间
      */
-    function get_empty_room(){
-        foreach ($this->rooms as $room){
-            if ($room->get_state()<=1){
+    function get_empty_room()
+    {
+        foreach ($this->rooms as $room)
+        {
+            if ($room->get_state()<=1)
+            {
                 return $room;
             }
         }
@@ -322,7 +329,8 @@ final class room_manager
      */
     function enter_room($room_id,$user)
     {
-        if (isset($this->rooms)&&isset($this->rooms[$room_id])) {
+        if (isset($this->rooms)&&isset($this->rooms[$room_id]))
+        {
             $this->rooms[$room_id]->user_enter($user);
         }
     }
@@ -340,11 +348,20 @@ final class room_manager
      */
     function reenter_room($room_id,$user)
     {
-        if (isset($this->rooms)&&isset($this->rooms[$room_id])){
+        if (isset($this->rooms)&&isset($this->rooms[$room_id]))
+        {
             $this->rooms[$room_id]->user_reenter($user);
         }
     }
 
+    /**
+     * 单局游戏结束回调
+     * @param $competition_id
+     * @param $room_type
+     * @param $room_id
+     * @param $index
+     * @param $data
+     */
     function roomGame_Calculation($competition_id,$room_type,$room_id,$index,$data)
     {
         echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n";
@@ -353,7 +370,8 @@ final class room_manager
             /**
              * 所有参加者积分（本轮）
              */
-            foreach ($data as $userid => $item){
+            foreach ($data as $userid => $item)
+            {
                 $this->users[$competition_id][$room_type]['integral'][$index][$userid] = $item->gold;
             }
 
@@ -425,6 +443,9 @@ final class room_manager
 
     /**
      * 进入房间
+     * @param $client_id
+     * @param $playerid
+     * @param $roomid
      */
     function JoinTheRoom($client_id,$playerid,$roomid)
     {
@@ -521,6 +542,10 @@ final class room_manager
 
                 $result->setRoomInfo($roominfo);
                 \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(Message_Id::SC_JoinTheRoom_Id,$result->serializeToString()));
+
+                /**
+                 * 通知比赛定义者
+                 */
                 if (\GatewayWorker\Lib\Gateway::isUidOnline($this->user_crooms[$roomid]['createplayer']))
                 {
                     $number = new SC_RoomNumber();
@@ -543,7 +568,9 @@ final class room_manager
                         $number->setRoomId($roomid);
                         $number->setNumber(count($this->user_crooms[$roomid]['playerid']));
                         if (\GatewayWorker\Lib\Gateway::isUidOnline($uid))
-                            \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(Message_Id::SC_RoomNumber_Id,$number->serializeToString()));
+                        {
+                            \GatewayWorker\Lib\Gateway::sendToUid($uid, my_pack(Message_Id::SC_RoomNumber_Id, $number->serializeToString()));
+                        }
                     }
                 }
             }
@@ -552,6 +579,8 @@ final class room_manager
 
     /**
      * 用户创建比赛
+     * @param $client_id
+     * @param $CreateCardRoom_data
      */
     function CreateCardRoom($client_id,$CreateCardRoom_data)
     {
@@ -629,6 +658,8 @@ final class room_manager
 
     /**
      * 初始化房间
+     * @param $client_id
+     * @param $playerid
      */
     function RoomInfoTable($client_id,$playerid)
     {
@@ -689,6 +720,9 @@ final class room_manager
     }
     /**
      * 删除房间
+     * @param $client_id
+     * @param $playerid
+     * @param $roomid
      */
     function delRoom($client_id,$playerid,$roomid)
     {
@@ -708,6 +742,9 @@ final class room_manager
     }
     /**
      * 退出自定义比赛
+     * @param $client_id
+     * @param $playerid
+     * @param $roomid
      */
     function outRoom($client_id,$playerid,$roomid)
     {
@@ -742,11 +779,13 @@ final class room_manager
              */
             foreach ($this->user_crooms[$roomid]['playerid'] as $key =>$uid)
             {
-                $roomnumber = new SC_RoomNumber();
-                $roomnumber->setRoomId($roomid);
-                $roomnumber->setNumber($playernum - 1);
                 if (\GatewayWorker\Lib\Gateway::isUidOnline($uid))
+                {
+                    $roomnumber = new SC_RoomNumber();
+                    $roomnumber->setRoomId($roomid);
+                    $roomnumber->setNumber($playernum - 1);
                     \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(Message_Id::SC_RoomNumber_Id,$roomnumber->serializeToString()));
+                }
             }
         }
     }
