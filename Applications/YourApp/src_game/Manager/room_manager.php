@@ -218,6 +218,7 @@ final class room_manager
         foreach ($rs as $data)
         {
             $this->user_crooms[$data->code]['createplayer']             = $data->Player_id;
+            $this->user_crooms[$data->code]['gameover']                 = false;
             $this->user_crooms[$data->code]['playerid']                 = array();
             $this->user_crooms[$data->code]['config']['roomType']       = $data->ROOMTYPE->roomType;
             $this->user_crooms[$data->code]['config']['gameType']       = $data->ROOMTYPE->GAMETYPE->gameType;
@@ -363,83 +364,184 @@ final class room_manager
      * @param $index
      * @param $data
      */
-    function roomGame_Calculation($competition_id,$room_type,$room_id,$index,$data)
+    function roomGame_Calculation($competition_id,$room_type,$game_type,$room_id,$index,$data)
     {
         echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n";
         if (isset($data))
         {
-            if ($competition_id != 10000)
             /**
-             * 所有参加者积分（本轮）
+             * 大奖赛
              */
-            foreach ($data as $userid => $item)
-            {
-                $this->users[$competition_id][$room_type]['integral'][$index][$userid] = $item->gold;
-            }
-
-            if (isset($this->users[$competition_id][$room_type]['socket_id']) && count($this->users[$competition_id][$room_type]['socket_id']) == $this->rooms[$competition_id][$room_type]['room_max'][$index])
+            if ($competition_id != 10000)
             {
                 /**
-                 * 对本轮积分排序
+                 * 所有参加者积分（本轮）
                  */
-                arsort($this->users[$competition_id][$room_type]['integral'][$index]);
-                $competition_result = new SC_Competition_Result();
-                $begin = 1;
-                foreach ($this->users[$competition_id][$room_type]['socket_id'] as $uid => $socket)
+                foreach ($data as $userid => $item)
                 {
-                    $competition_result->setCompetitionId($competition_id); //competition_id
-                    $competition_end = new SC_Competition_Result_Competition_end();
-                    $competition_end->setPlayerId($uid);
-                    $competition_end->appendLevelUp($begin);
-                    $competition_end->appendLevelUp($this->rooms[$competition_id][$room_type]['top_list'][$index]);
-                    if ($begin < $this->rooms[$competition_id][$room_type]['top_list'][$index + 1])
-                    {
-                        $competition_end->setToUp(true);
-                    }
-                    else
-                    {
-                        $competition_end->setToUp(false);
-                    }
-
-                    $competition_result->setCompetition($competition_end); //competition
-                    $competition_result->setTopList($this->rooms[$competition_id][$room_type]['top_list_str']);
-
-                    if ($index + 1 == count($this->rooms[$competition_id][$room_type]['top_list']))
-                    { //over
-                        $competition_result->setOver(true);
-                    }
-                    else
-                    {
-                        $competition_result->setOver(false);
-                    }
-                    \GatewayWorker\Lib\Gateway::sendToClient($socket,my_pack(Message_Id::SC_Competition_Result_Id,$competition_result->serializeToString()));
-                    $begin++;
+                    $this->users[$competition_id][$room_type]['integral'][$index][$userid] = $item->gold;
                 }
 
-                /**
-                 * 开始下一轮组合
-                 */
-                $index++;
-                if ($index <= count($this->rooms[$competition_id][$room_type]['top_list']))
+                if (isset($this->users[$competition_id][$room_type]['socket_id']) && count($this->users[$competition_id][$room_type]['socket_id']) == $this->rooms[$competition_id][$room_type]['room_max'][$index])
                 {
-                    $begin = 0;
-                    $user_ids = array();
+                    /**
+                     * 对本轮积分排序
+                     */
+                    arsort($this->users[$competition_id][$room_type]['integral'][$index]);
+                    $competition_result = new SC_Competition_Result();
+                    $begin = 1;
                     foreach ($this->users[$competition_id][$room_type]['socket_id'] as $uid => $socket)
                     {
-                        if ($begin < $this->rooms[$competition_id][$room_type]['top_list'][$index])
+                        $competition_result->setCompetitionId($competition_id); //competition_id
+                        $competition_end = new SC_Competition_Result_Competition_end();
+                        $competition_end->setPlayerId($uid);
+                        $competition_end->appendLevelUp($begin);
+                        $competition_end->appendLevelUp($this->rooms[$competition_id][$room_type]['top_list'][$index]);
+                        if ($begin < $this->rooms[$competition_id][$room_type]['top_list'][$index + 1])
                         {
-                            $user_ids[] = $uid;
-                            if (count($user_ids) == 3)
+                            $competition_end->setToUp(true);
+                        }
+                        else
+                        {
+                            $competition_end->setToUp(false);
+                        }
+
+                        $competition_result->setCompetition($competition_end); //competition
+                        $competition_result->setTopList($this->rooms[$competition_id][$room_type]['top_list_str']);
+
+                        if ($index + 1 == count($this->rooms[$competition_id][$room_type]['top_list']))
+                        { //over
+                            $competition_result->setOver(true);
+                        }
+                        else
+                        {
+                            $competition_result->setOver(false);
+                        }
+                        \GatewayWorker\Lib\Gateway::sendToClient($socket,my_pack(Message_Id::SC_Competition_Result_Id,$competition_result->serializeToString()));
+                        $begin++;
+                    }
+
+                    /**
+                     * 开始下一轮组合
+                     */
+                    $index++;
+                    if ($index <= count($this->rooms[$competition_id][$room_type]['top_list']))
+                    {
+                        $begin = 0;
+                        $user_ids = array();
+                        foreach ($this->users[$competition_id][$room_type]['socket_id'] as $uid => $socket)
+                        {
+                            if ($begin < $this->rooms[$competition_id][$room_type]['top_list'][$index])
                             {
-                                $code = substr(time(),-9);
-                                roomInit($user_ids,$room_type, intval($code), $competition_id, $index);
-                                $user_ids = array();
+                                $user_ids[] = $uid;
+                                if (count($user_ids) == 3)
+                                {
+                                    $code = substr(time(),-9);
+                                    roomInit($user_ids,$room_type, intval($code), $competition_id, $index);
+                                    $user_ids = array();
+                                }
+                                $begin++;
                             }
-                            $begin++;
                         }
                     }
                 }
             }
+            else
+            {
+                /**
+                 * 用户自定义比赛
+                 */
+                if ($game_type == 1)
+                {
+                    /**
+                     * 1晋级赛
+                     */
+                    if ($index > 0)
+                    {
+
+                    }
+                }
+                elseif ($game_type == 2)
+                {
+                    /**
+                     * 2积分赛
+                     */
+                    /**
+                     * 所有参加者积分（本轮）
+                     */
+                    foreach ($data as $userid => $item)
+                    {
+                        if (isset($this->user_crooms[$competition_id]['integral']))
+                        {
+                            $gold = $this->user_crooms[$competition_id]['integral'][$userid];
+                            $this->user_crooms[$competition_id]['integral'][$userid] = $item->gold + $gold;
+                        }
+                        else
+                        {
+                            $this->user_crooms[$competition_id]['integral'][$userid] = $item->gold;
+                        }
+                    }
+
+                    if ($index > 0)
+                    {
+                        /**
+                         * 对积分排序
+                         */
+                        arsort($this->user_crooms[$competition_id]['integral']);
+                        /**
+                         * 结束了
+                         */
+                        $begin = 1;
+                        foreach ($this->user_crooms[$competition_id]['playerid'] as $key => $uid)
+                        {
+                            if (isset($this->user_crooms[$competition_id]['playerid'][$uid]['num']))
+                            {
+                                $num = $this->user_crooms[$competition_id]['playerid'][$uid]['num'];
+                                $this->user_crooms[$competition_id]['playerid'][$uid]['num'] = $num - 1;
+                            }
+                            else
+                            {
+                                $num = $this->user_crooms[$competition_id]['config']['numberOfGames'];
+                                $this->user_crooms[$competition_id]['playerid'][$uid] = $num - 1;
+                            }
+                            $resul = new SC_Competition_Result();
+                            $resul->setCompetitionId($competition_id);
+                            $competition = new SC_Competition_Result_Competition_end();
+                            $competition->setPlayerId($uid);
+                            $competition->appendLevelUp($begin);
+                            $resul->setCompetition($competition);
+                            $resul->setTopList($this->user_crooms[$competition_id]['config']['toplist']);
+                            $resul->setOver(true);
+                            if (\GatewayWorker\Lib\Gateway::isUidOnline($uid))
+                            {
+                                \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(Message_Id::SC_Competition_Result_Id,$resul->serializeToString()));
+                            }
+                            $begin++;
+                        }
+                    }
+                    else
+                    {
+                        $index--;
+                    }
+                }
+
+            }
+
+        }
+    }
+
+    function Get_User_GameOver($roomid)
+    {
+        if (isset($this->user_crooms[$roomid]['playerid']))
+        {
+            foreach ($this->user_crooms[$roomid]['playerid'] as $key => $uid)
+            {
+                return true;
+            }
+        }
+        else
+        {
+            return false;
         }
     }
 
@@ -459,7 +561,7 @@ final class room_manager
                     array_push($user_ids,$uid);
                     if (count($user_ids) == 3)
                     {
-                        roomInit($user_ids,$this->user_crooms[$roomid]['config']['roomType'], $roomid, 10000, $this->user_crooms[$roomid]['config']['numberOfGames']);
+                        roomInit($user_ids,$this->user_crooms[$roomid]['config']['roomType'], time(), 10000, $this->user_crooms[$roomid]['config']['numberOfGames']);
                         $user_ids = array();
                     }
                 }
@@ -699,6 +801,7 @@ final class room_manager
             $this->user_crooms[intval($code)]['config']['playermax']        = $CreateCardRoom_data->getPlayers();
             $this->user_crooms[intval($code)]['config']['roomType']         = $CreateCardRoom_data->getRoomType();
             $this->user_crooms[intval($code)]['config']['gameType']         = $CreateCardRoom_data->getGameType();
+            $this->user_crooms[intval($code)]['gameover']                   = false;
 
             \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(Message_Id::SC_CreateCardRoom_Id,$result->serializeToString()));
         }
