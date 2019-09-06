@@ -1,6 +1,6 @@
 <?php
 /**
- * Auto generated from doudizhu.proto at 2019-09-05 16:14:51
+ * Auto generated from doudizhu.proto at 2019-09-06 17:32:41
  *
  * proto package
  */
@@ -17,6 +17,7 @@ class Player_Game_Result extends \ProtobufMessage
     const GOLD = 3;
     const UNPLAYCARDS = 4;
     const LIANSHENG = 5;
+    const GAMETYPE = 6;
 
     /* @var array Field descriptors */
     protected static $fields = array(
@@ -45,6 +46,11 @@ class Player_Game_Result extends \ProtobufMessage
             'required' => false,
             'type' => '\Proto\Player_Game_Result_Lian_Sheng'
         ),
+        self::GAMETYPE => array(
+            'name' => 'gameType',
+            'required' => false,
+            'type' => \ProtobufMessage::PB_TYPE_INT,
+        ),
     );
 
     /**
@@ -67,6 +73,7 @@ class Player_Game_Result extends \ProtobufMessage
         $this->values[self::GOLD] = null;
         $this->values[self::UNPLAYCARDS] = null;
         $this->values[self::LIANSHENG] = null;
+        $this->values[self::GAMETYPE] = null;
     }
 
     /**
@@ -282,6 +289,39 @@ class Player_Game_Result extends \ProtobufMessage
     public function hasLianSheng()
     {
         return $this->get(self::LIANSHENG) !== null;
+    }
+
+    /**
+     * Sets value of 'gameType' property
+     *
+     * @param integer $value Property value
+     *
+     * @return null
+     */
+    public function setGameType($value)
+    {
+        return $this->set(self::GAMETYPE, $value);
+    }
+
+    /**
+     * Returns value of 'gameType' property
+     *
+     * @return integer
+     */
+    public function getGameType()
+    {
+        $value = $this->get(self::GAMETYPE);
+        return $value === null ? (integer)$value : $value;
+    }
+
+    /**
+     * Returns true if 'gameType' property is set, false otherwise
+     *
+     * @return boolean
+     */
+    public function hasGameType()
+    {
+        return $this->get(self::GAMETYPE) !== null;
     }
 }
 }
