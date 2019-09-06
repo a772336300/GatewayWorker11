@@ -33,6 +33,7 @@ final class room_manager
     private $user_crooms;    //用户自定义房间
     private $__time_id_read;
     private $__time_id_start;
+    private $bLoad_user_create_room;    //是否加载用户自定义比赛
 
     private function __construct()
     {
@@ -41,6 +42,7 @@ final class room_manager
         $this->user_number=0;
         $this->user_ids=null;
         $this->rooms=null;          //房间
+        $this->bLoad_user_create_room=false;
         $this->__time_id_read=Timer::add(20,function ()
         {
             $this->room_loop();
@@ -194,7 +196,7 @@ final class room_manager
         }
     }
 
-    /*
+    /**
      * 读取用户自定义比赛
      */
     function load_user_room()
@@ -220,9 +222,11 @@ final class room_manager
             $this->user_crooms[$data->code]['config']['playermax']      = $data->ROOMTYPE->GAMETYPE->CODE->players;
             $this->user_crooms[$data->code]['config']['numberOfGames']  = $data->ROOMTYPE->GAMETYPE->CODE->numberOfGames;
         }
+        $this->bLoad_user_create_room=true;
     }
 
     /**
+     * 创建房间
      * @param $data =>[
      *                  'id'=>1,
      *                  'type'=>'ddz'/'xzdd',
@@ -421,7 +425,7 @@ final class room_manager
 
     /**
      * 进入房间
-     **/
+     */
     function JoinTheRoom($client_id,$playerid,$roomid)
     {
         if (isset($this->user_crooms[$roomid]['config']['playermax']))
@@ -721,6 +725,18 @@ final class room_manager
             $outroom->setRoomId($roomid);
             \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(Message_Id::SC_RoomOut_Id,$outroom->serializeToString()));
             $playernum = count($this->user_crooms[$roomid]['playerid']);
+
+            /**
+             * 通知比赛定义者
+             */
+            if (\GatewayWorker\Lib\Gateway::isUidOnline($this->user_crooms[$roomid]['createplayer']))
+            {
+                $roomnumber = new SC_RoomNumber();
+                $roomnumber->setRoomId($roomid);
+                $roomnumber->setNumber($playernum - 1);
+                \GatewayWorker\Lib\Gateway::sendToUid($this->user_crooms[$roomid]['createplayer'],my_pack(Message_Id::SC_RoomNumber_Id,$roomnumber->serializeToString()));
+            }
+
             /**
              * 通知所有人
              */
