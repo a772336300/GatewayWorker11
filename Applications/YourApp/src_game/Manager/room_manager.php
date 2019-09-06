@@ -442,6 +442,30 @@ final class room_manager
     }
 
     /**
+     * 自定义比赛开赛（人满就开）
+     * @param $roomid 自定义比赛房间ID
+     */
+    function User_Competition_game($roomid)
+    {
+        if (isset($this->user_crooms[$roomid]['playerid']))
+        {
+            if (count($this->user_crooms[$roomid]['playerid']) == $this->user_crooms[$roomid]['config']['playermax'])
+            {
+                $user_ids = array();
+                foreach ($this->user_crooms[$roomid]['playerid'] as $key => $uid)
+                {
+                    array_push($user_ids,$uid);
+                    if (count($user_ids) == 3)
+                    {
+                        roomInit($user_ids,$this->user_crooms[$roomid]['config']['roomType'], $roomid, 10000, $this->user_crooms[$roomid]['config']['numberOfGames']);
+                        $user_ids = array();
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * 进入房间
      * @param $client_id
      * @param $playerid
@@ -592,6 +616,7 @@ final class room_manager
                 }
             }
         }
+        $this->User_Competition_game($roomid);
     }
 
     /**
