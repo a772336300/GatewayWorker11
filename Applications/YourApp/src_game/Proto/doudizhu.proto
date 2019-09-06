@@ -188,6 +188,7 @@ message Player_Game_Result
 		repeated Goods extra_goods=4;
 	}
 	optional Lian_Sheng lianSheng = 5;
+	optional int32 gameType = 6;  //游戏的类型1.自由 2.积分 3.晋级 4.比赛
 	//得分加倍
 }
 message SC_Game_Result
