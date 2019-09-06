@@ -34,6 +34,7 @@ final class room_manager
     private $__time_id_read;
     private $__time_id_start;
     private $bLoad_user_create_room;    //是否加载用户自定义比赛
+    private static $user_crate_room_id; //取法
 
     /**
      * room_manager constructor.
@@ -367,6 +368,7 @@ final class room_manager
         echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n";
         if (isset($data))
         {
+            if ($competition_id != 10000)
             /**
              * 所有参加者积分（本轮）
              */
