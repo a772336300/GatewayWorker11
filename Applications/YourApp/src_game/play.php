@@ -1212,6 +1212,7 @@ function game_over_task($roomId)
     $dizhu=$redis->hGet($roomId,'dizhu');
     foreach ($players as $player)
     {
+        game_set_tack($player,$task_type['youxijiesu']);
         if($player==$dizhu)
         {
             game_set_tack($player,$task_type['dangdizhu']);

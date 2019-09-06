@@ -694,8 +694,12 @@ final class room_manager
 
         if (!isset($this->user_crooms[intval($code)]['config']['playermax']))
         {
-            $this->user_crooms[intval($code)]['config']['playermax'] = $CreateCardRoom_data->getPlayers();
-            $this->user_crooms[intval($code)]['createplayer'] = $CreateCardRoom_data->getPlayerid();
+            $this->user_crooms[intval($code)]['createplayer']               = $CreateCardRoom_data->getPlayerid();
+            $this->user_crooms[intval($code)]['config']['numberOfGames']    = $CreateCardRoom_data->getNumberOfGames();
+            $this->user_crooms[intval($code)]['config']['playermax']        = $CreateCardRoom_data->getPlayers();
+            $this->user_crooms[intval($code)]['config']['roomType']         = $CreateCardRoom_data->getRoomType();
+            $this->user_crooms[intval($code)]['config']['gameType']         = $CreateCardRoom_data->getGameType();
+
             \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(Message_Id::SC_CreateCardRoom_Id,$result->serializeToString()));
         }
     }
