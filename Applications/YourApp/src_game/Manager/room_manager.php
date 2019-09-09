@@ -749,11 +749,11 @@ final class room_manager
                     $roominfo = new RoomInfoTable();
                     $roominfo->setGameState(0);
                     $roominfo->setRoomId($roomid);
-                    if (isset($this->user_crooms[$roomid]['config']['roomType']) && $this->user_crooms[$roomid]['config']['roomType'] == 1)
+                    if (isset($this->user_crooms[$roomid]['config']['roomType']) && $this->user_crooms[$roomid]['config']['roomType'] == \Proto\Game_Type::jinji)
                     {
                         $roominfo->setGameText('地主');
                     }
-                    elseif (isset($this->user_crooms[$roomid]['config']['roomType']) && $this->user_crooms[$roomid]['config']['roomType'] == 2)
+                    elseif (isset($this->user_crooms[$roomid]['config']['roomType']) && $this->user_crooms[$roomid]['config']['roomType'] == \Proto\Game_Type::jifen)
                     {
                         $roominfo->setGameText('麻将');
                     }
@@ -762,11 +762,11 @@ final class room_manager
                         $roominfo->setNameText($this->user_crooms[$roomid]['config']['name']);
                     }
 
-                    if (isset($this->user_crooms[$roomid]['config']['gameType']) && $this->user_crooms[$roomid]['config']['gameType'] == 1)
+                    if (isset($this->user_crooms[$roomid]['config']['gameType']) && $this->user_crooms[$roomid]['config']['gameType'] == \Proto\Game_Type::jinji)
                     {
                         $roominfo->setTypeText('晋级赛');
                     }
-                    elseif (isset($this->user_crooms[$roomid]['config']['gameType']) && $this->user_crooms[$roomid]['config']['gameType'] == 2)
+                    elseif (isset($this->user_crooms[$roomid]['config']['gameType']) && $this->user_crooms[$roomid]['config']['gameType'] == \Proto\Game_Type::jifen)
                     {
                         $roominfo->setTypeText('积分赛');
                     }
@@ -803,11 +803,11 @@ final class room_manager
                 $roominfo = new RoomInfoTable();
                 $roominfo->setGameState(0);
                 $roominfo->setRoomId($roomid);
-                if (isset($this->user_crooms[$roomid]['config']['roomType']) && $this->user_crooms[$roomid]['config']['roomType'] == 1)
+                if (isset($this->user_crooms[$roomid]['config']['roomType']) && $this->user_crooms[$roomid]['config']['roomType'] == \Proto\Game_Type::jinji)
                 {
                     $roominfo->setGameText('地主');
                 }
-                elseif (isset($this->user_crooms[$roomid]['config']['roomType']) && $this->user_crooms[$roomid]['config']['roomType'] == 2)
+                elseif (isset($this->user_crooms[$roomid]['config']['roomType']) && $this->user_crooms[$roomid]['config']['roomType'] == \Proto\Game_Type::jifen)
                 {
                     $roominfo->setGameText('麻将');
                 }
@@ -816,11 +816,11 @@ final class room_manager
                     $roominfo->setNameText($this->user_crooms[$roomid]['config']['name']);
                 }
 
-                if (isset($this->user_crooms[$roomid]['config']['gameType']) && $this->user_crooms[$roomid]['config']['gameType'] == 1)
+                if (isset($this->user_crooms[$roomid]['config']['gameType']) && $this->user_crooms[$roomid]['config']['gameType'] == \Proto\Game_Type::jinji)
                 {
                     $roominfo->setTypeText('晋级赛');
                 }
-                elseif (isset($this->user_crooms[$roomid]['config']['gameType']) && $this->user_crooms[$roomid]['config']['gameType'] == 2)
+                elseif (isset($this->user_crooms[$roomid]['config']['gameType']) && $this->user_crooms[$roomid]['config']['gameType'] == \Proto\Game_Type::jifen)
                 {
                     $roominfo->setTypeText('积分赛');
                 }
