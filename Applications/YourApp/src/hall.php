@@ -989,11 +989,9 @@ function get_super_agent($uid){
     $agent_id=$user["agent_id"];
     $user_type=$user["user_type"];
     if($agent_id==""){
-        if($user_type==4){
-            return (int)$agent_id;
-        }else{
-            return 0;
-        }
+        return 0;
+    }else if($user_type==4){
+        return (int)$agent_id;
     }else{
         return get_super_agent($agent_id);
     }
