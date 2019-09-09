@@ -15,7 +15,6 @@ function robot_join($client_id,$robotId)
     echo "\n机器人加入id:$robotId\n";
     game_send_join($client_id,0);
 }
-
 function game_join($client_id,$join)
 {
     //test

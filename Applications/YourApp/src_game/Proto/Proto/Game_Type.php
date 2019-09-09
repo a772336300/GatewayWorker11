@@ -7,13 +7,12 @@
 
 namespace Proto {
 /**
- * Play_Data_Type enum
+ * Game_Type enum
  */
-final class Play_Data_Type
+final class Game_Type
 {
-    const jiaodizhu = 1;
-    const qiangdizhu = 2;
-    const pai = 3;
+    const jinji = 1;
+    const jifen = 2;
 
     /**
      * Returns defined enum values
@@ -23,9 +22,8 @@ final class Play_Data_Type
     public function getEnumValues()
     {
         return array(
-            'jiaodizhu' => self::jiaodizhu,
-            'qiangdizhu' => self::qiangdizhu,
-            'pai' => self::pai,
+            'jinji' => self::jinji,
+            'jifen' => self::jifen,
         );
     }
 }
