@@ -703,7 +703,7 @@ final class room_manager
                     array_push($user_ids,$uid);
                     if (count($user_ids) == 3)
                     {
-                        roomInit($user_ids,$this->user_crooms[$roomid]['config']['roomType'], time(), 10000, $this->user_crooms[$roomid]['config']['numberOfGames']);
+                        roomInit($user_ids,$this->user_crooms[$roomid]['config']['roomType'], time(), 10000, $this->user_crooms[$roomid]['config']['numberOfGames'],$this->user_crooms[$roomid]['config']['gameType']);
                         $user_ids = array();
                     }
                 }
