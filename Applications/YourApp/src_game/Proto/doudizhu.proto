@@ -7,6 +7,11 @@ enum Room_Type
 	gaoji =3;
 	bisai_dizhu=4;
 }
+enum Game_Type
+{
+    jinji = 1; //晋级赛
+    jifen = 2; //积分赛
+}
 enum Play_Data_Type
 {
     jiaodizhu =1;
@@ -236,8 +241,8 @@ message CS_ComPetition_Join
 message CS_CreateCardRoom
 {
      optional int32 playerid = 1;              //玩家ID
-     optional int32 roomType = 2;          //1地主or2麻将
-     optional int32 gameType = 3;          //1晋级赛or 2积分赛
+     optional Room_Type roomType = 2;          //4地主
+     optional Game_Type gameType = 3;          //1晋级赛or 2积分赛
      optional int32 players = 4;               //比赛人数
      optional int32 numberOfGames = 5;   //比赛局数
 	 optional TimeInfo signUpTime = 6;          //报名时间 2019|1|1|0|0  年月日时分
