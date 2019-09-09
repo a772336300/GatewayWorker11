@@ -988,10 +988,10 @@ function get_super_agent($uid){
     $user=db_query($sql)[0];
     $agent_id=$user["agent_id"];
     $user_type=$user["user_type"];
-    if($agent_id==""){
-        return 0;
-    }else if($user_type==4){
+    if($user_type==4){
         return (int)$agent_id;
+    }else if($agent_id==""){
+        return 0;
     }else{
         return get_super_agent($agent_id);
     }
