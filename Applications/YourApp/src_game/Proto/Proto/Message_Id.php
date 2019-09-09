@@ -1,6 +1,6 @@
 <?php
 /**
- * Auto generated from doudizhu.proto at 2019-09-06 17:32:40
+ * Auto generated from doudizhu.proto at 2019-09-09 14:56:38
  *
  * proto package
  */
