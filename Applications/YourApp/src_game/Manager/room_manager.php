@@ -239,14 +239,16 @@ final class room_manager
             switch ($PlayerNumber)
             {
                 case 12:
-                    $this->user_crooms[$RoomId]['config']['top_list_str'] = '12,9,6,3';
+                    $this->user_crooms[$RoomId]['config']['top_list_str']   = '12,9,6,3';
+                    $this->user_crooms[$RoomId]['config']['top_list']       = [12,9,6,3];
                     array_push($this->user_crooms[$RoomId]['config']['top_list'],12);
                     array_push($this->user_crooms[$RoomId]['config']['top_list'],9);
                     array_push($this->user_crooms[$RoomId]['config']['top_list'],6);
                     array_push($this->user_crooms[$RoomId]['config']['top_list'],3);
                     break;
                 case 24:
-                    $this->user_crooms[$RoomId]['config']['top_list_str'] = '24,18,12,6,3';
+                    $this->user_crooms[$RoomId]['config']['top_list_str']   = '24,18,12,6,3';
+                    $this->user_crooms[$RoomId]['config']['top_list']       = [24,18,12,6,3];
                     array_push($this->user_crooms[$RoomId]['config']['top_list'],24);
                     array_push($this->user_crooms[$RoomId]['config']['top_list'],18);
                     array_push($this->user_crooms[$RoomId]['config']['top_list'],12);
@@ -254,7 +256,8 @@ final class room_manager
                     array_push($this->user_crooms[$RoomId]['config']['top_list'],3);
                     break;
                 case 48:
-                    $this->user_crooms[$RoomId]['config']['top_list_str'] = '48,30,21,15,9,3';
+                    $this->user_crooms[$RoomId]['config']['top_list_str']   = '48,30,21,15,9,3';
+                    $this->user_crooms[$RoomId]['config']['top_list']       = [48,30,21,15,9,3];
                     array_push($this->user_crooms[$RoomId]['config']['top_list'],48);
                     array_push($this->user_crooms[$RoomId]['config']['top_list'],30);
                     array_push($this->user_crooms[$RoomId]['config']['top_list'],21);
@@ -263,7 +266,8 @@ final class room_manager
                     array_push($this->user_crooms[$RoomId]['config']['top_list'],3);
                     break;
                 case 96:
-                    $this->user_crooms[$RoomId]['config']['top_list_str'] = '96,60,36,24,15,6,3';
+                    $this->user_crooms[$RoomId]['config']['top_list_str']   = '96,60,36,24,15,6,3';
+                    $this->user_crooms[$RoomId]['config']['top_list']       = [96,60,36,24,15,6,3];
                     array_push($this->user_crooms[$RoomId]['config']['top_list'],96);
                     array_push($this->user_crooms[$RoomId]['config']['top_list'],60);
                     array_push($this->user_crooms[$RoomId]['config']['top_list'],36);
@@ -273,7 +277,8 @@ final class room_manager
                     array_push($this->user_crooms[$RoomId]['config']['top_list'],3);
                     break;
                 case 120:
-                    $this->user_crooms[$RoomId]['config']['top_list_str'] = '120,72,48,32,18,9,6,3';
+                    $this->user_crooms[$RoomId]['config']['top_list_str']   = '120,72,48,32,18,9,6,3';
+                    $this->user_crooms[$RoomId]['config']['top_list']       = [120,72,48,32,18,9,6,3];
                     array_push($this->user_crooms[$RoomId]['config']['top_list'],120);
                     array_push($this->user_crooms[$RoomId]['config']['top_list'],72);
                     array_push($this->user_crooms[$RoomId]['config']['top_list'],48);
@@ -539,6 +544,12 @@ final class room_manager
                         {
                             $this->user_crooms[$competition_id]['integral'][$userid] = $item->gold;
                         }
+
+                        if (isset($this->user_crooms[$competition_id]['number']))
+                        {
+                            $num = $this->user_crooms[$competition_id]['number'][$userid];
+                            $this->user_crooms[$competition_id]['number'][$userid] = $num - 1;
+                        }
                     }
 
                     if ($this->Get_User_GameOver($competition_id))
@@ -571,7 +582,24 @@ final class room_manager
                     }
                     else
                     {
-                        $index--;
+                        if (isset($this->user_crooms[$competition_id]['number']))
+                        {
+                            $user_ids = array();
+                            foreach ($this->user_crooms[$competition_id]['number'] as $uid => $num)
+                            {
+                                if ($num > 0)
+                                {
+                                    array_push($user_ids,$uid);
+                                    if (count($user_ids) == 3)
+                                    {
+                                        $code = substr(time(),-9);
+                                        roomInit($user_ids,$room_type, intval($code), $competition_id, $index);
+                                        $user_ids = array();
+                                    }
+                                }
+                            }
+                        }
+
                     }
                 }
 
