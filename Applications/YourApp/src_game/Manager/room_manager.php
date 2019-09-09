@@ -520,9 +520,32 @@ final class room_manager
                     /**
                      * 1晋级赛
                      */
-                    if ($index > 0)
+                    $this->add_integral($competition_id,$data);
+
+                    foreach ($data as $userid => $item)
+                    {
+                        if (isset($this->user_crooms[$competition_id]['number']))
+                        {
+                            $num = $this->user_crooms[$competition_id]['number'][$userid];
+                            $this->user_crooms[$competition_id]['number'][$userid] = $num - 1;
+                        }
+                    }
+
+                    if ($this->Get_User_GameOver($competition_id))
                     {
 
+                    }
+
+                    if ($index > 0)
+                    {
+                        $this->add_integral($competition_id,$data);
+                        foreach ($data as $userid => $item)
+                        {
+                            if (isset($this->user_crooms[$competition_id]['number']))
+                            {
+
+                            }
+                        }
                     }
                 }
                 elseif ($game_type == 2)
@@ -535,15 +558,7 @@ final class room_manager
                      */
                     foreach ($data as $userid => $item)
                     {
-                        if (isset($this->user_crooms[$competition_id]['integral']))
-                        {
-                            $gold = $this->user_crooms[$competition_id]['integral'][$userid];
-                            $this->user_crooms[$competition_id]['integral'][$userid] = $item->gold + $gold;
-                        }
-                        else
-                        {
-                            $this->user_crooms[$competition_id]['integral'][$userid] = $item->gold;
-                        }
+                        $this->add_integral($competition_id,$data);
 
                         if (isset($this->user_crooms[$competition_id]['number']))
                         {
@@ -602,6 +617,22 @@ final class room_manager
 
                     }
                 }
+                /**
+                 * 比赛结束时关闭这个比赛
+                 */
+                if ($this->Get_User_GameOver($competition_id))
+                {
+                    $collname='user_create_competition';
+                    $mongodb=mongo_db::singleton('func_system');
+                    $delets = [
+                        ['q' =>['code' => $competition_id], 'limit' =>0]
+                    ];
+                    $rs = $mongodb->del($collname, $delets);
+                    /**
+                     * 删除对应内存数组
+                     */
+                    unset($this->user_crooms[$competition_id]);
+                }
 
             }
 
@@ -609,7 +640,31 @@ final class room_manager
     }
 
     /**
-     * 获取房间中都结束了游戏S
+     * 记录总成绩
+     * @param $competition_id
+     * @param $data
+     */
+    function add_integral($competition_id,$data)
+    {
+        if (isset($data))
+        {
+            foreach ($data as $userid => $item)
+            {
+                if (isset($this->user_crooms[$competition_id]['integral']))
+                {
+                    $gold = $this->user_crooms[$competition_id]['integral'][$userid];
+                    $this->user_crooms[$competition_id]['integral'][$userid] = $item->gold + $gold;
+                }
+                else
+                {
+                    $this->user_crooms[$competition_id]['integral'][$userid] = $item->gold;
+                }
+            }
+        }
+    }
+
+    /**
+     * 获取房间中都结束了游戏
      * @param $roomid
      * @return bool
      */
