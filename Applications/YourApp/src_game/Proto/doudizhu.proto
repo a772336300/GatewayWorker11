@@ -6,6 +6,7 @@ enum Room_Type
 	zhongji =2;
 	gaoji =3;
 	bisai_dizhu=4;
+	bisai_majiang = 5;
 }
 enum Game_Type
 {
