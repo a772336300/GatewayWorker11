@@ -643,6 +643,41 @@ function hall_message_switch($mid,$data){
                 send_pack_notice_info($uid,$rs[0]->content,$rs[0]->state);
             }
             break;
+        //推广获得联欢豆记录
+        case 20035:
+            echo "\n---------- 推广获得联欢豆记录 -----------\n";
+
+//            $sql="SELECT lhd FROM `bolaik_user`.`user_info` WHERE user_id='$uid'";
+//            $lhd = db_query($sql)[0]["lhd"];
+            //查询用户信息
+            $sql="SELECT user_id FROM `bolaik_user`.`user_info` WHERE agent_id='$uid'";
+            $users = db_query($sql);
+            foreach ($users as $key => &$user) {
+                $user_id=$user["user_id"];
+                //查询用户昵称
+                $sql="SELECT name FROM `bolaik_db`.`user` WHERE uid=$user_id";
+                $us=db_query($sql)[0];
+                $user["name"]=$us['name'];
+                //查询大奖赛次数
+                $filter = [
+                    "uid"=>$user_id,
+                    "agent_id"=>$uid,
+                    "is_super"=>0
+                ];
+                $log = $hall_log->query('agent_lhd_logs', $filter, []);
+                $user["num"]=count($log);
+                //查询绑定时间
+                $filter = [
+                    "uid"=>(int)$user_id
+                ];
+                $log = $hall_log->query('spread_log', $filter, []);
+                $user["bind_time"]=count($log)>0?$log[0]->bind_time:"";
+            }
+
+            echo "--最终输出：\n";
+            print_r($users);
+            send_pack_spread_lhd_info($uid,$users);
+            break;
     }
 }
 
@@ -845,6 +880,19 @@ function send_user_coin_change($uid,$phone){
     $BU=getBuRemain($phone);
     //发送帐变
     send_pack_BU_change($uid,$BU,$money);
+}
+
+/**发送玩家联欢豆信息
+ * @param $uid
+ * @param $phone
+ */
+function send_user_lhd($uid){
+    //查询玩家货币信息
+    $sql="SELECT lhd FROM `bolaik_user`.`user_info` WHERE user_id=$uid";
+    $rs=db_query($sql);
+    $lhd=$rs[0]['lhd'];
+    //发送帐变
+    send_pack_Lhd($uid,$lhd);
 }
 
 /**发送玩家货币变化信息

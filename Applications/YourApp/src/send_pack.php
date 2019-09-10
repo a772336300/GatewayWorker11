@@ -165,6 +165,15 @@ function send_pack_BU_change($uid,$BU,$gold_coin)
     \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(1014,$object->serializeToString()));
     //$connection->send(my_pack(802,$object->serializeToString()));
 }
+
+function send_pack_Lhd($uid,$lhd)
+{
+    $object = new \Proto\SC_User_LHD();
+    $object->setLhd($lhd);
+    \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20103,$object->serializeToString()));
+    //$connection->send(my_pack(802,$object->serializeToString()));
+}
+
 function send_pack_strength_change($uid,$strength)
 {
     $object = new \Proto\SC_User_UB();
@@ -513,6 +522,22 @@ function send_pack_spread_info($uid,$user,$data)
         $object->appendSpreadInfo($spread_info);
     }
     \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20030,$object->serializeToString()));
+}
+
+function send_pack_spread_lhd_info($uid,$lhd,$data)
+{
+    $object= new \Proto\SC_User_Spread_Lhd_info();
+    foreach ($data as $value)
+    {
+        $spread_info = new \Proto\E_Spread_Lhd_Info();
+        $spread_info->setUid($value["user_id"]);
+        $spread_info->setName($value["name"]);
+        $spread_info->setNum($value["num"]);
+        $spread_info->setBindTime($value["bind_time"]);
+
+        $object->appendSpreadLhdInfo($spread_info);
+    }
+    \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20036,$object->serializeToString()));
 }
 
 function send_user_get_spread_award($uid,$code)
