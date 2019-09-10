@@ -449,6 +449,13 @@ message SC_User_UB
 
 }
 
+//联欢豆变化
+message SC_User_LHD
+{
+	//option (msgid) = 20103;
+	optional int32     	lhd                = 1; //联欢豆
+}
+
 /////////////////GPS位置 1015 --> 
 
 //GPS位置 
@@ -912,6 +919,28 @@ message SC_User_Notice_Info
 	optional  int32 state= 2;//状态 1开启，0关闭
 }
 
+//获取推广获得联欢豆信息
+message CS_User_Spread_Lhd_info
+{
+	//option (msgid) = 20035;
+}
+
+// 获得联欢豆信息
+message E_Spread_Lhd_Info
+{
+	optional int32  uid  = 1;	//用户id
+	optional string  name= 2;	//用户名称
+	optional int32  num= 3;	//大奖赛次数
+	optional string  bind_time= 4;	//绑定时间
+}
+
+//获取推广获得联欢豆信息 返回
+message SC_User_Spread_Lhd_info
+{
+	//option (msgid) = 20036;
+	repeated E_Spread_Lhd_Info spread_lhd_info = 1;
+}
+
 //用户邮件变动
 message SC_User_Email_Update
 {
@@ -919,6 +948,8 @@ message SC_User_Email_Update
 	optional E_User_mail user_mail = 1;//邮件信息
 	optional  int32 type= 2;//类型 1添加，2修改，3删除
 }
+
+
 
 
 

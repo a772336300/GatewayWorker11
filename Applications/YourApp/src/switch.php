@@ -341,6 +341,7 @@ function message_switch($client_id,$mid,$data)
                 //801基本信息
                 send_pack_user_info($client_id,$user_info[0]);
                 send_pack_task_reward($client_id);
+                send_user_lhd($_SESSION['uid']);
                 $user_info_bag = db_get_user_bag_info_by_uid($_SESSION['uid']);
                 var_dump($user_info_bag);
                 send_pack_user_bag_info($client_id,$user_info_bag[0]);
