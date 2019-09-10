@@ -514,40 +514,21 @@ final class room_manager
                 /**
                  * 用户自定义比赛
                  */
-                if ($game_type == 1)
+                if ($game_type == \Proto\Game_Type::jinji)
                 {
                     /**
                      * 1晋级赛
                      */
                     $this->add_integral($competition_id,$data);
 
-                    foreach ($data as $userid => $item)
-                    {
-                        if (isset($this->user_crooms[$competition_id]['number']))
-                        {
-                            $num = $this->user_crooms[$competition_id]['number'][$userid];
-                            $this->user_crooms[$competition_id]['number'][$userid] = $num - 1;
-                        }
-                    }
+                    $this->sub_number($competition_id,$data);
 
                     if ($this->Get_User_GameOver($competition_id))
                     {
 
                     }
-
-                    if ($index > 0)
-                    {
-                        $this->add_integral($competition_id,$data);
-                        foreach ($data as $userid => $item)
-                        {
-                            if (isset($this->user_crooms[$competition_id]['number']))
-                            {
-
-                            }
-                        }
-                    }
                 }
-                elseif ($game_type == 2)
+                elseif ($game_type == \Proto\Game_Type::jifen)
                 {
                     /**
                      * 2积分赛
@@ -555,16 +536,9 @@ final class room_manager
                     /**
                      * 所有参加者积分（本轮）
                      */
-                    foreach ($data as $userid => $item)
-                    {
-                        $this->add_integral($competition_id,$data);
+                    $this->add_integral($competition_id,$data);
 
-                        if (isset($this->user_crooms[$competition_id]['number']))
-                        {
-                            $num = $this->user_crooms[$competition_id]['number'][$userid];
-                            $this->user_crooms[$competition_id]['number'][$userid] = $num - 1;
-                        }
-                    }
+                    $this->sub_number($competition_id,$data);
 
                     if ($this->Get_User_GameOver($competition_id))
                     {
@@ -656,6 +630,24 @@ final class room_manager
                 else
                 {
                     $this->user_crooms[$competition_id]['integral'][$userid] = $item['gold'];
+                }
+            }
+        }
+    }
+
+    function sub_number($competition_id,$data)
+    {
+        if (isset($this->user_crooms[$competition_id]))
+        {
+            if (isset($data))
+            {
+                foreach ($data as $userid => $item)
+                {
+                    if (isset($this->user_crooms[$competition_id]['number']))
+                    {
+                        $num = $this->user_crooms[$competition_id]['number'][$userid];
+                        $this->user_crooms[$competition_id]['number'][$userid] = $num - 1;
+                    }
                 }
             }
         }
