@@ -1184,7 +1184,7 @@ function gameOver($roomId,$winner=null)
         game_over_task($roomId);
 
     }
-    game_send_game_result($roomId,$result);
+    game_send_game_result($roomId,$result,$redis->hGet($roomId,'roomtype'),$redis->hGet($roomId,'gametype'));
 
     //比赛房间计算
     if ($redis->hGet($roomId,'roomtype') == \Proto\Room_Type::bisai_dizhu)
