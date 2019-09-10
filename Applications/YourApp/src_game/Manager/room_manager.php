@@ -436,7 +436,7 @@ final class room_manager
             /**
              * 大奖赛
              */
-            if ($competition_id != 10000)
+            if ($competition_id < 10000)
             {
                 /**
                  * 所有参加者积分（本轮）
@@ -500,8 +500,7 @@ final class room_manager
                                 $user_ids[] = $uid;
                                 if (count($user_ids) == 3)
                                 {
-                                    $code = substr(time(),-9);
-                                    roomInit($user_ids,$room_type, intval($code), $competition_id, $index);
+                                    roomInit($user_ids,$room_type, time(), $competition_id, $index);
                                     $user_ids = array();
                                 }
                                 $begin++;
@@ -607,8 +606,7 @@ final class room_manager
                                     array_push($user_ids,$uid);
                                     if (count($user_ids) == 3)
                                     {
-                                        $code = substr(time(),-9);
-                                        roomInit($user_ids,$room_type, intval($code), $competition_id, $index);
+                                        roomInit($user_ids,$room_type, time(), $competition_id, $index,intval($this->user_crooms[$competition_id]['config']['gameType']));
                                         $user_ids = array();
                                     }
                                 }
@@ -650,14 +648,14 @@ final class room_manager
         {
             foreach ($data as $userid => $item)
             {
-                if (isset($this->user_crooms[$competition_id]['integral']))
+                if (isset($this->user_crooms[$competition_id]['integral'][$userid]))
                 {
                     $gold = $this->user_crooms[$competition_id]['integral'][$userid];
-                    $this->user_crooms[$competition_id]['integral'][$userid] = $item->gold + $gold;
+                    $this->user_crooms[$competition_id]['integral'][$userid] = $item['gold'] + $gold;
                 }
                 else
                 {
-                    $this->user_crooms[$competition_id]['integral'][$userid] = $item->gold;
+                    $this->user_crooms[$competition_id]['integral'][$userid] = $item['gold'];
                 }
             }
         }
@@ -703,7 +701,7 @@ final class room_manager
                     array_push($user_ids,$uid);
                     if (count($user_ids) == 3)
                     {
-                        roomInit($user_ids,$this->user_crooms[$roomid]['config']['roomType'], time(), 10000, $this->user_crooms[$roomid]['config']['numberOfGames'],$this->user_crooms[$roomid]['config']['gameType']);
+                        roomInit($user_ids,$this->user_crooms[$roomid]['config']['roomType'], time(), $roomid, $this->user_crooms[$roomid]['config']['numberOfGames'],$this->user_crooms[$roomid]['config']['gameType']);
                         $user_ids = array();
                     }
                 }
