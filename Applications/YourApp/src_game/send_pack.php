@@ -86,7 +86,7 @@ function game_send_bottom_cards($roomId,$cards,$dizhu)
     $message->setOwner($dizhu);
     Gateway::sendToGroup($roomId,my_pack(\Proto\Message_Id::SC_Bottom_Cards_Id,$message->serializeToString()));
 }
-function game_send_game_result($roomId,$result)
+function game_send_game_result($roomId,$result,$roomtype,$gametype)
 {
     $message = new \Proto\SC_Game_Result();
     foreach ($result as $playerId =>$item)
@@ -95,6 +95,8 @@ function game_send_game_result($roomId,$result)
         $player_game_result->setPlayerId($playerId);
         $player_game_result->setGold($item['gold']);
         $player_game_result->setUnPlayCards($item['cardsLeft']);
+        $player_game_result->setRoomType($roomtype);
+        $player_game_result->setGameType($gametype);
         $message->appendPlayerGameResult($player_game_result);
 
         $player_liansheng= new \Proto\Player_Game_Result_Lian_Sheng();

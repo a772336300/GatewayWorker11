@@ -523,9 +523,18 @@ final class room_manager
 
                     $this->sub_number($competition_id,$data);
 
-                    if ($this->Get_User_GameOver($competition_id))
+                    $index--;
+                    if ($index >= 0)
                     {
+                        if ($this->Get_User_GameOver($competition_id))
+                        {
+                            //asdf
 
+                        }
+                        else
+                        {
+
+                        }
                     }
                 }
                 elseif ($game_type == \Proto\Game_Type::jifen)
@@ -572,6 +581,7 @@ final class room_manager
                     {
                         if (isset($this->user_crooms[$competition_id]['number']))
                         {
+                            sleep(5);
                             $user_ids = array();
                             foreach ($this->user_crooms[$competition_id]['number'] as $uid => $num)
                             {
