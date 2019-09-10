@@ -238,6 +238,13 @@ final class room_manager
         {
             switch ($PlayerNumber)
             {
+                case 3:
+                    $this->user_crooms[$RoomId]['config']['top_list_str']   = '3,2,1';
+                    $this->user_crooms[$RoomId]['config']['top_list']       = [3,2,1];
+                    array_push($this->user_crooms[$RoomId]['config']['top_list'],3);
+                    array_push($this->user_crooms[$RoomId]['config']['top_list'],2);
+                    array_push($this->user_crooms[$RoomId]['config']['top_list'],1);
+                    break;
                 case 12:
                     $this->user_crooms[$RoomId]['config']['top_list_str']   = '12,9,6,3';
                     $this->user_crooms[$RoomId]['config']['top_list']       = [12,9,6,3];
@@ -523,7 +530,7 @@ final class room_manager
 
                     $this->sub_number($competition_id,$data);
 
-                    if (isset($this->user_crooms[$competition_id]['index']) && $index < count($this->user_crooms[$competition_id]['index']))
+                    if (isset($this->user_crooms[$competition_id]['index']) && $index < $this->user_crooms[$competition_id]['config']['top_list'])
                     {
                         if ($this->Get_User_GameOver($competition_id))
                         {
@@ -542,8 +549,8 @@ final class room_manager
                                 $competition = new SC_Competition_Result_Competition_end();
                                 $competition->setPlayerId($uid);
                                 $competition->appendLevelUp($begin);
-                                $competition->appendLevelUp($this->user_crooms[$competition_id]['top_list'][$index]);
-                                if ($begin <= $this->user_crooms[$competition_id]['top_list'][$index + 1])
+                                $competition->appendLevelUp($this->user_crooms[$competition_id]['config']['top_list'][$index]);
+                                if ($begin <= $this->user_crooms[$competition_id]['config']['top_list'][$index + 1])
                                 {
                                     $competition->setToUp(true);
                                 }
@@ -819,7 +826,8 @@ final class room_manager
             {
                 if (count($this->user_crooms[$roomid]['playerid']) < $this->user_crooms[$roomid]['config']['playermax'])
                 {
-                    $this->user_crooms[$roomid]['playerid'][] = $playerid;
+                    array_push($this->user_crooms[$roomid]['playerid'],$playerid);
+                    $this->user_crooms[$roomid]['index'][$playerid] = 0;
                     $result = new SC_JoinTheRoom();
                     $result->setResult(1);
                     $roominfo = new RoomInfoTable();
