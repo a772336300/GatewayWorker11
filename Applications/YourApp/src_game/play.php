@@ -1193,7 +1193,7 @@ function gameOver($roomId,$winner=null)
         $roomtype = $redis->hGet($roomId,'roomtype');
         $index = $redis->hGet($roomId,'index');
         //room_manager::singleton()->roomGame_Calculation(1,2,3,4,null);
-        room_manager::singleton()->roomGame_Calculation(intval($redis->hGet($roomId,'competition_id')),intval($redis->hGet($roomId,'roomtype')),intval($redis->hGet($roomId,'gameType')),$roomId,intval($redis->hGet($roomId,'index')),$result);
+        room_manager::singleton()->roomGame_Calculation(intval($redis->hGet($roomId,'competition_id')),intval($redis->hGet($roomId,'roomtype')),intval($redis->hGet($roomId,'gametype')),$roomId,intval($redis->hGet($roomId,'index')),$result);
     }
 
     // Gateway::leaveGroup();
