@@ -1184,6 +1184,8 @@ function gameOver($roomId,$winner=null)
         game_over_task($roomId);
 
     }
+    game_send_game_result($roomId,$result);
+
     //比赛房间计算
     if ($redis->hGet($roomId,'roomtype') == \Proto\Room_Type::bisai_dizhu)
     {
@@ -1194,7 +1196,6 @@ function gameOver($roomId,$winner=null)
         room_manager::singleton()->roomGame_Calculation(intval($redis->hGet($roomId,'competition_id')),intval($redis->hGet($roomId,'roomtype')),intval($redis->hGet($roomId,'gameType')),$roomId,intval($redis->hGet($roomId,'index')),$result);
     }
 
-    game_send_game_result($roomId,$result);
     // Gateway::leaveGroup();
     $playerIds=$redis->lRange($roomId.':playerIds',0,-1);
     $redis->multi(\Redis::PIPELINE);
