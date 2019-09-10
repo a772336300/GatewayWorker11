@@ -7,6 +7,8 @@ enum Room_Type
 	gaoji =3;
 	bisai_dizhu=4;
 	bisai_majiang = 5;
+	player_bisai_dizhu=6;
+	player_bisai_majiang=7;
 }
 enum Game_Type
 {
@@ -194,8 +196,8 @@ message Player_Game_Result
 		repeated Goods extra_goods=4;
 	}
 	optional Lian_Sheng lianSheng = 5;
-	optional int32 gameType = 6;  //游戏的类型1.自由 2.积分 3.晋级 4.比赛
-	//得分加倍
+	optional Room_Type roomType = 6;
+	optional Game_type gameType = 7;
 }
 message SC_Game_Result
 {
