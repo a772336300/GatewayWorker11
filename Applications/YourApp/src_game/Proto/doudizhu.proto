@@ -197,7 +197,7 @@ message Player_Game_Result
 	}
 	optional Lian_Sheng lianSheng = 5;
 	optional Room_Type roomType = 6;
-	optional Game_type gameType = 7;
+	optional Game_Type gameType = 7;
 }
 message SC_Game_Result
 {
