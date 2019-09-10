@@ -712,7 +712,7 @@ final class room_manager
     }
 
     /**
-     * 进入房间
+     *Player 进入房间
      * @param $client_id
      * @param $playerid
      * @param $roomid
@@ -749,11 +749,11 @@ final class room_manager
                     $roominfo = new RoomInfoTable();
                     $roominfo->setGameState(0);
                     $roominfo->setRoomId($roomid);
-                    if (isset($this->user_crooms[$roomid]['config']['roomType']) && $this->user_crooms[$roomid]['config']['roomType'] == \Proto\Game_Type::jinji)
+                    if (isset($this->user_crooms[$roomid]['config']['roomType']) && $this->user_crooms[$roomid]['config']['roomType'] == \Proto\Room_Type::player_bisai_dizhu)
                     {
                         $roominfo->setGameText('地主');
                     }
-                    elseif (isset($this->user_crooms[$roomid]['config']['roomType']) && $this->user_crooms[$roomid]['config']['roomType'] == \Proto\Game_Type::jifen)
+                    elseif (isset($this->user_crooms[$roomid]['config']['roomType']) && $this->user_crooms[$roomid]['config']['roomType'] == \Proto\Room_Type::player_bisai_majiang)
                     {
                         $roominfo->setGameText('麻将');
                     }
@@ -913,20 +913,20 @@ final class room_manager
         $result->setResult(1);
         $roominfotable = new RoomInfoTable();
         $roominfotable->setRoomId(intval($code));
-        if ($CreateCardRoom_data->getRoomType()==1)
+        if ($CreateCardRoom_data->getRoomType()==\Proto\Room_Type::player_bisai_dizhu)
         {
             $roominfotable->setGameText('地主');
         }
-        elseif ($CreateCardRoom_data->getRoomType()==2)
+        elseif ($CreateCardRoom_data->getRoomType()==\Proto\Room_Type::player_bisai_majiang)
         {
             $roominfotable->setGameText('麻将');
         }
         $roominfotable->setNameText($CreateCardRoom_data->getRoomName());
-        if ($CreateCardRoom_data->getGameType() == 1)
+        if ($CreateCardRoom_data->getGameType() == \Proto\Game_Type::jinji)
         {
             $roominfotable->setTypeText('晋级赛');
         }
-        elseif ($CreateCardRoom_data->getGameType() == 2)
+        elseif ($CreateCardRoom_data->getGameType() == \Proto\Game_Type::jifen)
         {
             $roominfotable->setTypeText('积分赛');
         }
@@ -953,7 +953,7 @@ final class room_manager
     }
 
     /**
-     * 初始化房间
+     * Player 初始化房间
      * @param $client_id
      * @param $playerid
      */
@@ -973,19 +973,19 @@ final class room_manager
         foreach ($rs as $data)
         {
             $roominfo = new RoomInfoTable();
-            if ($data->ROOMTYPE->roomType == 1)
+            if ($data->ROOMTYPE->roomType == \Proto\Room_Type::player_bisai_dizhu)
             {
                 $roominfo->setGameText('地主');
             }
-            elseif ($data->ROOMTYPE->roomType == 2)
+            elseif ($data->ROOMTYPE->roomType == \Proto\Room_Type::player_bisai_majiang)
             {
                 $roominfo->setGameText('麻将');
             }
-            if ($data->ROOMTYPE->GAMETYPE->gameType == 1)
+            if ($data->ROOMTYPE->GAMETYPE->gameType == \Proto\Game_Type::jinji)
             {
                 $roominfo->setTypeText('晋级赛');
             }
-            elseif ($data->ROOMTYPE->GAMETYPE->gameType == 2)
+            elseif ($data->ROOMTYPE->GAMETYPE->gameType == \Proto\Game_Type::jifen)
             {
                 $roominfo->setTypeText('积分赛');
             }
