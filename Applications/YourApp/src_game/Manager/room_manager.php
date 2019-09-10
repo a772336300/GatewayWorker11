@@ -523,17 +523,91 @@ final class room_manager
 
                     $this->sub_number($competition_id,$data);
 
-                    $index--;
-                    if ($index >= 0)
+                    if (isset($this->user_crooms[$competition_id]['index']) && $index < count($this->user_crooms[$competition_id]['index']))
                     {
                         if ($this->Get_User_GameOver($competition_id))
                         {
-                            //asdf
+                            /**
+                             * 对积分排序
+                             */
+                            arsort($this->user_crooms[$competition_id]['integral']);
+                            /**
+                             * index 所有人都结束了
+                             */
+                            $begin = 1;
+                            foreach ($this->user_crooms[$competition_id]['playerid'] as $key => $uid)
+                            {
+                                $resul = new SC_Competition_Result();
+                                $resul->setCompetitionId($competition_id);
+                                $competition = new SC_Competition_Result_Competition_end();
+                                $competition->setPlayerId($uid);
+                                $competition->appendLevelUp($begin);
+                                $competition->appendLevelUp($this->user_crooms[$competition_id]['top_list'][$index]);
+                                if ($begin <= $this->user_crooms[$competition_id]['top_list'][$index + 1])
+                                {
+                                    $competition->setToUp(true);
+                                }
+                                else
+                                {
+                                    $competition->setToUp(false);
+                                }
+                                $resul->setCompetition($competition);
+                                if (isset($this->user_crooms[$competition_id]['config']['top_list_str']))
+                                {
+                                    $resul->setTopList($this->user_crooms[$competition_id]['config']['top_list_str']);
+                                }
+                                $resul->setOver(true);
 
+                                if (\GatewayWorker\Lib\Gateway::isUidOnline($uid))
+                                {
+                                    \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(Message_Id::SC_Competition_Result_Id,$resul->serializeToString()));
+                                }
+
+                                $this->user_crooms[$competition_id]['number'][$uid] = $this->user_crooms[$competition_id]['config']['numberOfGames'];
+                                $begin++;
+                            }
+
+                            $index++;
+                            $player_max = $this->user_crooms[$competition_id]['top_list'][$index];
+                            $player_num = 0;
+                            $user_ids = array();
+                            foreach ($this->user_crooms[$competition_id]['playerid'] as $key => $uid)
+                            {
+                                if ($player_num < $player_max)
+                                {
+                                    array_push($user_ids,$uid);
+                                    $player_num++;
+                                    if (count($user_ids) == 3)
+                                    {
+                                        roomInit($user_ids,$room_type, time(), $competition_id, $index,intval($this->user_crooms[$competition_id]['config']['gameType']));
+                                        $user_ids = array();
+                                    }
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
                         }
                         else
                         {
-
+                            if (isset($this->user_crooms[$competition_id]['number']))
+                            {
+                                sleep(5);
+                                $user_ids = array();
+                                foreach ($this->user_crooms[$competition_id]['number'] as $uid => $num)
+                                {
+                                    if ($num > 0)
+                                    {
+                                        array_push($user_ids,$uid);
+                                        if (count($user_ids) == 3)
+                                        {
+                                            roomInit($user_ids,$room_type, time(), $competition_id, $index,intval($this->user_crooms[$competition_id]['config']['gameType']));
+                                            $user_ids = array();
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -567,9 +641,9 @@ final class room_manager
                             $competition->setPlayerId($uid);
                             $competition->appendLevelUp($begin);
                             $resul->setCompetition($competition);
-                            if (isset($this->user_crooms[$competition_id]['config']['toplist']))
+                            if (isset($this->user_crooms[$competition_id]['config']['top_list']))
                             {
-                                $resul->setTopList($this->user_crooms[$competition_id]['config']['toplist']);
+                                $resul->setTopList($this->user_crooms[$competition_id]['config']['top_list']);
                             }
                             $resul->setOver(true);
 
@@ -599,7 +673,6 @@ final class room_manager
                                 }
                             }
                         }
-
                     }
                 }
                 /**
