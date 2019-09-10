@@ -1,6 +1,6 @@
 <?php
 /**
- * Auto generated from doudizhu.proto at 2019-09-09 15:05:50
+ * Auto generated from doudizhu.proto at 2019-09-10 14:02:15
  *
  * proto package
  */
@@ -17,7 +17,8 @@ class Player_Game_Result extends \ProtobufMessage
     const GOLD = 3;
     const UNPLAYCARDS = 4;
     const LIANSHENG = 5;
-    const GAMETYPE = 6;
+    const ROOMTYPE = 6;
+    const GAMETYPE = 7;
 
     /* @var array Field descriptors */
     protected static $fields = array(
@@ -46,6 +47,11 @@ class Player_Game_Result extends \ProtobufMessage
             'required' => false,
             'type' => '\Proto\Player_Game_Result_Lian_Sheng'
         ),
+        self::ROOMTYPE => array(
+            'name' => 'roomType',
+            'required' => false,
+            'type' => \ProtobufMessage::PB_TYPE_INT,
+        ),
         self::GAMETYPE => array(
             'name' => 'gameType',
             'required' => false,
@@ -73,6 +79,7 @@ class Player_Game_Result extends \ProtobufMessage
         $this->values[self::GOLD] = null;
         $this->values[self::UNPLAYCARDS] = null;
         $this->values[self::LIANSHENG] = null;
+        $this->values[self::ROOMTYPE] = null;
         $this->values[self::GAMETYPE] = null;
     }
 
@@ -289,6 +296,39 @@ class Player_Game_Result extends \ProtobufMessage
     public function hasLianSheng()
     {
         return $this->get(self::LIANSHENG) !== null;
+    }
+
+    /**
+     * Sets value of 'roomType' property
+     *
+     * @param integer $value Property value
+     *
+     * @return null
+     */
+    public function setRoomType($value)
+    {
+        return $this->set(self::ROOMTYPE, $value);
+    }
+
+    /**
+     * Returns value of 'roomType' property
+     *
+     * @return integer
+     */
+    public function getRoomType()
+    {
+        $value = $this->get(self::ROOMTYPE);
+        return $value === null ? (integer)$value : $value;
+    }
+
+    /**
+     * Returns true if 'roomType' property is set, false otherwise
+     *
+     * @return boolean
+     */
+    public function hasRoomType()
+    {
+        return $this->get(self::ROOMTYPE) !== null;
     }
 
     /**
