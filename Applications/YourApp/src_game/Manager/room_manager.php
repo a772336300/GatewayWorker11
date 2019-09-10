@@ -567,7 +567,10 @@ final class room_manager
                             $competition->setPlayerId($uid);
                             $competition->appendLevelUp($begin);
                             $resul->setCompetition($competition);
-                            $resul->setTopList($this->user_crooms[$competition_id]['config']['toplist']);
+                            if (isset($this->user_crooms[$competition_id]['config']['toplist']))
+                            {
+                                $resul->setTopList($this->user_crooms[$competition_id]['config']['toplist']);
+                            }
                             $resul->setOver(true);
 
                             if (\GatewayWorker\Lib\Gateway::isUidOnline($uid))
