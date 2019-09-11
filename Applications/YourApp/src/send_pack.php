@@ -380,7 +380,7 @@ function send_pack_get_user_active($uid,$data)
     \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20012,$object->serializeToString()));
 }
 
-function send_pack_get_goods_info($uid,$data)
+function send_pack_get_goods_info($uid,$data,$lastRate)
 {
     $object= new \Proto\SC_Get_Goods();
     foreach ($data as $value)
@@ -393,7 +393,7 @@ function send_pack_get_goods_info($uid,$data)
         $good_info->setImg($value->img);
         $good_info->setMallType($value->mall_type);
         $good_info->setPriceType($value->price_type);
-        $good_info->setPrice($value->price);
+        $good_info->setPrice($value->price_type==3?$value->price*$lastRate:$value->price);
         $object->appendGoodsInfo($good_info);
     }
     \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20014,$object->serializeToString()));
