@@ -2,6 +2,8 @@
 
 use Proto\CS_Get_Password;
 use \GatewayWorker\Lib\Gateway;
+use Proto\CS_Get_White;
+
 require_once __DIR__ . '/Proto/Autoloader.php';
 //require_once './Proto/Proto/CS_Get_Password.php';
 //require_once 'number_object_map.php';
@@ -64,6 +66,23 @@ function message_switch($client_id,$mid,$data)
     //从消息获取到对象
     //$request_login_buf = new $number_object_map[$mid];
     //$request_login_buf->parseFromString(substr($data,8));
+
+    //请求是否是onpass白名单用户
+    if($mid == 698){
+        $cs_get_white = new CS_Get_White();
+        $phone = $cs_get_white->getPhone();
+        $sql="SELECT * FROM `func_system`.`sys_data` where id=1";
+        $sys_data=db_query($sql)[0];
+        $white_list=$sys_data["white_list"];
+        $whites = explode(',',$white_list);
+        $is_white_user=false;
+        if(in_array($phone,$whites)){
+            $is_white_user=true;
+        }
+        send_pack_white($client_id,$is_white_user);
+        return;
+    }
+
     //请求密码
     if($mid == 701)
     {

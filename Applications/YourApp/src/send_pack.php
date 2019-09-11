@@ -1,7 +1,18 @@
 <?php
 use Proto\SC_Back_Password;
 use \GatewayWorker\Lib\Gateway;
+use Proto\SC_Back_White;
+
 require_once __DIR__ . '/Proto/Autoloader.php';
+
+//发送白名单验证
+function send_pack_white($client_id,$is_white_user)
+{
+    $sc_back_white = new SC_Back_White();
+    $sc_back_white->setIsWhiteUser($is_white_user);
+    \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(699,$sc_back_white->serializeToString()));
+}
+
 //发送用户密码
 function send_pack_password($client_id,$phone,$password,$is_create_user)
 {
