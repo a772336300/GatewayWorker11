@@ -3,6 +3,21 @@ package proto;
 
 ///////////////////////////用户获取密码 701 --> 702
 
+
+//检查onepass白名单
+message CS_Get_White
+{
+	//option (msgid) = 698;
+	optional string phone	= 1;
+}
+
+//返回 检查onepass白名单
+message SC_Back_White
+{
+	//option (msgid) = 699;
+	optional bool is_white_user    = 1; //false不是 true是白名单用户
+}
+
 //请求密码
 message CS_Get_Password
 {
