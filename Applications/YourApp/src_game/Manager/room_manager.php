@@ -497,7 +497,7 @@ final class room_manager
 
                     $this->sub_number($competition_id,$data);
 
-                    if (isset($this->user_crooms[$competition_id]['index']) && $index < $this->user_crooms[$competition_id]['config']['top_list'])
+                    if (isset($this->user_crooms[$competition_id]['index']) && $index <= count($this->user_crooms[$competition_id]['config']['top_list']))
                     {
                         if ($this->Get_User_GameOver($competition_id))
                         {
