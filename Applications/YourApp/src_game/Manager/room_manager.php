@@ -551,26 +551,30 @@ final class room_manager
                             }
 
                             $index++;
-                            $player_max = $this->user_crooms[$competition_id]['config']['top_list'][$index];
-                            $player_num = 0;
-                            $user_ids = array();
-                            foreach ($this->user_crooms[$competition_id]['playerid'] as $key => $uid)
+                            if (isset($this->user_crooms[$competition_id]['config']['top_list'][$index]))
                             {
-                                if ($player_num < $player_max)
+                                $player_max = $this->user_crooms[$competition_id]['config']['top_list'][$index];
+                                $player_num = 0;
+                                $user_ids = array();
+                                foreach ($this->user_crooms[$competition_id]['playerid'] as $key => $uid)
                                 {
-                                    array_push($user_ids,$uid);
-                                    $player_num++;
-                                    if (count($user_ids) == 3)
+                                    if ($player_num < $player_max)
                                     {
-                                        roomInit($user_ids,$room_type, time(), $competition_id, $index, intval($this->user_crooms[$competition_id]['number'][$uid]), intval($this->user_crooms[$competition_id]['config']['gameType']));
-                                        $user_ids = array();
+                                        array_push($user_ids,$uid);
+                                        $player_num++;
+                                        if (count($user_ids) == 3)
+                                        {
+                                            roomInit($user_ids,$room_type, time(), $competition_id, $index, intval($this->user_crooms[$competition_id]['number'][$uid]), intval($this->user_crooms[$competition_id]['config']['gameType']));
+                                            $user_ids = array();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        break;
                                     }
                                 }
-                                else
-                                {
-                                    break;
-                                }
                             }
+
                         }
                         else
                         {
@@ -713,7 +717,7 @@ final class room_manager
             {
                 foreach ($data as $userid => $item)
                 {
-                    if (isset($this->user_crooms[$competition_id]['number']))
+                    if (isset($this->user_crooms[$competition_id]['number'][$userid]))
                     {
                         $num = $this->user_crooms[$competition_id]['number'][$userid];
                         $this->user_crooms[$competition_id]['number'][$userid] = $num - 1;
