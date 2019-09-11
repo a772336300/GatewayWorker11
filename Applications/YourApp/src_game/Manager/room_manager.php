@@ -31,6 +31,8 @@ final class room_manager
     private $user_number;    //房间人数
     private $users;          //报名用户ID
     private $user_crooms;    //用户自定义房间
+    private $public_rooms;     //公共房间
+    private $public_rooms_config;     //公共房间配置
     private $__time_id_read;
     private $__time_id_start;
     private $bLoad_user_create_room;    //是否加载用户自定义比赛
@@ -49,7 +51,7 @@ final class room_manager
         $this->bLoad_user_create_room=false;
         $this->__time_id_read=Timer::add(20,function ()
         {
-            $this->room_loop();
+            $this->load_public_rooms_config();
         },true);
     }
 
@@ -196,6 +198,30 @@ final class room_manager
             {
                 $data->index = 0;
                 $this->create_room($data);
+            }
+        }
+    }
+
+    /**
+     * 读取大奖赛配置
+     */
+    function load_public_rooms_config()
+    {
+        $collname='game_competition';
+        $mongodb=mongo_db::singleton('func_system');
+        $filter = [
+            'Player_id'  => ['$gt' => 0]
+        ];
+        $queryWriteOps = [
+            'projection'    => ['_id'   =>0],//,//不输出_id字段
+            'sort'          => ['id'    =>1]//根据Player_id字段排序 1是升序，-1是降序
+        ];
+        $rs = $mongodb->query($collname,$filter,$queryWriteOps);
+        foreach ($rs as $data)
+        {
+            if (!isset($this->public_rooms_config[$data->id]))
+            {
+                $this->public_rooms_config[$data->id] = $data;
             }
         }
     }
@@ -353,6 +379,21 @@ final class room_manager
             $this->users[$competition_id][$room_type]['socket_id'][$user_id] = $client_id;
             $this->users[$competition_id][$room_type]['integral'][$user_id] = 0;
             send_notice($user_id,1,"报名成功！");
+        }
+        if (isset($this->public_rooms_config[$competition_id]))
+        {
+            if (isset($this->public_rooms[$competition_id]) && is_array($this->public_rooms[$competition_id]))
+            {
+                if (count($this->public_rooms[$competition_id]) < $this->public_rooms_config[$competition_id]->minNum)
+                {
+                    array_push($this->public_rooms[$competition_id],$user_id);
+                }
+            }
+            else
+            {
+                $this->public_rooms[$competition_id] = array();
+                array_push($this->public_rooms[$competition_id],$user_id);
+            }
         }
     }
 
