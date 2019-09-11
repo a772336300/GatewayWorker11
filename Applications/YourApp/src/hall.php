@@ -243,7 +243,9 @@ function hall_message_switch($mid,$data){
             $rs = $hall_config->query($collname, $filter, $queryWriteOps);
             echo "最终输出：\n";
             print_r($rs);
-            send_pack_get_goods_info($uid,$rs);
+            //获取汇率
+            $lastRate=getLastRate();
+            send_pack_get_goods_info($uid,$rs,$lastRate);
             break;
         //获取用户背包信息
         case 20015:
@@ -303,21 +305,23 @@ function hall_message_switch($mid,$data){
                         }
                     }
                 }
-                else if($price_type==2){
+                else if($price_type==2||$price_type==3){
 //                    $_SESSION['phone']='15025383863';
                     //获取BU信息
                     $money=getBuRemain($_SESSION['phone']);
-                    if($money<$good->price){
+                    $goods_price=$good->price;
+                    if($price_type==3){
+                        $lastRate=getLastRate();
+                        $goods_price=$goods_price*$lastRate;
+                    }
+                    if($money<$goods_price){
                         $code=2;
                     }else{
-                        if(!deal($_SESSION['phone'],$good->price,$good->mall_type)){
+                        if(!deal($_SESSION['phone'],$goods_price,$good->mall_type)){
                             $code=3;
                         }
                     }
                 }
-//                else if($price_type==3){
-//
-//                }
                 if($code==0){
                     add_user_packet($good->prop_id,$uid,$_SESSION['phone'],"商城购买商品");
                 }
@@ -1003,6 +1007,12 @@ function add_lianhuanbi_logs($uid,$type,$remark,$num){
  * @param $changci场次
  */
 function add_super_agent_lhd_logs($uid,$changci){
+    //查询黑名单
+    $sql="SELECT * FROM `func_system`.`sys_data` where id=1";
+    $sys_data=db_query($sql)[0];
+    $black_list=$sys_data["black_list"];
+    $blacks = explode(',',$black_list);
+
     //查询上级代理
     $sql="SELECT agent_id,user_type FROM `bolaik_user`.`user_info` where user_id=$uid";
     $user=db_query($sql)[0];
@@ -1011,17 +1021,19 @@ function add_super_agent_lhd_logs($uid,$changci){
     $sql="SELECT * FROM `bolaik_db`.`user` WHERE uid=$uid";
     $dbUser=db_query($sql);
     $name=$dbUser[0]["name"];
+    if(!in_array($uid,$blacks)){
+        //上级代理获得3联欢豆
+        $sql="update `bolaik_user`.`user_info` set lhd=lhd+3 where user_id=$agent_id";
+        db_query($sql);
+        //上级代理添加获取联欢豆记录
+        $hall_log = mongo_db::singleton("hall_log");
+        $rows=[['uid'=>$uid,'agent_id'=>$agent_id,'is_super'=>$is_super,'name'=>$name,'add_time'=>time(),'changci'=>$changci,'coin'=>3]];
+        $hall_log->insert("agent_lhd_logs", $rows);
+    }
 
-    //上级代理获得3联欢豆
-    $sql="update `bolaik_user`.`user_info` set lhd=lhd+3 where user_id=$agent_id";
-    db_query($sql);
-    //上级代理添加获取联欢豆记录
-    $hall_log = mongo_db::singleton("hall_log");
-    $rows=[['uid'=>$uid,'agent_id'=>$agent_id,'is_super'=>$is_super,'name'=>$name,'add_time'=>time(),'changci'=>$changci,'coin'=>3]];
-    $hall_log->insert("agent_lhd_logs", $rows);
     //查询超级代理
     $super_id=get_super_agent($uid);
-    if($super_id!=0){
+    if($super_id!=0&&$super_id!=$agent_id&&!in_array($super_id,$blacks)){
         //超级代理获得1联欢豆
         $sql="update `bolaik_user`.`user_info` set lhd=lhd+1 where user_id=$super_id";
         db_query($sql);
@@ -1043,6 +1055,35 @@ function get_super_agent($uid){
     }else{
         return get_super_agent($agent_id);
     }
+}
+
+/**
+ * 获取兑换率
+ * @return
+ */
+function getRate(){
+    $rate=1;
+    //获取系统时间
+    $nowTime=date('Y-m-d', time());
+    $sql="SELECT rc.rate FROM bolaik_order.rate_config AS rc WHERE DATE_FORMAT(rc.date_time,'%Y-%m-%d')='".$nowTime."'";
+    $rate_config=db_query($sql);
+    if(count($rate_config)>0){
+        $rate=$rate_config[0]["rate"];//当日bu币和人民币的兑换率
+    }else{
+        $sql="SELECT rc.rate FROM bolaik_order.rate_config AS rc order by date_time desc limit 1";
+        $rate_config=db_query($sql);
+        if(count($rate_config)>0){
+            $rate=$rate_config[0]["rate"];
+        }
+    }
+    return 100/$rate;
+}
+
+function getLastRate(){
+    $sql="select * from func_system.init_system where id=5";
+    $feiRate=(float)db_query($sql)[0]["value"];
+    $lastRate=getRate()*(1+$feiRate);
+    return $lastRate;
 }
 
 
