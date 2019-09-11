@@ -11,6 +11,7 @@ function web_server_message_manager($data)
     util_log("收到Web端消息f：".$dataArr['f']);
     if($dataArr['f']=='signNotice')
     {
+        util_log("任务更新：".$dataArr['user_id']."-->".$dataArr['task_id']);
         task_udpate_once($dataArr['user_id'],$dataArr['task_id']);
         return;
     }
