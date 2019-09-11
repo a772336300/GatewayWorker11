@@ -239,61 +239,28 @@ final class room_manager
             switch ($PlayerNumber)
             {
                 case 3:
-                    $this->user_crooms[$RoomId]['config']['top_list_str']   = '3,2,1';
-                    $this->user_crooms[$RoomId]['config']['top_list']       = [3,2,1];
-                    array_push($this->user_crooms[$RoomId]['config']['top_list'],3);
-                    array_push($this->user_crooms[$RoomId]['config']['top_list'],2);
-                    array_push($this->user_crooms[$RoomId]['config']['top_list'],1);
+                    $this->user_crooms[$RoomId]['config']['top_list_str']   = '3';
+                    $this->user_crooms[$RoomId]['config']['top_list']       = [3];
                     break;
                 case 12:
                     $this->user_crooms[$RoomId]['config']['top_list_str']   = '12,9,6,3';
                     $this->user_crooms[$RoomId]['config']['top_list']       = [12,9,6,3];
-                    array_push($this->user_crooms[$RoomId]['config']['top_list'],12);
-                    array_push($this->user_crooms[$RoomId]['config']['top_list'],9);
-                    array_push($this->user_crooms[$RoomId]['config']['top_list'],6);
-                    array_push($this->user_crooms[$RoomId]['config']['top_list'],3);
                     break;
                 case 24:
                     $this->user_crooms[$RoomId]['config']['top_list_str']   = '24,18,12,6,3';
                     $this->user_crooms[$RoomId]['config']['top_list']       = [24,18,12,6,3];
-                    array_push($this->user_crooms[$RoomId]['config']['top_list'],24);
-                    array_push($this->user_crooms[$RoomId]['config']['top_list'],18);
-                    array_push($this->user_crooms[$RoomId]['config']['top_list'],12);
-                    array_push($this->user_crooms[$RoomId]['config']['top_list'],6);
-                    array_push($this->user_crooms[$RoomId]['config']['top_list'],3);
                     break;
                 case 48:
                     $this->user_crooms[$RoomId]['config']['top_list_str']   = '48,30,21,15,9,3';
                     $this->user_crooms[$RoomId]['config']['top_list']       = [48,30,21,15,9,3];
-                    array_push($this->user_crooms[$RoomId]['config']['top_list'],48);
-                    array_push($this->user_crooms[$RoomId]['config']['top_list'],30);
-                    array_push($this->user_crooms[$RoomId]['config']['top_list'],21);
-                    array_push($this->user_crooms[$RoomId]['config']['top_list'],15);
-                    array_push($this->user_crooms[$RoomId]['config']['top_list'],9);
-                    array_push($this->user_crooms[$RoomId]['config']['top_list'],3);
                     break;
                 case 96:
                     $this->user_crooms[$RoomId]['config']['top_list_str']   = '96,60,36,24,15,6,3';
                     $this->user_crooms[$RoomId]['config']['top_list']       = [96,60,36,24,15,6,3];
-                    array_push($this->user_crooms[$RoomId]['config']['top_list'],96);
-                    array_push($this->user_crooms[$RoomId]['config']['top_list'],60);
-                    array_push($this->user_crooms[$RoomId]['config']['top_list'],36);
-                    array_push($this->user_crooms[$RoomId]['config']['top_list'],24);
-                    array_push($this->user_crooms[$RoomId]['config']['top_list'],15);
-                    array_push($this->user_crooms[$RoomId]['config']['top_list'],6);
-                    array_push($this->user_crooms[$RoomId]['config']['top_list'],3);
                     break;
                 case 120:
                     $this->user_crooms[$RoomId]['config']['top_list_str']   = '120,72,48,32,18,9,6,3';
                     $this->user_crooms[$RoomId]['config']['top_list']       = [120,72,48,32,18,9,6,3];
-                    array_push($this->user_crooms[$RoomId]['config']['top_list'],120);
-                    array_push($this->user_crooms[$RoomId]['config']['top_list'],72);
-                    array_push($this->user_crooms[$RoomId]['config']['top_list'],48);
-                    array_push($this->user_crooms[$RoomId]['config']['top_list'],32);
-                    array_push($this->user_crooms[$RoomId]['config']['top_list'],18);
-                    array_push($this->user_crooms[$RoomId]['config']['top_list'],9);
-                    array_push($this->user_crooms[$RoomId]['config']['top_list'],6);
-                    array_push($this->user_crooms[$RoomId]['config']['top_list'],3);
                     break;
                 default:
                     break;
@@ -575,7 +542,7 @@ final class room_manager
                             }
 
                             $index++;
-                            $player_max = $this->user_crooms[$competition_id]['top_list'][$index];
+                            $player_max = $this->user_crooms[$competition_id]['config']['top_list'][$index];
                             $player_num = 0;
                             $user_ids = array();
                             foreach ($this->user_crooms[$competition_id]['playerid'] as $key => $uid)
@@ -685,19 +652,20 @@ final class room_manager
                 /**
                  * 比赛结束时关闭这个比赛
                  */
-                if ($this->Get_User_GameOver($competition_id))
-                {
-                    $collname='user_create_competition';
-                    $mongodb=mongo_db::singleton('func_system');
-                    $delets = [
-                        ['q' =>['code' => $competition_id], 'limit' =>0]
-                    ];
-                    $rs = $mongodb->del($collname, $delets);
+
+                //if ($this->Get_User_GameOver($competition_id))
+                //{
+                //    $collname='user_create_competition';
+                //    $mongodb=mongo_db::singleton('func_system');
+                //    $delets = [
+                //        ['q' =>['code' => $competition_id], 'limit' =>0]
+                //    ];
+                //    $rs = $mongodb->del($collname, $delets);
                     /**
                      * 删除对应内存数组
                      */
-                    unset($this->user_crooms[$competition_id]);
-                }
+                //    unset($this->user_crooms[$competition_id]);
+                //}
 
             }
 
