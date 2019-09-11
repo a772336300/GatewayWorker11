@@ -300,7 +300,7 @@ function ac($playerId)
     return $playerId;
     //return strstr($playerId,':',true);
 }
-function roomInit($playerIds,$channel,$channelNumber=-1,$competition_id=-1,$index=-1,$gametype=-1)
+function roomInit($playerIds,$channel,$channelNumber=-1,$competition_id=-1,$index=-1,$number=-1,$gametype=-1)
 {
     global $redis;
     // TODO: Implement onmessage() method.
@@ -325,6 +325,7 @@ function roomInit($playerIds,$channel,$channelNumber=-1,$competition_id=-1,$inde
     $redis->hSet($roomId,'competition_id',$competition_id);
     $redis->hSet($roomId,'roomtype',$channel);
     $redis->hSet($roomId,'gametype',$gametype);
+    $redis->hSet($roomId,'number',$number);
     GameStart($roomId,$playerIds_room);
     //房间初始化的信息
     //房间信息
@@ -1193,7 +1194,7 @@ function gameOver($roomId,$winner=null)
         $roomtype = $redis->hGet($roomId,'roomtype');
         $index = $redis->hGet($roomId,'index');
         //room_manager::singleton()->roomGame_Calculation(1,2,3,4,null);
-        room_manager::singleton()->roomGame_Calculation(intval($redis->hGet($roomId,'competition_id')),intval($redis->hGet($roomId,'roomtype')),intval($redis->hGet($roomId,'gametype')),$roomId,intval($redis->hGet($roomId,'index')),$result);
+        room_manager::singleton()->roomGame_Calculation(intval($redis->hGet($roomId,'competition_id')),intval($redis->hGet($roomId,'roomtype')),intval($redis->hGet($roomId,'gametype')),$roomId,intval($redis->hGet($roomId,'index')),intval($redis->hGet($roomId,'number')),$result);
     }
 
     // Gateway::leaveGroup();

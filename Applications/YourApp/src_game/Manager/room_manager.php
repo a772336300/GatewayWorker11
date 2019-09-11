@@ -402,7 +402,7 @@ final class room_manager
      * @param $index
      * @param $data
      */
-    function roomGame_Calculation($competition_id,$room_type,$game_type,$room_id,$index,$data)
+    function roomGame_Calculation($competition_id,$room_type,$game_type,$room_id,$index,$number,$data)
     {
         echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n";
         if (isset($data))
@@ -497,7 +497,7 @@ final class room_manager
 
                     $this->sub_number($competition_id,$data);
 
-                    if (isset($this->user_crooms[$competition_id]['index']) && $index < $this->user_crooms[$competition_id]['config']['top_list'])
+                    if (isset($this->user_crooms[$competition_id]['index']) && $index < $this->user_crooms[$competition_id]['config']['top_list'][$index])
                     {
                         if ($this->Get_User_GameOver($competition_id))
                         {
@@ -516,15 +516,24 @@ final class room_manager
                                 $competition = new SC_Competition_Result_Competition_end();
                                 $competition->setPlayerId($uid);
                                 $competition->appendLevelUp($begin);
-                                $competition->appendLevelUp($this->user_crooms[$competition_id]['config']['top_list'][$index]);
-                                if ($begin <= $this->user_crooms[$competition_id]['config']['top_list'][$index + 1])
+                                if (isset($this->user_crooms[$competition_id]['config']['top_list'][$index + 1]))
                                 {
-                                    $competition->setToUp(true);
+                                    $competition->appendLevelUp($this->user_crooms[$competition_id]['config']['top_list'][$index + 1]);
+                                    if ($begin <= $this->user_crooms[$competition_id]['config']['top_list'][$index + 1])
+                                    {
+                                        $competition->setToUp(true);
+                                    }
+                                    else
+                                    {
+                                        $competition->setToUp(false);
+                                    }
                                 }
                                 else
                                 {
-                                    $competition->setToUp(false);
+                                    $competition->appendLevelUp($this->user_crooms[$competition_id]['config']['top_list'][$index]);
                                 }
+
+
                                 $resul->setCompetition($competition);
                                 if (isset($this->user_crooms[$competition_id]['config']['top_list_str']))
                                 {
@@ -553,7 +562,7 @@ final class room_manager
                                     $player_num++;
                                     if (count($user_ids) == 3)
                                     {
-                                        roomInit($user_ids,$room_type, time(), $competition_id, $index,intval($this->user_crooms[$competition_id]['config']['gameType']));
+                                        roomInit($user_ids,$room_type, time(), $competition_id, $index, intval($this->user_crooms[$competition_id]['number'][$uid]), intval($this->user_crooms[$competition_id]['config']['gameType']));
                                         $user_ids = array();
                                     }
                                 }
@@ -576,7 +585,7 @@ final class room_manager
                                         array_push($user_ids,$uid);
                                         if (count($user_ids) == 3)
                                         {
-                                            roomInit($user_ids,$room_type, time(), $competition_id, $index,intval($this->user_crooms[$competition_id]['config']['gameType']));
+                                            roomInit($user_ids,$room_type, time(), $competition_id, $index, intval($this->user_crooms[$competition_id]['number'][$uid]), intval($this->user_crooms[$competition_id]['config']['gameType']));
                                             $user_ids = array();
                                         }
                                     }
@@ -641,7 +650,7 @@ final class room_manager
                                     array_push($user_ids,$uid);
                                     if (count($user_ids) == 3)
                                     {
-                                        roomInit($user_ids,$room_type, time(), $competition_id, $index,intval($this->user_crooms[$competition_id]['config']['gameType']));
+                                        roomInit($user_ids,$room_type, time(), $competition_id, $index, intval($this->user_crooms[$competition_id]['number'][$uid]), intval($this->user_crooms[$competition_id]['config']['gameType']));
                                         $user_ids = array();
                                     }
                                 }
@@ -754,7 +763,7 @@ final class room_manager
                     array_push($user_ids,$uid);
                     if (count($user_ids) == 3)
                     {
-                        roomInit($user_ids,$this->user_crooms[$roomid]['config']['roomType'], time(), $roomid, $this->user_crooms[$roomid]['config']['numberOfGames'],$this->user_crooms[$roomid]['config']['gameType']);
+                        roomInit($user_ids,$this->user_crooms[$roomid]['config']['roomType'], time(), $roomid, 0, $this->user_crooms[$roomid]['config']['numberOfGames'], $this->user_crooms[$roomid]['config']['gameType']);
                         $user_ids = array();
                     }
                 }
