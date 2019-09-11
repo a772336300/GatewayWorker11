@@ -210,7 +210,7 @@ final class room_manager
         $collname='game_competition';
         $mongodb=mongo_db::singleton('func_system');
         $filter = [
-            'Player_id'  => ['$gt' => 0]
+            'id'  => ['$gt' => 0]
         ];
         $queryWriteOps = [
             'projection'    => ['_id'   =>0],//,//不输出_id字段
@@ -364,6 +364,7 @@ final class room_manager
      */
     function competition_sign_up($competition_id,$room_type,$user_id,$client_id)
     {
+        /*
         if (is_array($this->users[$competition_id][$room_type]['socket_id']))
         {
             $number = count($this->users[$competition_id][$room_type]['socket_id']);
@@ -380,6 +381,7 @@ final class room_manager
             $this->users[$competition_id][$room_type]['integral'][$user_id] = 0;
             send_notice($user_id,1,"报名成功！");
         }
+        */
         if (isset($this->public_rooms_config[$competition_id]))
         {
             if (isset($this->public_rooms[$competition_id]) && is_array($this->public_rooms[$competition_id]))
@@ -410,10 +412,13 @@ final class room_manager
      */
     function enter_room($room_id,$user)
     {
+        /*
         if (isset($this->rooms)&&isset($this->rooms[$room_id]))
         {
             $this->rooms[$room_id]->user_enter($user);
         }
+        */
+
     }
 
     /**
