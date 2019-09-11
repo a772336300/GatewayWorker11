@@ -624,9 +624,9 @@ final class room_manager
                             $competition->setPlayerId($uid);
                             $competition->appendLevelUp($begin);
                             $resul->setCompetition($competition);
-                            if (isset($this->user_crooms[$competition_id]['config']['top_list']))
+                            if (isset($this->user_crooms[$competition_id]['config']['top_list_str']))
                             {
-                                $resul->setTopList($this->user_crooms[$competition_id]['config']['top_list']);
+                                $resul->setTopList($this->user_crooms[$competition_id]['config']['top_list_str']);
                             }
                             $resul->setOver(true);
 
