@@ -280,8 +280,15 @@ function mytime()
 
     });
 }
+
 function util_log($str){
-    file_put_contents('log.txt', $str."\n", FILE_APPEND | LOCK_EX);
+    $file="log.txt";
+    $size=filesize($file);
+    $temp=strlen($str);
+    //日志文件最大500M
+    if($size+$temp<=1024*1024*500){
+        file_put_contents('log.txt', $str."\n", FILE_APPEND | LOCK_EX);
+    }
 }
 
 
