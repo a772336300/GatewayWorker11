@@ -821,7 +821,7 @@ final class room_manager
                     }
                     foreach ($this->user_crooms[$competition_id]['playerid'] as $uid)
                     {
-                        add_super_agent_lhd_logs($uid,$this->user_crooms[$competition_id]['number']);
+                        //add_super_agent_lhd_logs($uid,$this->user_crooms[$competition_id]['number']);
                     }
                     /**
                      * 删除对应内存数组
