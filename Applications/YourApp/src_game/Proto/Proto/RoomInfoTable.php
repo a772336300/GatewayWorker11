@@ -1,6 +1,6 @@
 <?php
 /**
- * Auto generated from doudizhu.proto at 2019-09-10 14:02:15
+ * Auto generated from doudizhu.proto at 2019-09-12 15:42:38
  *
  * proto package
  */
@@ -62,7 +62,7 @@ class RoomInfoTable extends \ProtobufMessage
         self::GAMESTATE => array(
             'name' => 'gameState',
             'required' => false,
-            'type' => \ProtobufMessage::PB_TYPE_STRING,
+            'type' => \ProtobufMessage::PB_TYPE_INT,
         ),
         self::PLAYERMAX => array(
             'name' => 'playerMax',
@@ -339,7 +339,7 @@ class RoomInfoTable extends \ProtobufMessage
     /**
      * Sets value of 'gameState' property
      *
-     * @param string $value Property value
+     * @param integer $value Property value
      *
      * @return null
      */
@@ -351,12 +351,12 @@ class RoomInfoTable extends \ProtobufMessage
     /**
      * Returns value of 'gameState' property
      *
-     * @return string
+     * @return integer
      */
     public function getGameState()
     {
         $value = $this->get(self::GAMESTATE);
-        return $value === null ? (string)$value : $value;
+        return $value === null ? (integer)$value : $value;
     }
 
     /**
