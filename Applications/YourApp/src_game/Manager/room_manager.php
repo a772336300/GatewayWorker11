@@ -819,6 +819,10 @@ final class room_manager
                             GatewayWorker\Lib\Gateway::sendToUid($this->user_crooms[$competition_id]['createplayer'],my_pack(Message_Id::SC_RoomState_Id,$roomstate->serializeToString()));
                         }
                     }
+                    foreach ($this->user_crooms[$competition_id]['playerid'] as $uid)
+                    {
+                        add_super_agent_lhd_logs($uid,$this->user_crooms[$competition_id]['number']);
+                    }
                     /**
                      * 删除对应内存数组
                      */
