@@ -89,31 +89,73 @@ final class room_manager
                 {
                     if ($data->bnumber == true)
                     {
-                        if (isset($this->public_rooms[$key]['state']))
+                        /**
+                         * 人满就开
+                         */
+                        if (isset($this->public_rooms[$key]['playerid']))
                         {
-                            if ($this->public_rooms[$key]['state'] == false)
+                            if (isset($this->public_rooms[$key]['state']))
                             {
-                                if (isset($this->public_rooms[$key]['playerid']))
+                                if ($this->public_rooms[$key]['state'] == false)
                                 {
-                                    $users_id = array_push();
-                                    foreach ($this->public_rooms[$key]['playerid'] as $id)
+                                    if (isset($this->public_rooms[$key]['playerid']) && $data->minNum == count($this->public_rooms[$key]['playerid']))
                                     {
-                                        array_push($users_id,$id);
-                                        //if (count($users_id) == 3)
+                                        $users_id = array_push();
+                                        foreach ($this->public_rooms[$key]['playerid'] as $id)
+                                        {
+                                            array_push($users_id,$id);
+                                            if (count($users_id) == 3)
+                                            {
+                                                roomInit($users_id,$data->gameRules,time(),$key,0,$data->gameNum,$data->gametype);
+                                                $users_id = array();
+                                            }
+                                        }
+                                        $this->public_rooms[$key]['state'] = true;
                                     }
                                 }
                             }
-                        }
-                        else
-                        {
-                            $this->public_rooms[$key]['state'] = false;
+                            else
+                            {
+                                $this->public_rooms[$key]['state'] = false;
+                            }
                         }
                     }
                     elseif ($data->bnumber == false)
                     {
-
+                        /**
+                         * 定时开起
+                         */
+                        if ($data->starttime == strtotime(date("Y-m-d H:i:s")))
+                        {
+                            if (isset($this->public_rooms[$key]['playerid']))
+                            {
+                                if (isset($this->public_rooms[$key]['state']))
+                                {
+                                    if ($this->public_rooms[$key]['state'] == false)
+                                    {
+                                        if (isset($this->public_rooms[$key]['playerid']) && $data->minNum == count($this->public_rooms[$key]['playerid']))
+                                        {
+                                            $users_id = array_push();
+                                            foreach ($this->public_rooms[$key]['playerid'] as $id)
+                                            {
+                                                array_push($users_id,$id);
+                                                if (count($users_id) == 3)
+                                                {
+                                                    roomInit($users_id,$data->gameRules,time(),$key,0,$data->gameNum,$data->gametype);
+                                                    $users_id = array();
+                                                }
+                                            }
+                                            $this->public_rooms[$key]['state'] = true;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    $this->public_rooms[$key]['state'] = false;
+                                }
+                            }
+                        }
                     }
-
                 }
             }
         }
