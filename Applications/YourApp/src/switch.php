@@ -70,6 +70,7 @@ function message_switch($client_id,$mid,$data)
     //请求是否是onpass白名单用户
     if($mid == 698){
         $cs_get_white = new CS_Get_White();
+        $cs_get_white->parseFromString($data);
         $phone = $cs_get_white->getPhone();
         $sql="SELECT * FROM `func_system`.`sys_data` where id=1";
         $sys_data=db_query($sql)[0];
