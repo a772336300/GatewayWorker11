@@ -234,7 +234,7 @@ function hall_message_switch($mid,$data){
             echo "\n---------- 查询商城信息 -----------\n";
             $filter = [
                 "mall_type" => ['$gt' => 0],//查询条件 结束时间 大于 当前时间
-                "mall_type" => ['$lt' => 8],//查询条件 结束时间 大于 当前时间
+                "mall_type" => ['$lt' => 20],//查询条件 结束时间 大于 当前时间
             ];
             $queryWriteOps = [
                 "sort"       => ["mall_type" => -1],//根据添加时间字段排序 1是升序，-1是降序
@@ -321,6 +321,18 @@ function hall_message_switch($mid,$data){
                             $code=3;
                         }
                     }
+                }else if($price_type==4){
+                    $sql="select * from user_money where uid=$uid";
+                    $rs=db_query($sql);
+                    $money=$rs[0]['lhd'];
+                    if($money<$good->price){
+                        $code=2;
+                    }else{
+                        $sql="update user_money set lhd=lhd-$good->price where uid=$uid";
+                        if(!db_query($sql)){
+                            $code=3;
+                        }
+                    }
                 }
                 if($code==0){
                     add_user_packet($good->prop_id,$uid,$_SESSION['phone'],"商城购买商品");
@@ -355,9 +367,10 @@ function hall_message_switch($mid,$data){
             if(count($rs)>0&&$rs[0]->num>=$user_packet->getNum()){
                 $packet_good=$rs[0];
                 $use_type=$packet_good->use_type;
-                if ($use_type==1){
+                if ($use_type==1||$use_type==5){
+                    $type=$use_type==1?2:3;
                     //打开电话输入框
-                    if(recharge($uid,$user_packet->getPhone(),$packet_good->detail)==false){
+                    if(recharge($uid,$user_packet->getPhone(),$packet_good->detail,$type)==false){
                         $code=2;
                     }
                 }else if ($use_type==2){
@@ -689,8 +702,9 @@ function hall_message_switch($mid,$data){
 /**话费充值
  * @param $code
  * @param $num
+ * @param $type 2话费充值，3Q币充值
  */
-function recharge($user_id,$code,$num){
+function recharge($user_id,$code,$num,$type){
     $orderId=get_order_num();
     $ip=get_real_ip();
     //添加充值收到的数据记录
