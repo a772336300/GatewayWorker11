@@ -274,7 +274,7 @@ message RoomInfoTable
     optional int32 playerNum = 5;      //在线人数
 	optional TimeInfo signUpTime = 6;    //报名时间
 	optional TimeInfo beginningTime = 7;   //开始时间
-    optional string gameState = 8;         //游戏状态
+    optional int32 gameState = 8;         //游戏状态 1报名中 2已开赛 3已结束
 	optional int32	playerMax = 9;		//总人数
 }
 //时间信息
@@ -297,7 +297,7 @@ message CS_JoinTheRoom
 //加入房间返回
 message SC_JoinTheRoom
 {
-     optional int32 result = 1;     //加入房间结果 0失败 1成功
+     optional int32 result = 1;     //加入房间结果 0成功 1已开赛 2已结束 3房间已关闭
 	 optional RoomInfoTable roomInfo = 2;		//房间信息
 }
 

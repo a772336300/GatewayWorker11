@@ -49,10 +49,10 @@ final class room_manager
         $this->user_ids=null;
         $this->rooms=null;          //房间
         $this->bLoad_user_create_room=false;
-        $this->__time_id_read=Timer::add(20,function ()
-        {
+        //$this->__time_id_read=Timer::add(20,function ()
+        //{
             $this->load_public_rooms_config();
-        },true);
+        //},true);
     }
 
 
@@ -81,6 +81,89 @@ final class room_manager
      */
     function start_game_room()
     {
+        $this->__time_id_read = Timer::add(10,function ()
+        {
+            if (isset($this->public_rooms_config))
+            {
+                foreach ($this->public_rooms_config as $key => $data)
+                {
+                    if ($data->bnumber == true)
+                    {
+                        /**
+                         * 人满就开
+                         */
+                        if (isset($this->public_rooms[$key]['playerid']))
+                        {
+                            if (isset($this->public_rooms[$key]['state']))
+                            {
+                                if ($this->public_rooms[$key]['state'] == false)
+                                {
+                                    if (isset($this->public_rooms[$key]['playerid']) && $data->minNum == count($this->public_rooms[$key]['playerid']))
+                                    {
+                                        $users_id = array_push();
+                                        foreach ($this->public_rooms[$key]['playerid'] as $id)
+                                        {
+                                            array_push($users_id,$id);
+                                            if (count($users_id) == 3)
+                                            {
+                                                roomInit($users_id,$data->gameRules,time(),$key,0,$data->gameNum,$data->gametype);
+                                                $users_id = array();
+                                            }
+                                        }
+                                        $this->public_rooms[$key]['state'] = true;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                $this->public_rooms[$key]['state'] = false;
+                            }
+                        }
+                    }
+                    elseif ($data->bnumber == false)
+                    {
+                        /**
+                         * 定时开起
+                         */
+                        if ($data->starttime == strtotime(date("Y-m-d H:i:s")))
+                        {
+                            if (isset($this->public_rooms[$key]['playerid']))
+                            {
+                                if (isset($this->public_rooms[$key]['state']))
+                                {
+                                    if ($this->public_rooms[$key]['state'] == false)
+                                    {
+                                        if (isset($this->public_rooms[$key]['playerid']) && $data->minNum == count($this->public_rooms[$key]['playerid']))
+                                        {
+                                            $users_id = array_push();
+                                            foreach ($this->public_rooms[$key]['playerid'] as $id)
+                                            {
+                                                array_push($users_id,$id);
+                                                if (count($users_id) == 3)
+                                                {
+                                                    roomInit($users_id,$data->gameRules,time(),$key,0,$data->gameNum,$data->gametype);
+                                                    $users_id = array();
+                                                }
+                                            }
+                                            $this->public_rooms[$key]['state'] = true;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    $this->public_rooms[$key]['state'] = false;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        );
+
+        return;
+        ///////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////
         $this->__timer_id_read=Timer::add(20,function ()
         {
             if (isset($this->rooms))
@@ -364,7 +447,24 @@ final class room_manager
      */
     function competition_sign_up($competition_id,$room_type,$user_id,$client_id)
     {
-        /*
+        if (isset($this->public_rooms_config[$competition_id]))
+        {
+            if (isset($this->public_rooms[$competition_id]) && is_array($this->public_rooms[$competition_id]))
+            {
+                if (count($this->public_rooms[$competition_id]) < $this->public_rooms_config[$competition_id]->minNum)
+                {
+                    array_push($this->public_rooms[$competition_id]['playerid'],$user_id);
+                }
+            }
+            else
+            {
+                $this->public_rooms[$competition_id] = array();
+                array_push($this->public_rooms[$competition_id]['playerid'],$user_id);
+            }
+        }
+        return;
+        //////////////////////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////////////////////
         if (is_array($this->users[$competition_id][$room_type]['socket_id']))
         {
             $number = count($this->users[$competition_id][$room_type]['socket_id']);
@@ -380,22 +480,6 @@ final class room_manager
             $this->users[$competition_id][$room_type]['socket_id'][$user_id] = $client_id;
             $this->users[$competition_id][$room_type]['integral'][$user_id] = 0;
             send_notice($user_id,1,"报名成功！");
-        }
-        */
-        if (isset($this->public_rooms_config[$competition_id]))
-        {
-            if (isset($this->public_rooms[$competition_id]) && is_array($this->public_rooms[$competition_id]))
-            {
-                if (count($this->public_rooms[$competition_id]) < $this->public_rooms_config[$competition_id]->minNum)
-                {
-                    array_push($this->public_rooms[$competition_id],$user_id);
-                }
-            }
-            else
-            {
-                $this->public_rooms[$competition_id] = array();
-                array_push($this->public_rooms[$competition_id],$user_id);
-            }
         }
     }
 
@@ -418,7 +502,6 @@ final class room_manager
             $this->rooms[$room_id]->user_enter($user);
         }
         */
-
     }
 
     /**
@@ -712,8 +795,8 @@ final class room_manager
                  * 比赛结束时关闭这个比赛
                  */
 
-                //if ($this->Get_User_GameOver($competition_id))
-                //{
+                if ($this->Get_User_GameOver($competition_id))
+                {
                 //    $collname='user_create_competition';
                 //    $mongodb=mongo_db::singleton('func_system');
                 //    $delets = [
@@ -723,8 +806,8 @@ final class room_manager
                     /**
                      * 删除对应内存数组
                      */
-                //    unset($this->user_crooms[$competition_id]);
-                //}
+                    unset($this->user_crooms[$competition_id]['playerid']);
+                }
 
             }
 
