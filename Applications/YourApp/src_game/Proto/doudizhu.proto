@@ -58,7 +58,7 @@ enum Message_Id
 	SC_RoomNumber_Id = 33;	//房间人数
 	CS_RoomOut_Id	= 34;	//退出自定义房间
 	SC_RoomOut_Id	= 35;
-	SC_RoomState    = 36;   //游戏房间状态
+	SC_RoomState_Id    = 36;   //游戏房间状态
 
 }
 
