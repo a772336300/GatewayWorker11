@@ -308,6 +308,8 @@ function message_switch($client_id,$mid,$data)
                 $binded=1;
             }
             update_online_num(1);
+        }else{
+            $binded=2;//用户不存在
         }
         send_pack_login($client_id,$is_success,$binded);
         return;
