@@ -795,8 +795,8 @@ final class room_manager
                  * 比赛结束时关闭这个比赛
                  */
 
-                //if ($this->Get_User_GameOver($competition_id))
-                //{
+                if ($this->Get_User_GameOver($competition_id))
+                {
                 //    $collname='user_create_competition';
                 //    $mongodb=mongo_db::singleton('func_system');
                 //    $delets = [
@@ -806,8 +806,8 @@ final class room_manager
                     /**
                      * 删除对应内存数组
                      */
-                //    unset($this->user_crooms[$competition_id]);
-                //}
+                    unset($this->user_crooms[$competition_id]['playerid']);
+                }
 
             }
 
