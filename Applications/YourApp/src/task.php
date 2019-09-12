@@ -121,6 +121,24 @@ function task_udpate_game($play_game_result,$uid)
                 update($taskIds,$wuqi,$uid,$gameTime);
             }
             break;
+        case 7://打气球
+            $jifen=$play_game_result->getValue1();//280-283
+            $shuziqiqiu=$play_game_result->getValue2();//280-283
+            $wenhaoqiqiu=$play_game_result->getValue3();//280-283
+            $gameTime=$play_game_result->getValue4();
+            if($jifen>0){
+                $taskIds="(320400)";
+                update($taskIds,$jifen,$uid,$gameTime);
+            }
+            if($shuziqiqiu>0){
+                $taskIds="(320401)";
+                update($taskIds,$shuziqiqiu,$uid,$gameTime);
+            }
+            if($wenhaoqiqiu>0){
+                $taskIds="(320402)";
+                update($taskIds,$wenhaoqiqiu,$uid,$gameTime);
+            }
+            break;
     }
 }
 function update($taskIds,$value,$uid,$gameTime=60){
