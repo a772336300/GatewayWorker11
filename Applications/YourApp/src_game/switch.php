@@ -141,7 +141,7 @@ function switch_game($client_id,$mid,$data)
         {
             $delroom = new CS_RoomDel();
             $delroom->parseFromString($data);
-            room_manager::singleton()->delRoom($client_id,$delroom->getPlayerid(),$delroom->getRoomId());
+            room_manager::singleton()->delRoom($delroom->getPlayerid(),$delroom->getRoomId());
             break;
         }
         case Message_Id::CS_RoomOut_Id:

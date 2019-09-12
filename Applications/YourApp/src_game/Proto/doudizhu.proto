@@ -58,6 +58,7 @@ enum Message_Id
 	SC_RoomNumber_Id = 33;	//房间人数
 	CS_RoomOut_Id	= 34;	//退出自定义房间
 	SC_RoomOut_Id	= 35;
+	SC_RoomState    = 36;   //游戏房间状态
 
 }
 
@@ -297,7 +298,7 @@ message CS_JoinTheRoom
 //加入房间返回
 message SC_JoinTheRoom
 {
-     optional int32 result = 1;     //加入房间结果 0成功 1已开赛 2已结束 3房间已关闭
+     optional int32 result = 1;     //加入房间结果 0成功 1已开赛 2已结束 3房间已关闭 4已在房间中
 	 optional RoomInfoTable roomInfo = 2;		//房间信息
 }
 
@@ -333,5 +334,11 @@ message CS_RoomOut
 message SC_RoomOut
 {
 	optional int32 roomId	= 1;
+}
+//游戏房间状态
+message SC_RoomState
+{
+    optional int32 roomId   = 1;
+    optional int32 gameState = 2;
 }
 
