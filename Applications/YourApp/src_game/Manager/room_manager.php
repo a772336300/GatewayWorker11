@@ -81,6 +81,43 @@ final class room_manager
      */
     function start_game_room()
     {
+        $this->__time_id_read = Timer::add(10,function ()
+        {
+            if (isset($this->public_rooms_config))
+            {
+                foreach ($this->public_rooms_config as $key => $data)
+                {
+                    if ($data->bnumber == true)
+                    {
+                        if (isset($this->public_rooms[$key]['state']))
+                        {
+                            if ($this->public_rooms[$key]['state'] == false)
+                            {
+                                if (isset($this->public_rooms[$key]['playerid']))
+                                {
+                                    $users_id = array_push();
+                                    foreach ($this->public_rooms[$key]['playerid'] as $id)
+                                    {
+                                        array_push($users_id,$id);
+                                        //if (count($users_id) == 3)
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            $this->public_rooms[$key]['state'] = false;
+                        }
+                    }
+                    elseif ($data->bnumber == false)
+                    {
+
+                    }
+
+                }
+            }
+        }
+        );
 
         return;
         ///////////////////////////////////////////////////////////////
@@ -368,7 +405,24 @@ final class room_manager
      */
     function competition_sign_up($competition_id,$room_type,$user_id,$client_id)
     {
-        /*
+        if (isset($this->public_rooms_config[$competition_id]))
+        {
+            if (isset($this->public_rooms[$competition_id]) && is_array($this->public_rooms[$competition_id]))
+            {
+                if (count($this->public_rooms[$competition_id]) < $this->public_rooms_config[$competition_id]->minNum)
+                {
+                    array_push($this->public_rooms[$competition_id]['playerid'],$user_id);
+                }
+            }
+            else
+            {
+                $this->public_rooms[$competition_id] = array();
+                array_push($this->public_rooms[$competition_id]['playerid'],$user_id);
+            }
+        }
+        return;
+        //////////////////////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////////////////////
         if (is_array($this->users[$competition_id][$room_type]['socket_id']))
         {
             $number = count($this->users[$competition_id][$room_type]['socket_id']);
@@ -384,22 +438,6 @@ final class room_manager
             $this->users[$competition_id][$room_type]['socket_id'][$user_id] = $client_id;
             $this->users[$competition_id][$room_type]['integral'][$user_id] = 0;
             send_notice($user_id,1,"报名成功！");
-        }
-        */
-        if (isset($this->public_rooms_config[$competition_id]))
-        {
-            if (isset($this->public_rooms[$competition_id]) && is_array($this->public_rooms[$competition_id]))
-            {
-                if (count($this->public_rooms[$competition_id]) < $this->public_rooms_config[$competition_id]->minNum)
-                {
-                    array_push($this->public_rooms[$competition_id],$user_id);
-                }
-            }
-            else
-            {
-                $this->public_rooms[$competition_id] = array();
-                array_push($this->public_rooms[$competition_id],$user_id);
-            }
         }
     }
 
