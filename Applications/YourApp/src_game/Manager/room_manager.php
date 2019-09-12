@@ -49,10 +49,10 @@ final class room_manager
         $this->user_ids=null;
         $this->rooms=null;          //房间
         $this->bLoad_user_create_room=false;
-        $this->__time_id_read=Timer::add(20,function ()
-        {
+        //$this->__time_id_read=Timer::add(20,function ()
+        //{
             $this->load_public_rooms_config();
-        },true);
+        //},true);
     }
 
 
@@ -81,6 +81,10 @@ final class room_manager
      */
     function start_game_room()
     {
+
+        return;
+        ///////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////
         $this->__timer_id_read=Timer::add(20,function ()
         {
             if (isset($this->rooms))
@@ -418,7 +422,6 @@ final class room_manager
             $this->rooms[$room_id]->user_enter($user);
         }
         */
-
     }
 
     /**
