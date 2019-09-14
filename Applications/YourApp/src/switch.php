@@ -55,6 +55,7 @@ function message_switch($client_id,$mid,$data)
     if($mid == 40000)
     {
         web_server_message_manager($data);
+        Gateway::sendToClient($client_id,"");
         return;
     }
 
