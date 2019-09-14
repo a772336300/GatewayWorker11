@@ -322,13 +322,13 @@ function hall_message_switch($mid,$data){
                         }
                     }
                 }else if($price_type==4){
-                    $sql="select * from user_money where uid=$uid";
+                    $sql="select * from `bolaik_user`.`user_info` where user_id='$uid'";
                     $rs=db_query($sql);
                     $money=$rs[0]['lhd'];
                     if($money<$good->price){
                         $code=2;
                     }else{
-                        $sql="update user_money set lhd=lhd-$good->price where uid=$uid";
+                        $sql="update `bolaik_user`.`user_info` set lhd=lhd-$good->price where user_id=$uid";
                         if(!db_query($sql)){
                             $code=3;
                         }
@@ -858,16 +858,16 @@ function use_shiwuquan($user_id,$packet_good,$user_name,$user_phone,$u_addr){
 				$b_phone_nu=$user['b_phone_nu'];
 
     $total_price=$packet_good->price;
+    $lastRate=getLastRate();
+    $rate=getRate();
     if($packet_good->price_type==3){
-        $lastRate=getLastRate();
-        $rate=getRate();
         $total_price=$packet_good->price*$lastRate;
     }
 
     $sql="insert into bolaik_order.goods_order_pay(order_id,user_id,user_nick,b_phone_nu,".
-        "user_name,user_phone,u_addr,goods_id,goods_icon,goods_name,oper_id,oper_name,link_name,phone_number,addr,num,price,total_price,totalsxf,rate,rmb) ".
-        " values('$order_id','$user_id','$user_nick','$b_phone_nu','$user_name','$user_phone','$u_addr',$packet_good->prop_id,'$packet_good->img','$packet_good->des',$packet_good->oper_id,'$account_name',".
-        "'$link_name','$phone_number','$addr',1,$packet_good->price*$rate,$total_price,0,$rate,$packet_good->price)";
+        "user_name,user_phone,u_addr,goods_id,goods_icon,goods_name,oper_id,oper_name,link_name,phone_number,addr,num,price_type,price,total_price,totalsxf,rate,rmb) ".
+        " values('$order_id','$user_id','$user_nick','$b_phone_nu','$user_name','$user_phone','$u_addr',$packet_good->prop_id,'$packet_good->img','$packet_good->name',$packet_good->oper_id,'$account_name',".
+        "'$link_name','$phone_number','$addr',1,$packet_good->price_type,$packet_good->price*$rate,$total_price,0,$rate,$packet_good->price)";
     db_query($sql);
     //添加U币商城订单
     $sql="insert into bolaik_order.ucoin_order_pay(order_id,user_id,user_nick,goods_id,goods_name,goods_icon,num,goods_type,price_type,price,total_price) ".

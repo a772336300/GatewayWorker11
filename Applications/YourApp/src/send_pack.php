@@ -563,7 +563,7 @@ function send_pack_user_order_list($uid,$data)
         $order_info->setTotalPrice($value["total_price"]);
         $order_info->setUserSubmitTime($value["user_submit_time"]);
 
-        $object->appendSpreadLhdInfo($order_info);
+        $object->appendOrderInfo($order_info);
     }
     \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20038,$object->serializeToString()));
 }
