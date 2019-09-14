@@ -551,6 +551,23 @@ function send_pack_spread_lhd_info($uid,$lhd,$data)
     \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20036,$object->serializeToString()));
 }
 
+function send_pack_user_order_list($uid,$data)
+{
+    $object= new \Proto\SC_User_Order_List();
+    foreach ($data as $value)
+    {
+        $order_info = new \Proto\E_Order_Info();
+        $order_info->setAuditStatus($value["audit_status"]);
+        $order_info->setGoodsName($value["goods_name"]);
+        $order_info->setOperSubmitTime($value["oper_submit_time"]);
+        $order_info->setTotalPrice($value["total_price"]);
+        $order_info->setUserSubmitTime($value["user_submit_time"]);
+
+        $object->appendOrderInfo($order_info);
+    }
+    \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20038,$object->serializeToString()));
+}
+
 function send_user_get_spread_award($uid,$code)
 {
     $message = new \Proto\SC_User_Get_Spread_Award();
