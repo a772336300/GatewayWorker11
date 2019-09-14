@@ -46,7 +46,8 @@ $tcp_worker->count = 1;
 // 服务注册地址
 $tcp_worker->registerAddress = '127.0.0.1:1238';
 
-
+// 将屏幕打印输出到Worker::$stdoutFile指定的文件中
+Worker::$stdoutFile = '/tmp/businessworker.log';
 
 $tcp_worker->product_uid_count = 0;
 //连接数
