@@ -805,6 +805,24 @@ final class room_manager
                 //        ['q' =>['code' => $competition_id], 'limit' =>0]
                 //    ];
                 //    $rs = $mongodb->del($collname, $delets);
+                    $this->updateRoom($competition_id,3);
+                    if (isset($this->user_crooms[$competition_id]['createplayer']))
+                    {
+                        if (GatewayWorker\Lib\Gateway::isUidOnline($this->user_crooms[$competition_id]['createplayer']))
+                        {
+                            /**
+                             * 通知创建者
+                             */
+                            $roomstate = new \Proto\SC_RoomState();
+                            $roomstate->setGameState(3);
+                            $roomstate->setRoomId($competition_id);
+                            GatewayWorker\Lib\Gateway::sendToUid($this->user_crooms[$competition_id]['createplayer'],my_pack(Message_Id::SC_RoomState_Id,$roomstate->serializeToString()));
+                        }
+                    }
+                    foreach ($this->user_crooms[$competition_id]['playerid'] as $uid)
+                    {
+                        //add_super_agent_lhd_logs($uid,$this->user_crooms[$competition_id]['number']);
+                    }
                     /**
                      * 删除对应内存数组
                      */
@@ -896,12 +914,15 @@ final class room_manager
                 {
                     if (GatewayWorker\Lib\Gateway::isUidOnline($this->user_crooms[$roomid]['createplayer']))
                     {
-
+                        /**
+                         * 通知创建者
+                         */
+                        $roomstate = new \Proto\SC_RoomState();
+                        $roomstate->setGameState(2);
+                        $roomstate->setRoomId($roomid);
+                        GatewayWorker\Lib\Gateway::sendToUid($this->user_crooms[$roomid]['createplayer'],my_pack(Message_Id::SC_RoomState_Id,$roomstate->serializeToString()));
                     }
                 }
-                //$result = new SC_JoinTheRoom();
-                //$result->setResult(1);
-                //GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(Message_Id::SC_JoinTheRoom_Id,$result->serializeToString()));
 
                 $user_ids = array();
                 foreach ($this->user_crooms[$roomid]['playerid'] as $key => $uid)

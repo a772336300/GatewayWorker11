@@ -339,6 +339,6 @@ message SC_RoomOut
 message SC_RoomState
 {
     optional int32 roomId   = 1;
-    optional int32 gameState = 2;
+    optional int32 gameState = 2;//游戏状态 1报名中 2已开赛 3已结束
 }
 
