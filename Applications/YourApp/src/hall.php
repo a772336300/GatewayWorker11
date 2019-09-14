@@ -367,7 +367,7 @@ function hall_message_switch($mid,$data){
             if(count($rs)>0&&$rs[0]->num>=$user_packet->getNum()){
                 $packet_good=$rs[0];
                 $use_type=$packet_good->use_type;
-                if ($use_type==1||$use_type==5){
+                if ($use_type==1||$use_type==6){
                     $type=$use_type==1?2:3;
                     //打开电话输入框
                     if(recharge($uid,$user_packet->getPhone(),$packet_good->detail,$type)==false){
@@ -695,6 +695,15 @@ function hall_message_switch($mid,$data){
             print_r($users);
             send_pack_spread_lhd_info($uid,$users);
             break;
+        //获取订单信息
+        case 20037:
+            echo "\n---------- 获取订单信息 -----------\n";
+            $sql="select user_submit_time,goods_name,total_price,audit_status,oper_submit_time from `bolaik_order`.`goods_order_pay` where user_id='$uid' order by user_submit_time desc";
+            $rs = db_query($sql);
+            echo "--最终输出：\n";
+            print_r($rs);
+            send_pack_user_order_list($uid,$rs);
+            break;
     }
 }
 
@@ -704,7 +713,7 @@ function hall_message_switch($mid,$data){
  * @param $num
  * @param $type 2话费充值，3Q币充值
  */
-function recharge($user_id,$code,$num,$type){
+/*function recharge($user_id,$code,$num,$type){
     $orderId=get_order_num();
     $ip=get_real_ip();
     //添加充值收到的数据记录
@@ -746,7 +755,86 @@ function recharge($user_id,$code,$num,$type){
     $sql="insert into bolaik_order.recharge_log(order_id,user_id,code,rmb,type,u_coin,totalxsf) values('$orderId','$user_id','$code',$num,2,$num,0)";
     db_query($sql);
     return true;
+}*/
+
+/**话费充值
+ * @param $code
+ * @param $num
+ * @param $type 2话费充值，3Q币充值
+ */
+function recharge($user_id,$code,$num,$type){
+
+    $orderId=get_order_num();
+    if($type==3){
+        $TypeId="1099";
+        $Proid="331";
+        $OtherInfo="<root><lists><list><name>QQ</name><form>GameId</form><value>".$code."</value></list></lists></root>";
+        //充值
+        $MerchantID="91910";
+        $BuyNumber="".$num;
+        $ReturnUrl="";
+        $key="FkhjkSDfedewEfu==";
+
+        $sign=$MerchantID."|".$TypeId."|".$Proid."|".$orderId."|".$BuyNumber."|".$OtherInfo."|".$ReturnUrl."|".$key;
+        $md5String = md5($sign);
+        $loadUrl = "Action=Buy&MerchantID=".$MerchantID."&TypeId=".$TypeId."&Proid=".$Proid."&OrderId=".$orderId.
+            "&BuyNumber=".$BuyNumber."&OtherInfo=".$OtherInfo."&ReturnUrl=".$ReturnUrl."&sign=".$md5String;
+        $url="http://219.153.10.203:9013/api/buy.ashx?".$loadUrl;
+
+        $sr=file_get_contents($url);
+
+        echo "趣购返回：".$sr;
+        $test = new SimpleXMLElement($sr);
+
+        //获得ping_protocol的值
+        $nodes = $test->root->State;
+        if("0".equals($nodes)){
+            echo "成功";
+        }else{
+            $sql="update bolaik_order.recharge_request_log set remsg='平台账户异常，请联系客服' where order_id='".$orderId."'";
+            db_query($sql);
+            return false;
+        }
+    }else{
+        //话费充值
+        $openId="JHcf8bedbe82bf6cb106a9b6aabe83172d";
+        $key="74e411713e9610d12096371b21ec4975";
+        //查询号码是否能充值
+        $url="http://op.juhe.cn/ofpay/mobile/telcheck?cardnum=".$num."&phoneno=".$code."&key=".$key;
+        $sr=file_get_contents($url);
+
+        $check = json_decode($sr);
+        if($check->error_code==0){
+            //话费直冲
+            $sign=$openId.$key.$code.$num.$orderId;
+            $md5String = md5($sign);
+            $url="http://op.juhe.cn/ofpay/mobile/onlineorder?key=".$key."&phoneno=".$code."&cardnum=".$num."&orderid=".$orderId."&sign=".$md5String;
+            $sr=file_get_contents($url);
+            $recharge = json_decode($sr);
+            echo "话费充值返回：".$sr;
+            if($recharge->error_code!=0){
+
+                $sql="update bolaik_order.recharge_request_log set remsg='充值失败' where order_id='$orderId'";
+                db_query($sql);
+                return false;
+            }
+        }else{
+            $sql="update bolaik_order.recharge_request_log set remsg='该号码不能充值' where order_id='$orderId'";
+            db_query($sql);
+            return false;
+        }
+
+    }
+    $sql="update bolaik_order.recharge_request_log set remsg='创建订单成功' where order_id='$orderId'";
+    db_query($sql);
+
+    //充值成功
+    //生成订单
+    $sql="insert into bolaik_order.recharge_log(order_id,user_id,code,rmb,type,u_coin,totalxsf) values('$orderId','$user_id','$code',$num,2,$num,0)";
+    db_query($sql);
+    return true;
 }
+
 
 /**使用实物券
  * @param $packet_good
@@ -769,10 +857,17 @@ function use_shiwuquan($user_id,$packet_good,$user_name,$user_phone,$u_addr){
 				$user_nick=$user['user_nick'];
 				$b_phone_nu=$user['b_phone_nu'];
 
+    $total_price=$packet_good->price;
+    if($packet_good->price_type==3){
+        $lastRate=getLastRate();
+        $rate=getRate();
+        $total_price=$packet_good->price*$lastRate;
+    }
+
     $sql="insert into bolaik_order.goods_order_pay(order_id,user_id,user_nick,b_phone_nu,".
         "user_name,user_phone,u_addr,goods_id,goods_icon,goods_name,oper_id,oper_name,link_name,phone_number,addr,num,price,total_price,totalsxf,rate,rmb) ".
         " values('$order_id','$user_id','$user_nick','$b_phone_nu','$user_name','$user_phone','$u_addr',$packet_good->prop_id,'$packet_good->img','$packet_good->des',$packet_good->oper_id,'$account_name',".
-        "'$link_name','$phone_number','$addr',1,$packet_good->price,$packet_good->price,0,0,0)";
+        "'$link_name','$phone_number','$addr',1,$packet_good->price*$rate,$total_price,0,$rate,$packet_good->price)";
     db_query($sql);
     //添加U币商城订单
     $sql="insert into bolaik_order.ucoin_order_pay(order_id,user_id,user_nick,goods_id,goods_name,goods_icon,num,goods_type,price_type,price,total_price) ".

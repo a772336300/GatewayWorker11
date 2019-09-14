@@ -956,6 +956,33 @@ message SC_User_Spread_Lhd_info
 	repeated E_Spread_Lhd_Info spread_lhd_info = 1;
 }
 
+
+//获取订单信息
+message CS_User_Order_List
+{
+	//option (msgid) = 20037;
+}
+
+// 订单信息
+message E_Order_Info
+{
+	optional string   user_submit_time= 1;	//使用时间
+	optional string  goods_name= 2;	//商品名称
+	optional int32  total_price= 3;	//价格
+	optional int32  audit_status= 4;	//状态 1:提交商家,2:取消,0:待审核
+	optional string  oper_submit_time= 5;	//发货时间
+}
+
+//获取订单信息 返回
+message SC_User_Order_List
+{
+	//option (msgid) = 20038;
+	repeated E_Order_Info order_info = 1;
+}
+
+
+
+
 //用户邮件变动
 message SC_User_Email_Update
 {
