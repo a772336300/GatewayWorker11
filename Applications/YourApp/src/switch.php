@@ -57,7 +57,7 @@ function message_switch($client_id,$mid,$data)
     {
         if(!in_array($_SERVER['REMOTE_ADDR'],$address))
         return;
-        web_server_message_manager($data);
+        web_server_message_manager($client_id,$data);
         Gateway::sendToClient($client_id,$data);
         Gateway::closeClient($client_id);
         return;
