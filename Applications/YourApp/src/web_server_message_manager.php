@@ -1,7 +1,7 @@
 <?php
 use MongoDB\BSON\ObjectID;
 use \GatewayWorker\Lib\Gateway;
-function web_server_message_manager($data)
+function web_server_message_manager($client_id,$data)
 {
     global $task_sign_map;
     $dataArr =json_decode($data,true);
@@ -13,6 +13,7 @@ function web_server_message_manager($data)
     util_log("收到Web端消息f：".$dataArr['f']);
     if($dataArr['f']=='signNotice')
     {
+//        send_pack_toweb($client_id);
         task_udpate_once($dataArr['user_id'],$dataArr['task_id']);
         return;
     }

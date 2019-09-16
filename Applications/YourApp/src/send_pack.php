@@ -109,6 +109,16 @@ function send_pack_notice($client_id,$type,$tipStr)
     \GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(806,$notice->serializeToString()));
     //$connection->send(my_pack(806,$notice->serializeToString()));
 }
+
+//web服务器通知
+function send_pack_toweb($client_id)
+{
+    $notice="send to web\n";
+    echo $notice;
+    \GatewayWorker\Lib\Gateway::sendToClient($client_id,$notice);
+//    Gateway::closeClient($client_id);
+}
+
 function send_pack_sign($client_id,$date,$isSign)
 {
     $object= new \Proto\SC_User_Sign();
