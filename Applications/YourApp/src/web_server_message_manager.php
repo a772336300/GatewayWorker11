@@ -65,6 +65,15 @@ function web_server_message_manager($client_id,$data)
         }
         util_log("rechargeNotice uid:$dataArr[user_id] vip_day:$vip_day");
         send_vip_day($dataArr['user_id'],$vip_day);
+
+        $agent_id=$dataArr['agent_id'];
+        if($agent_id!=""){
+            //查询用户上级是否在线
+            if(Gateway::isUidOnline($agent_id))
+            {
+                send_user_lhd($agent_id);
+            }
+        }
         return;
 
     }
