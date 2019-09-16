@@ -60,13 +60,13 @@ class Events_Game
    {
        //echo substr($packet,0,4);
        // 向客户端发送hello $data
-//       if(unpack('i*',substr($packet,0,4))[1]!=strlen($packet))
-//       {
+       if(unpack('i*',substr($packet,0,4))[1]!=strlen($packet))
+       {
 //           $test_count1++;
 //           echo $test_count1;
 //           echo "bad pack!";
-//           return ;
-//       }
+           return ;
+       }
 
        self::nianbao($packet,$client_id);
       // message_switch($client_id,unpack('i*',substr($packet,4,4))[1],substr($packet,8));
