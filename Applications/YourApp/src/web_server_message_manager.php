@@ -18,6 +18,7 @@ function web_server_message_manager($client_id,$data)
         $user_id=$dataArr['user_id'];
         $task_id=$dataArr['task_id'];
         $web_name=$dataArr['web_name'];
+        echo "dataArr:".$dataArr;
         $sql="insert into bolaik_user.sign_log(user_id,web_name,times) values('$user_id','$web_name',1)";
         db_query($sql);
         task_udpate_once($dataArr['user_id'],$dataArr['task_id']);
