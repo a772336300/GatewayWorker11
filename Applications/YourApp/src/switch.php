@@ -54,6 +54,8 @@ function message_switch($client_id,$mid,$data)
     echo "调用switch-->mid：$mid\n";
     if($mid == 40000)
     {
+        if(substr($_SERVER['REMOTE_ADDR'],0,7)!=substr($_SERVER['GATEWAY_ADDR'],0,7))
+        return;
         web_server_message_manager($data);
         Gateway::sendToClient($client_id,$data);
         Gateway::closeClient($client_id);
