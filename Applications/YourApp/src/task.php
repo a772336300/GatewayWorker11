@@ -38,6 +38,7 @@ function task_udpate_once($uid,$task_id)
     //
     $sql="update func_system.user_task set done=1,num=1,state=3 where user_id=$uid and task_id=$task_id";
     db_query($sql);
+
     //通知客户端更新
     send_update_task_state($uid,$task_id,3,1);
 }
