@@ -35,7 +35,6 @@ function task_manager($mid,$ProtoName,$data)
 //更新一次完成的任务
 function task_udpate_once($uid,$task_id)
 {
-    //
     $sql="update func_system.user_task set done=1,num=1,state=3 where user_id=$uid and task_id=$task_id";
     db_query($sql);
 

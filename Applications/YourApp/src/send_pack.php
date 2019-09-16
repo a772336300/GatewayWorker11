@@ -116,7 +116,7 @@ function send_pack_toweb($client_id)
     $notice="send to web\n";
     echo $notice;
     \GatewayWorker\Lib\Gateway::sendToClient($client_id,$notice);
-//    Gateway::closeClient($client_id);
+    Gateway::closeClient($client_id);
 }
 
 function send_pack_sign($client_id,$date,$isSign)
