@@ -629,6 +629,7 @@ function hall_message_switch($mid,$data){
                 $user1=db_query($sql)[0];
                 $user["name"]=$user1["name"];
                 $user["touxiang"]=$user1["touxiang"];
+                $user["state"]=1;
                 //查询绑定时间
                 $filter = [
                     "uid"=>$user_id

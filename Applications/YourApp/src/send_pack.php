@@ -534,18 +534,18 @@ function send_pack_spread_info($uid,$user,$data)
     foreach ($data as $value)
     {
         $spread_info = new \Proto\E_Spread_Info();
-        $spread_info->setUid($value->uid);
-        $spread_info->setName($value->name);
-        $spread_info->setTouxiang($value->touxiang);
-        $spread_info->setVictoryNum($value->victory_num);
-        $spread_info->setBindTime($value->bind_time);
-        $spread_info->setState($value->state);
+        $spread_info->setUid($value["uid"]);
+        $spread_info->setName($value["name"]);
+        $spread_info->setTouxiang($value["touxiang"]);
+        $spread_info->setVictoryNum($value["victory_num"]);
+        $spread_info->setBindTime($value["bind_time"]);
+        $spread_info->setState($value["state"]);
         $object->appendSpreadInfo($spread_info);
     }
     \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20030,$object->serializeToString()));
 }
 
-function send_pack_spread_lhd_info($uid,$lhd,$data)
+function send_pack_spread_lhd_info($uid,$data)
 {
     $object= new \Proto\SC_User_Spread_Lhd_info();
     foreach ($data as $value)
