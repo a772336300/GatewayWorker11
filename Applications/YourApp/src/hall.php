@@ -562,7 +562,7 @@ function hall_message_switch($mid,$data){
             }
             break;
         //获取推广信息
-        case 20029:
+       /* case 20029:
             echo "\n---------- 获取推广信息 -----------\n";
             //查询用户信息
             $sql="SELECT ui.agent_id,ui.user_id FROM bolaik_user.user_info AS ui WHERE ui.user_id = '$uid'";
@@ -601,6 +601,48 @@ function hall_message_switch($mid,$data){
             echo "最终输出：\n";
             print_r($rs);
             send_pack_spread_info($uid,$user,$rs);
+            break;*/
+        case 20029:
+            echo "\n---------- 获取推广信息 -----------\n";
+            //查询用户信息
+            $sql="SELECT ui.agent_id,ui.user_id FROM bolaik_user.user_info AS ui WHERE ui.user_id = '$uid'";
+            $us = db_query($sql)[0];
+
+            $sql="SELECT ui.user_id uid FROM bolaik_user.user_info AS ui WHERE ui.agent_id = '$uid'";
+            $users = db_query($sql);
+            $collname="agent_lhd_logs";
+            foreach ($users as $key=>&$user) {
+                $user_id=$user["uid"];
+                $filter = [
+                    "uid"=>(int)$user_id,
+                    "agent_id"=>$uid,
+                    "changci"=>"充值"
+                ];
+                $rs = $hall_log->query($collname, $filter, []);
+                $total=0;
+                foreach ($rs as $r) {
+                    $total+=$r->coin;
+                }
+                $user["victory_num"]=$total;
+                //查询名称头像
+                $sql="SELECT name,touxiang FROM `bolaik_db`.`user` WHERE uid=$user_id";
+                $user1=db_query($sql)[0];
+                $user["name"]=$user1["name"];
+                $user["touxiang"]=$user1["touxiang"];
+                //查询绑定时间
+                $filter = [
+                    "uid"=>$user_id
+                ];
+                $rs = $hall_log->query("spread_log", $filter, []);
+                if(count($rs)>0){
+                    $user["bind_time"]=$rs[0]->bind_time;
+                }else{
+                    $user["bind_time"]="";
+                }
+            }
+            echo "最终输出：\n";
+            print_r($users);
+            send_pack_spread_info($uid,$us,$users);
             break;
         //领取推广奖励
         case 20031:
