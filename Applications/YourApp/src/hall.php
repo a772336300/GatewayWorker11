@@ -486,11 +486,14 @@ function hall_message_switch($mid,$data){
             break;
         //领取任务奖励
         case 20023:
+            $time=time();
+            echo "进入领取任务时间：$time";
             $task_award = new \Proto\CS_User_Get_Task_Award();
             $task_award->parseFromString($data);
             $task_id=$task_award->getTaskId();
             $code=get_award($task_id,$uid);
             send_user_get_task_award($uid,$code);
+            echo "总时间：".time()-$time;
             break;
         //绑定邀请码
         case 20025:

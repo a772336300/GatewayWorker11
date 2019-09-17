@@ -277,7 +277,7 @@ function get_award($task_id,$user_id){
             $nowTime=date('Y-m-d', time());
             $sql="select sum(get_uoin) totalNum from `func_system`.`game_task_log` where DATE_FORMAT(log_time,'%Y-%m-%d')='$nowTime' and user_id=$user_id and task_name_type=4";
             $totalNum = db_query($sql)[0]["totalNum"];
-            if($totalNum+$u_oin>500){
+            if($totalNum+$u_oin>480){
                 return 5;
             }
         }
