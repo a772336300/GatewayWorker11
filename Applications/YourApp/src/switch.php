@@ -330,7 +330,7 @@ function message_switch($client_id,$mid,$data)
     if(!isset($_SESSION['uid']))
     {
         echo "without login message!";
-//        return;
+        return;
     }
     //大厅新加信息
     if($mid>20000&&$mid<30000){
