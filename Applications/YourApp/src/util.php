@@ -274,5 +274,11 @@ function add_BU_logs($phone,$type,$send_back,$remark,$num,$behaviorId){
     $hall_log->insert("BU_logs", $rows);
 }
 
+// 毫秒级时间戳
+function getMillisecond() {
+    list($t1, $t2) = explode(' ', microtime());
+    return (float)sprintf('%.0f',(floatval($t1)+floatval($t2))*1000);
+}
+
 
 
