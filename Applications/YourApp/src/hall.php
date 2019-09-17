@@ -312,7 +312,7 @@ function hall_message_switch($mid,$data){
                     $goods_price=$good->price;
                     if($price_type==3){
                         $lastRate=getLastRate();
-                        $goods_price=(int)$goods_price*$lastRate;
+                        $goods_price=(int)($goods_price*$lastRate);
                     }
                     if($money<$goods_price){
                         $code=2;
