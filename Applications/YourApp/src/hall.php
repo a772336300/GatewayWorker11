@@ -928,55 +928,29 @@ function use_shiwuquan($user_id,$packet_good,$user_name,$user_phone,$u_addr){
  * @param $des 描述，如：商城购买,使用道具,比赛奖励,领取附件
  */
 function add_user_packet($prop_id,$uid,$phone,$des,$num=1){
-    $hall_config = mongo_db::singleton("hall_config");
-    $hall_log = mongo_db::singleton("hall_log");
+    if($num>0){
+        $hall_config = mongo_db::singleton("hall_config");
+        $hall_log = mongo_db::singleton("hall_log");
 
-    $collname="prop_config";
-    $filter = [
-        "prop_id" => (int)$prop_id
-    ];
-    $queryWriteOps = [
-    ];
-    $rs = $hall_config->query($collname, $filter, $queryWriteOps);
-    if(count($rs)>0){
-        $good=$rs[0];
-        //添加道具获得记录
-        $nowTime=date('Y-m-d h:i:s', time());
-        $rows=[['uid'=>$uid,'phone'=>$phone,'prop_id'=>$good->prop_id,'name'=>$good->name,'num'=>$num,'des'=>$des,'add_time'=>$nowTime,'times'=>time()]];
-        $hall_log->insert("get_goods_log", $rows);
-        if($good->use_type==5){
-            //获得联欢币
-            $sql="update user_money set gold=gold+($good->detail*$num) where uid=$uid";
-            db_query($sql);
-            send_user_coin_change($uid,$phone);
-        }else{
-            //查询背包是否有该道具
-            $collname="user_packet";
-            $filter = [
-                "prop_id" => $good->prop_id,
-                'uid'=>$uid
-            ];
-            $rs = $hall_log->query($collname, $filter, []);
-            if(count($rs)==0||$good->duidie==2){
-                //添加背包信息
-                $over_time=0;
-                if($good->active_time>0){
-                    $over_time=time()+$good->active_time;
-                }
-                if($good->active_id!=""){
-                    //查询活动结束时间
-                    $filter = [
-                        "_id" => new ObjectId($good->active_id),
-                    ];
-                    $rs = $hall_config->query("active_config", $filter, []);
-                    if(count($rs)>0){
-                        $over_time=$rs[0]->end_time;
-                    }
-                }
-                $good->num=$num;
-                $good->over_time=$over_time;
-                $rows=[['uid'=>$uid,'prop_id'=>$good->prop_id,'name'=>$good->name,'des'=>$good->des,'img'=>$good->img,'active_id'=>$good->active_id,'prop_type'=>$good->prop_type,'use_type'=>$good->use_type,'detail'=>$good->detail,'active_time'=>$good->active_time,'duidie'=>$good->duidie,'mall_type'=>$good->mall_type,'price_type'=>$good->price_type,'price'=>$good->price,'num'=>1,'over_time'=>$over_time,'oper_id'=>$good->oper_id]];
-                $hall_log->insert($collname, $rows);
+        $collname="prop_config";
+        $filter = [
+            "prop_id" => (int)$prop_id
+        ];
+        $queryWriteOps = [
+        ];
+        $rs = $hall_config->query($collname, $filter, $queryWriteOps);
+        if(count($rs)>0){
+            $good=$rs[0];
+            //添加道具获得记录
+            $nowTime=date('Y-m-d h:i:s', time());
+            $rows=[['uid'=>$uid,'phone'=>$phone,'prop_id'=>$good->prop_id,'name'=>$good->name,'num'=>$num,'des'=>$des,'add_time'=>$nowTime,'times'=>time()]];
+            $hall_log->insert("get_goods_log", $rows);
+            if($good->use_type==5){
+                //获得联欢币
+                $sql="update user_money set gold=gold+($good->detail*$num) where uid=$uid";
+                db_query($sql);
+                send_user_coin_change($uid,$phone);
+            }else{
                 //查询背包是否有该道具
                 $collname="user_packet";
                 $filter = [
@@ -984,46 +958,74 @@ function add_user_packet($prop_id,$uid,$phone,$des,$num=1){
                     'uid'=>$uid
                 ];
                 $rs = $hall_log->query($collname, $filter, []);
-                $good=$rs[0];
-                send_user_packet_update($uid,$good,1);
-            }else{
-                //修改背包信息
-                $updates=[];
-                $good=$rs[0];
-                if($good->active_time>0){
-                    //加时间
-                    $updates = [
-                        [
-                            "q"     => ["prop_id" => $good->prop_id,
-                                'uid'=>$uid],
-                            "u"     => ['$inc' =>['over_time'=>$good->active_time]],
-                            'multi' => false, 'upsert' => false
-                        ]
+                if(count($rs)==0||$good->duidie==2){
+                    //添加背包信息
+                    $over_time=0;
+                    if($good->active_time>0){
+                        $over_time=time()+$good->active_time;
+                    }
+                    if($good->active_id!=""){
+                        //查询活动结束时间
+                        $filter = [
+                            "_id" => new ObjectId($good->active_id),
+                        ];
+                        $rs = $hall_config->query("active_config", $filter, []);
+                        if(count($rs)>0){
+                            $over_time=$rs[0]->end_time;
+                        }
+                    }
+                    $good->num=$num;
+                    $good->over_time=$over_time;
+                    $rows=[['uid'=>$uid,'prop_id'=>$good->prop_id,'name'=>$good->name,'des'=>$good->des,'img'=>$good->img,'active_id'=>$good->active_id,'prop_type'=>$good->prop_type,'use_type'=>$good->use_type,'detail'=>$good->detail,'active_time'=>$good->active_time,'duidie'=>$good->duidie,'mall_type'=>$good->mall_type,'price_type'=>$good->price_type,'price'=>$good->price,'num'=>1,'over_time'=>$over_time,'oper_id'=>$good->oper_id]];
+                    $hall_log->insert($collname, $rows);
+                    //查询背包是否有该道具
+                    $collname="user_packet";
+                    $filter = [
+                        "prop_id" => $good->prop_id,
+                        'uid'=>$uid
                     ];
-                    $newTime=$good->over_time+$good->active_time;
-                    $good->over_time=$newTime;
+                    $rs = $hall_log->query($collname, $filter, []);
+                    $good=$rs[0];
+                    send_user_packet_update($uid,$good,1);
                 }else{
-                    //加数量
-                    $good->num=$good->num+$num;
-                    $updates = [
-                        [
-                            "q"     => ["prop_id" => $good->prop_id,
-                                'uid'=>$uid],
-                            "u"     => ['$set' => ['num'=>$good->num]],
-                            'multi' => false, 'upsert' => false
-                        ]
-                    ];
+                    //修改背包信息
+                    $updates=[];
+                    $good=$rs[0];
+                    if($good->active_time>0){
+                        //加时间
+                        $updates = [
+                            [
+                                "q"     => ["prop_id" => $good->prop_id,
+                                    'uid'=>$uid],
+                                "u"     => ['$inc' =>['over_time'=>$good->active_time]],
+                                'multi' => false, 'upsert' => false
+                            ]
+                        ];
+                        $newTime=$good->over_time+$good->active_time;
+                        $good->over_time=$newTime;
+                    }else{
+                        //加数量
+                        $good->num=$good->num+$num;
+                        $updates = [
+                            [
+                                "q"     => ["prop_id" => $good->prop_id,
+                                    'uid'=>$uid],
+                                "u"     => ['$set' => ['num'=>$good->num]],
+                                'multi' => false, 'upsert' => false
+                            ]
+                        ];
 
-                }
-                if(count($updates)>0){
-                    $hall_log->update($collname, $updates);
-                    //1添加，2修改，3删除
-                    send_user_packet_update($uid,$good,2);
+                    }
+                    if(count($updates)>0){
+                        $hall_log->update($collname, $updates);
+                        //1添加，2修改，3删除
+                        send_user_packet_update($uid,$good,2);
+                    }
                 }
             }
+        }else{
+            echo "道具不存在\n";
         }
-    }else{
-        echo "道具不存在\n";
     }
 }
 
