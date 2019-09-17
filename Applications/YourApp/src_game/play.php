@@ -169,7 +169,7 @@ function game_join_time_out_add_robot($playerId,$type)
                 if($robotId1!=null)
                 {
                     echo "\n机器人1加入：id:$robotId1\n";
-                    $redis->hSet($robotId,'is_robot',true);
+                    $redis->hSet($robotId1,'is_robot',true);
                     $waitingUser[$type][$robotId1]=time();
                 }
             }
@@ -456,7 +456,7 @@ function initRoomState($roomId,$compareValue,$currentValue)
     $redis->hSet($roomId,'compareValue',json_encode($compareValue));
     $redis->hSet($roomId,'currentValue',json_encode($currentValue));
 }
-function roomTick($roomId,$times,$timeSecond=3)
+function roomTick($roomId,$times,$timeSecond=16)
 {
     global $redis;
     $tick=$redis->hIncrBy($roomId,'tick',$times);
