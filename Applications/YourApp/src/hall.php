@@ -275,10 +275,10 @@ function hall_message_switch($mid,$data){
             break;
         //购买商品
         case 20017:
-            $goods = new \Proto\CS_User_Buy_Goods();
-            $goods->parseFromString($data);
-            $_id=$goods->getId();
-//            $_id='5d258eda6a4819cceeb909d7';
+//            $goods = new \Proto\CS_User_Buy_Goods();
+//            $goods->parseFromString($data);
+//            $_id=$goods->getId();
+            $_id='5d79e7d0e8b270500488ef3f';
             $collname="prop_config";
             $filter = [
                 "_id" => new ObjectId($_id)
@@ -312,7 +312,7 @@ function hall_message_switch($mid,$data){
                     $goods_price=$good->price;
                     if($price_type==3){
                         $lastRate=getLastRate();
-                        $goods_price=$goods_price*$lastRate;
+                        $goods_price=(int)$goods_price*$lastRate;
                     }
                     if($money<$goods_price){
                         $code=2;
