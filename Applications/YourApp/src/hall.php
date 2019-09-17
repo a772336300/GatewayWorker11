@@ -278,7 +278,7 @@ function hall_message_switch($mid,$data){
             $goods = new \Proto\CS_User_Buy_Goods();
             $goods->parseFromString($data);
             $_id=$goods->getId();
-//            $_id='5d258eda6a4819cceeb909d7';
+//            $_id='5d79e7d0e8b270500488ef3f';
             $collname="prop_config";
             $filter = [
                 "_id" => new ObjectId($_id)
@@ -312,7 +312,7 @@ function hall_message_switch($mid,$data){
                     $goods_price=$good->price;
                     if($price_type==3){
                         $lastRate=getLastRate();
-                        $goods_price=$goods_price*$lastRate;
+                        $goods_price=(int)($goods_price*$lastRate);
                     }
                     if($money<$goods_price){
                         $code=2;
@@ -486,11 +486,14 @@ function hall_message_switch($mid,$data){
             break;
         //领取任务奖励
         case 20023:
+            $time=getMillisecond();
+            echo "进入领取任务时间：$time";
             $task_award = new \Proto\CS_User_Get_Task_Award();
             $task_award->parseFromString($data);
             $task_id=$task_award->getTaskId();
             $code=get_award($task_id,$uid);
             send_user_get_task_award($uid,$code);
+            echo "总时间：".(getMillisecond()-$time);
             break;
         //绑定邀请码
         case 20025:
@@ -1049,6 +1052,16 @@ function send_user_lhd($uid){
     $lhd=$rs[0]['lhd'];
     //发送帐变
     send_pack_Lhd($uid,$lhd);
+}
+
+/**发送当日汇率
+ * @param $uid
+ * @param $phone
+ */
+function send_user_today_huilv($uid){
+    $lv=100/getRate();
+    //发送帐变
+    send_pack_huilv($uid,$lv);
 }
 
 /**发送玩家货币变化信息

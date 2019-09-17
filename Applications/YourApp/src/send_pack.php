@@ -195,6 +195,14 @@ function send_pack_Lhd($uid,$lhd)
     //$connection->send(my_pack(802,$object->serializeToString()));
 }
 
+function send_pack_huilv($uid,$lv)
+{
+    $object = new \Proto\SC_Today_Huilv();
+    $object->setLv($lv);
+    \GatewayWorker\Lib\Gateway::sendToUid($uid,my_pack(20104,$object->serializeToString()));
+    //$connection->send(my_pack(802,$object->serializeToString()));
+}
+
 function send_pack_strength_change($uid,$strength)
 {
     $object = new \Proto\SC_User_UB();

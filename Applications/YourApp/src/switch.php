@@ -389,6 +389,8 @@ function message_switch($client_id,$mid,$data)
                 hall_message_switch(20027,null);
                 //发送公告信息
                 hall_message_switch(20033,null);
+                //发送当日汇率
+                send_user_today_huilv($_SESSION['uid']);
                 break;
             }
         //游戏完成
