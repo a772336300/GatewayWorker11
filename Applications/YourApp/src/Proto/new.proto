@@ -464,14 +464,7 @@ message SC_User_UB
 
 }
 
-//联欢豆变化
-message SC_User_LHD
-{
-	//option (msgid) = 20103;
-	optional int32     	lhd                = 1; //联欢豆
-}
-
-/////////////////GPS位置 1015 --> 
+/////////////////GPS位置 1015 -->
 
 //GPS位置 
 message CS_User_GPS
@@ -989,6 +982,20 @@ message SC_User_Email_Update
 	//option (msgid) = 20102;
 	optional E_User_mail user_mail = 1;//邮件信息
 	optional  int32 type= 2;//类型 1添加，2修改，3删除
+}
+
+//联欢豆变化
+message SC_User_LHD
+{
+    //option (msgid) = 20103;
+    optional int32     	lhd                = 1; //联欢豆
+}
+
+//发送汇率
+message SC_Today_Huilv
+{
+    //option (msgid) = 20104;
+    optional double     	lv                = 1; //汇率
 }
 
 

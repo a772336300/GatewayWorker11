@@ -1051,6 +1051,16 @@ function send_user_lhd($uid){
     send_pack_Lhd($uid,$lhd);
 }
 
+/**发送当日汇率
+ * @param $uid
+ * @param $phone
+ */
+function send_user_today_huilv($uid){
+    $lv=100/getRate();
+    //发送帐变
+    send_pack_huilv($uid,$lv);
+}
+
 /**发送玩家货币变化信息
  * @param $uid
  * @param $phone
