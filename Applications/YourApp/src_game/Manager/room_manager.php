@@ -159,7 +159,7 @@ final class room_manager
                     }
                 }
             }
-        }
+        },true
         );
 
         return;
