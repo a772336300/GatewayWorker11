@@ -117,6 +117,7 @@ function game_db_store_game_result($roomId,$infos,$channel)
 }
 function game_db_update_gold($player,$gold,$fangfei)
 {
+    return;
     global $tcp_worker;
     $person_db=$tcp_worker->db->select('gold')->from("user_money")->where("uid= '$player'")->row();
     $diff=$person_db['gold']+$gold;

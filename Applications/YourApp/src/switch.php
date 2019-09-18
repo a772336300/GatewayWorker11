@@ -323,14 +323,14 @@ function message_switch($client_id,$mid,$data)
     {
         $xiaotiao= new \Proto\SC_XinTiao();
         $xiaotiao->setDate(time());
-        Gateway::sendToClient($client_id,my_pack(713,$xiaotiao->serializeToString()));
+       // Gateway::sendToClient($client_id,my_pack(713,$xiaotiao->serializeToString()));
         return;
     }
     //如果用户id没设置
     if(!isset($_SESSION['uid']))
     {
         echo "without login message!";
-//        return;
+        return;
     }
     //大厅新加信息
     if($mid>20000&&$mid<30000){
@@ -403,6 +403,7 @@ function message_switch($client_id,$mid,$data)
             {
                 $play_game_result = new \Proto\CS_Game_Over_Score();
                 $play_game_result->parseFromString($data);
+
                 db_add_user_game_store($_SESSION['uid'],$play_game_result);
 //                task_manager($mid);
                 task_udpate_game($play_game_result,$_SESSION['uid']);

@@ -7,6 +7,12 @@ use Proto\Message_Id;
 
 function switch_game($client_id,$mid,$data)
 {
+    if(!isset($_SESSION['uid']))
+    {
+        send_notice_by_client_id($client_id,1,"用户id错误");
+        util_log("用户id错误！error：2999");
+        return;
+    }
     switch ($mid)
     {
         case Message_Id::CS_Robot_Join_Id:

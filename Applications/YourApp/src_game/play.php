@@ -475,7 +475,7 @@ function roomTick($roomId,$times,$timeSecond=16)
 //    //#test
     if($redis->hGet($turnerId,'time_out_count')>=time_out_limit)
     {
-        $timeSecond=0.5;
+        $timeSecond=1;
     }
     Timer::add($timeSecond, function()use($roomId,$repeat,$tick,$turnerId)
     {
