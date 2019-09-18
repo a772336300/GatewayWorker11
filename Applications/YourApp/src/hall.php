@@ -943,7 +943,12 @@ function add_user_packet($prop_id,$uid,$phone,$des,$num=1){
             $good=$rs[0];
             //添加道具获得记录
             $nowTime=date('Y-m-d h:i:s', time());
-            $rows=[['uid'=>$uid,'phone'=>$phone,'prop_id'=>$good->prop_id,'name'=>$good->name,'num'=>$num,'des'=>$des,'add_time'=>$nowTime,'times'=>time()]];
+            $price=$good->price;
+            if($good->price_type==3){
+                $lastRate=getLastRate();
+                $price=(int)($price*$lastRate);
+            }
+            $rows=[['uid'=>$uid,'phone'=>$phone,'prop_id'=>$good->prop_id,'price_type'=>$good->price_type,'price'=>$price,'name'=>$good->name,'num'=>$num,'des'=>$des,'add_time'=>$nowTime,'times'=>time()]];
             $hall_log->insert("get_goods_log", $rows);
             if($good->use_type==5){
                 //获得联欢币
