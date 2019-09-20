@@ -312,7 +312,7 @@ function util_log($str){
     $size=filesize($file);
     $temp=strlen($str);
     //日志文件最大500M
-    if($size+$temp<=1024*1024*500){
+    if($size+$temp<=1024*1024*50){
         file_put_contents('log.txt', $str."\n", FILE_APPEND | LOCK_EX);
     }else{
         unlink ( $file);
