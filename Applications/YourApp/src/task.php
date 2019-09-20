@@ -44,8 +44,8 @@ function task_udpate_once($uid,$task_id)
 
 function task_udpate_game($play_game_result,$uid)
 {
-
-    $gameId=$play_game_result->getGameid();
+    $gameId=$play_game_result[0];
+    $gameTime=$play_game_result[1];
 //    echo "gameId:".$gameId;
 //    echo '/n';
     util_log('gameId:'.$gameId);
@@ -53,9 +53,9 @@ function task_udpate_game($play_game_result,$uid)
     switch ($gameId){
         //3  弓与箭   4  跳一跳   5  消消乐  6  怪物防守
         case 3://弓与箭
-            $getBaXin=$play_game_result->getValue1();//244-247
-            $score=$play_game_result->getValue2();
-            $gameTime=$play_game_result->getValue3();
+            $getBaXin=$play_game_result[2];//244-247
+            $score=$play_game_result[3];
+            $bazi=$play_game_result[4];
             if($getBaXin>0){
                 $taskIds="(320000,320001)";
                 update($taskIds,$getBaXin,$uid,$gameTime);
@@ -64,11 +64,15 @@ function task_udpate_game($play_game_result,$uid)
                 $taskIds="(320002,320003)";
                 update($taskIds,$score,$uid,$gameTime);
             }
+            if($bazi>0){
+                $taskIds="(320004)";
+                update($taskIds,$bazi,$uid,$gameTime);
+            }
             break;
         case 4://跳一跳
-            $getScore=$play_game_result->getValue1();//260-263
-            $zhongxin=$play_game_result->getValue2();//264-267
-            $gameTime=$play_game_result->getValue3();
+            $getScore=$play_game_result[2];//260-263
+            $zhongxin=$play_game_result[3];//264-267
+            $lxzhongxin=$play_game_result[4];//264-267
             if($getScore>0){
                 $taskIds="(320100,320101)";
                 update($taskIds,$getScore,$uid,$gameTime);
@@ -77,11 +81,14 @@ function task_udpate_game($play_game_result,$uid)
                 $taskIds="(320102,320103)";
                 update($taskIds,$zhongxin,$uid,$gameTime);
             }
+            if($lxzhongxin>0){
+                $taskIds="(320104)";
+                update($taskIds,$lxzhongxin,$uid,$gameTime);
+            }
             break;
         case 5://消消乐
-            $xing=$play_game_result->getValue1();//272-275
-            $getScore=$play_game_result->getValue2();//272-275
-            $gameTime=$play_game_result->getValue3();
+            $xing=$play_game_result[2];//272-275
+            $getScore=$play_game_result[3];//272-275
             $taskIds="(320200)";//通关次数+1
             update($taskIds,1,$uid,$gameTime);
             if($xing>0){
@@ -94,49 +101,24 @@ function task_udpate_game($play_game_result,$uid)
             }
             break;
         case 6://怪物防守
-            $boShu=$play_game_result->getValue1();//280-283
-            $normal=$play_game_result->getValue2();//284-287
-            $boss=$play_game_result->getValue3();//288-291
-            $chengqiang=$play_game_result->getValue4();//292-295
-            $wuqi=$play_game_result->getValue5();//296-299
-            $gameTime=$play_game_result->getValue6();
-            if($boShu>0){
-                $taskIds="(320300)";
-                update($taskIds,$boShu,$uid,$gameTime);
-            }
-            if($normal>0){
-                $taskIds="(320301)";
-                update($taskIds,$normal,$uid,$gameTime);
-            }
-            if($boss>0){
-                $taskIds="(320302)";
-                update($taskIds,$boss,$uid,$gameTime);
-            }
-            if($chengqiang>0){
-                $taskIds="(320303)";
-                update($taskIds,$chengqiang,$uid,$gameTime);
-            }
-            if($wuqi>0){
-                $taskIds="(320304)";
-                update($taskIds,$wuqi,$uid,$gameTime);
+            for($i=2;$i<count($play_game_result);$i++){
+                $num=$play_game_result[$i];
+                if($num>0){
+                    $taskIds="(32030".($i-2).")";
+                    if($i==4){
+                        $taskIds="(32030".($i-2).",320306)";
+                    }
+                    update($taskIds,$num,$uid,$gameTime);
+                }
             }
             break;
         case 7://打气球
-            $jifen=$play_game_result->getValue1();//280-283
-            $shuziqiqiu=$play_game_result->getValue2();//280-283
-            $wenhaoqiqiu=$play_game_result->getValue3();//280-283
-            $gameTime=$play_game_result->getValue4();
-            if($jifen>0){
-                $taskIds="(320400)";
-                update($taskIds,$jifen,$uid,$gameTime);
-            }
-            if($shuziqiqiu>0){
-                $taskIds="(320401)";
-                update($taskIds,$shuziqiqiu,$uid,$gameTime);
-            }
-            if($wenhaoqiqiu>0){
-                $taskIds="(320402)";
-                update($taskIds,$wenhaoqiqiu,$uid,$gameTime);
+            for($i=2;$i<count($play_game_result);$i++){
+                $num=$play_game_result[$i];
+                if($num>0){
+                    $taskIds="(32040".($i-2).")";
+                    update($taskIds,$num,$uid,$gameTime);
+                }
             }
             break;
     }
@@ -180,24 +162,20 @@ function get_user_task_list($user_id){
     //判断用户是否有任务列表
     $sql="select count(id) total from func_system.user_task where user_id=".$user_id;
     $total=db_query($sql)[0]['total'];
-    if($total==0){
-        //查询是否有老任务
+
+    $task_cofigs=db_get_task_config();
+    if($total!=count($task_cofigs)){
         global $tcp_worker;
         $tcp_worker->db->beginTrans();
-        $task_cofigs=db_get_task_config();
         foreach ($task_cofigs as $task_config) {
-//            echo "task_id".$task_config["task_id"];
-//            echo '/n';
-            $state=2;
-            $done=0;
-            if($task_config["task_id"]==300032){
-                $state=3;
-                $done=1;
+            $task_id=$task_config["task_id"];
+            $sql="SELECT id FROM `func_system`.`user_task` WHERE user_id=$user_id and task_id=$task_id";
+            $user_tasks=db_query($sql);
+            if(count($user_tasks)==0){
+                $sql="insert into func_system.user_task (user_id,task_id,state,done,total,task_name_type) values($user_id,$task_config[task_id],2,0,$task_config[total],$task_config[task_name_type])";
+                db_query($sql);
             }
-            $sql="insert into func_system.user_task (user_id,task_id,state,done,total,task_name_type) values($user_id,$task_config[task_id],$state,$done,$task_config[total],$task_config[task_name_type])";
-            db_query($sql);
         }
-
         if(!$tcp_worker->db->commitTrans())
         {
             $tcp_worker->db->rollBackTrans();
@@ -205,11 +183,7 @@ function get_user_task_list($user_id){
             return false;
         }
     }
-    //查询玩家是普通玩家还是代理
-    $sql="select user_type from bolaik_user.`user_info` where user_id='$user_id'";
-    $user=db_query($sql);
-    $isNormal=$user[0]['user_type']==1?1:0;
-    //get user_taskList
+
     $sql="select ut.times,tc.id,ut.user_id, ut.task_id, ut.state, ut.num done, tc.total,ut.total total1,tc.task_name,tc.task_content,tc.task_name_type,tc.task_skip_type,tc.skip,tc.u_coin_first,tc.u_coin_agent,tc.u_coin_normal from func_system.user_task ut,func_system.task_config tc where ut.task_id=tc.task_id and ut.user_id=".$user_id." order by ut.state desc";
     $allDatas=db_query($sql);
     foreach ($allDatas as $key=>$allData) {
@@ -218,25 +192,13 @@ function get_user_task_list($user_id){
             db_query($sql);
         }
         if($allData['task_id']==299999){
-//            if($allData['times']>0){
-//                if($isNormal){
-                    $allDatas[$key]['u_coin']=$allData['u_coin_normal'];
-//                }else{
-                    $allDatas[$key]['gold_coin']=$allData['u_coin_agent'];
-//                }
-//            }else{
-//                //还未完成第一次领奖
-//                $allDatas[$key]['u_coin']=$allData['u_coin_first'];
-//                $allDatas[$key]['gold_coin']=0;
-//            }
+            $allDatas[$key]['u_coin']=$allData['u_coin_normal'];
+            $allDatas[$key]['gold_coin']=$allData['u_coin_agent'];
         }else{
             $allDatas[$key]['u_coin']=$allData['u_coin_normal'];
             $allDatas[$key]['gold_coin']=0;
         }
-
-
     }
-//    $allDatas=[];
     send_pack_user_task_list($user_id,true,$allDatas);
 }
 //领取任务奖励

@@ -2,7 +2,7 @@ package proto;
 //////////////////////////////////////////////////用户注册或获取密码
 
 ///////////////////////////用户获取密码 701 --> 702
-
+//文件生成语句  php protoc-gen-php.php new.proto
 
 //检查onepass白名单
 message CS_Get_White
@@ -288,14 +288,8 @@ message CS_User_bAgent
 //小游戏结束成绩 
 message CS_Game_Over_Score
 {
-    //option (msgid) = 900;
-    optional uint32 gameid = 1;
-	optional uint32 value1 = 2;
-	optional uint32 value2 = 3;
-	optional uint32 value3  = 4;
-	optional uint32 value4  = 5;
-	optional uint32 value5  = 6;
-	optional uint32 value6  = 7;
+	//option (msgid) = 900;
+	repeated uint32 value = 1;//第一位 gameid  第二位 时间  根据任务来
 }
 
 /////////////////小游戏排行榜  901 --> 902
