@@ -277,6 +277,8 @@ message RoomInfoTable
 	optional TimeInfo beginningTime = 7;   //开始时间
     optional int32 gameState = 8;         //游戏状态 1报名中 2已开赛 3已结束
 	optional int32	playerMax = 9;		//总人数
+	optional int32 numberOfGames = 10;   //游戏局数
+    optional string RewardDescription = 11;  //奖励描述
 }
 //时间信息
 message TimeInfo
