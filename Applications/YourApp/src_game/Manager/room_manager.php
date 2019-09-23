@@ -1202,6 +1202,7 @@ final class room_manager
             $this->user_crooms[intval($code)]['config']['gameType']         = $CreateCardRoom_data->getGameType();
             $this->user_crooms[intval($code)]['number']                     = array();
             $this->user_crooms[intval($code)]['config']['top_list']         = array();
+            $this->user_crooms[intval($code)]['gameState']                  = $roominfotable->getGameState();
             $this->set_top_list(intval($code),$CreateCardRoom_data->getPlayers());
 
             GatewayWorker\Lib\Gateway::sendToClient($client_id,my_pack(Message_Id::SC_CreateCardRoom_Id,$result->serializeToString()));
