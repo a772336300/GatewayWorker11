@@ -218,7 +218,6 @@ function message_switch($client_id,$mid,$data)
     }
     if($mid==710)
     {
-
         echo "client login request!";
         //获取请求对象
         $cs_client_login = new \Proto\CS_Client_Login();
@@ -301,9 +300,9 @@ function message_switch($client_id,$mid,$data)
             $sql="select max_user from bolaik_user.user_online where date_time='$date'";
             $online=db_query($sql);
             $max=count($online)>0?$online[0]['max_user']:1000;
-            global $connection_count;
-            if($connection_count>$max){
-                $sql="update bolaik_user.user_online set max_user= $connection_count,max_time='$time' where date_time='$date'";
+            $all_num=Gateway::getAllUidCount();
+            if($all_num>$max){
+                $sql="update bolaik_user.user_online set max_user= $all_num,max_time='$time' where date_time='$date'";
                 db_query($sql);
             }
             //判断是否绑定邀请码
@@ -522,7 +521,7 @@ function message_switch($client_id,$mid,$data)
                 $user_info_up->parseFromString($data);
                 $is_success = true;
                 $user=db_user_bWx_mark($_SESSION['uid']);
-                if(!isset($user['bWx'])|| $user['bWx']===null || $user['bWx']==1)
+                if(!isset($user['bWx'])|| $user['bWx']==1)
                 {
                     send_pack_user_wx($client_id,false);
                     return;
