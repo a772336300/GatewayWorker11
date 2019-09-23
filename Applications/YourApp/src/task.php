@@ -90,7 +90,7 @@ function task_udpate_game($play_game_result,$uid)
             $xing=$play_game_result[2];//272-275
             $getScore=$play_game_result[3];//272-275
             $taskIds="(320200)";//通关次数+1
-            update($taskIds,1,$uid,$gameTime);
+            update($taskIds,1,$uid,60);
             if($xing>0){
                 $taskIds="(320201,320202)";
                 update($taskIds,$xing,$uid,$gameTime);
@@ -312,8 +312,10 @@ function util_log($str){
     $size=filesize($file);
     $temp=strlen($str);
     //日志文件最大500M
-    if($size+$temp<=1024*1024*500){
+    if($size+$temp<=1024*1024*50){
         file_put_contents('log.txt', $str."\n", FILE_APPEND | LOCK_EX);
+    }else{
+        unlink ( $file);
     }
 }
 
