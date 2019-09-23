@@ -21,6 +21,15 @@ require_once 'user.php';
 
 //global
 
+/*
+地主得分=（叫分+倍数）x底分x2
+农民得分=（叫分+倍数）x底分
+每打出一个炸弹，倍数+2
+每打出火箭，倍数+2
+地主所有牌出完，其他两家一张都未出，称为“春天”，倍数+2
+其他两家中有一家先出完牌，地主只出过一手牌，也是“春天”，倍数+2
+ */
+
 
 final class room_manager
 {
@@ -126,7 +135,7 @@ final class room_manager
                         /**
                          * 定时开起
                          */
-                        if ($data->starttime == strtotime(date("Y-m-d H:i:s")))
+                        if ($data->starttime == strtotime(date("H:i")))
                         {
                             if (isset($this->public_rooms[$key]['playerid']))
                             {
