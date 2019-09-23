@@ -1032,7 +1032,7 @@ final class room_manager
                         {
                             $this->user_crooms[$roomid]['playerid'][] = $playerid;
                             $result = new SC_JoinTheRoom();
-                            $result->setResult(1);
+                            $result->setResult(0);
                             $roominfo = new RoomInfoTable();
                             $roominfo->setGameState(1);
                             $roominfo->setRoomId($roomid);
