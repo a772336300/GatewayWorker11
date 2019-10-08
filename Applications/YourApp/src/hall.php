@@ -348,6 +348,7 @@ function hall_message_switch($mid,$data){
             }
             $is_success=$code==0?true:false;
             send_user_buy_goods($uid,$is_success,$code);
+            send_user_lhd($uid);
             break;
         //使用道具
         case 20019:
